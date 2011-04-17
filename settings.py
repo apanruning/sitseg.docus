@@ -15,7 +15,7 @@ ADMINS = (
 MANAGERS = ADMINS
 
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-TIME_ZONE = 'America/Argentina/Córdoba'
+TIME_ZONE = 'America/Argentina/Cordoba'
 
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'es-AR'
