@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang='es'>
+    <head>
+        <meta charset="utf-8" />
+        <title>{% block title %}Bienvenido{% endblock %} sitseg</title>
+        <meta name="description" content="Sistema Tecnológico de Seguridad" />
+        <link rel="stylesheet" href="/static/css/style.css" type="text/css" media="screen" />
+        <!--[if IE]>
+          <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js">
+          </script>
+        <![endif]-->
+
+    </head>
+    <body>
+    {% block page %}
+        {% for datasource in datasource_list %}
+        {{datasource}}
+        {% empty %}
+        <h1>No hay registros</h1>
+        {% endfor %}        
+    {% endblock %}
+    </body>
+</html>
+
