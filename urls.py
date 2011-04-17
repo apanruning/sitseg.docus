@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+
 from django.conf.urls.defaults import patterns, include, url
 
-urlpatterns = patterns('',
+urlpatterns = patterns('datasources.views',
+    (r'^$', 'index', {}, 'index'),
 )

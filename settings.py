@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import os
 from mongoengine import connect
 
@@ -38,9 +39,7 @@ STATIC_URL = '/static/'
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+    MEDIA_ROOT,
 )
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -66,6 +65,8 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'docus.urls'
 
 TEMPLATE_DIRS = (
+    'templates',
+    os.path.join(BASE_DIR, 'templates')
 )
 
 INSTALLED_APPS = (
@@ -75,6 +76,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'datasources',
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -82,6 +84,8 @@ AUTHENTICATION_BACKENDS = (
 )
 
 SESSION_ENGINE = 'mongoengine.django.sessions'
+
+DEFAULT_FILE_STORAGE = 'mongoengine.django.GridFSStorage'
 
 connect('sitseg')
 
