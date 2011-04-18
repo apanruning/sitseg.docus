@@ -2,6 +2,10 @@ body {
     font: 100% sans-serif;
 }
 
+form {
+    float:right;
+    width: 20em;
+}
 form label {
     display: block;
 }

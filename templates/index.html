@@ -12,9 +12,30 @@
 
     </head>
     <body>
+    <header>
+    <form method="post" action="." enctype="multipart/form-data">{% csrf_token %}
+    
+
+        <p class="{{form.name.errors|yesno:'errors,valid'}}">
+            {{form.name.errors}}
+            <label for="id_name">Nombre</label>
+            {{form.name}}
+        </p>
+        <p class="{{form.attach.errors|yesno:'errors,valid'}}">
+            {{form.attach.errors}}
+            <label for="id_{{form.attach.name}}">Archivo</label>
+            {{form.attach}}
+        </p>   
+        <p class="{{form.author.errors|yesno:'errors,valid'}}">
+            <label for="id_{{form.author.name}}">Autor</label>
+            {{form.author}}
+        </p>
+        <input type="submit" name="Guardar" value="Submit"/>
+    </form>
+    </header>
     {% block page %}
         {% for datasource in datasource_list %}
-        {{datasource}}
+        {{datasource.name}} - {{datasource.attach.path}}
         {% empty %}
         <h1>No hay registros</h1>
         {% endfor %}        

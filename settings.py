@@ -87,6 +87,29 @@ SESSION_ENGINE = 'mongoengine.django.sessions'
 
 DEFAULT_FILE_STORAGE = 'mongoengine.django.GridFSStorage'
 
+#LOGGING = {
+#    'version': 1,
+#    'disable_existing_loggers': True,
+#    'handlers': {
+#        'console':{
+#            'level':'DEBUG',
+#            'class':'logging.StreamHandler',
+#        },
+#    },
+#    'loggers': {
+#        'django': {
+#            'handlers':['null'],
+#            'propagate': True,
+#            'level':'INFO',
+#        },
+#        'django.debug': {
+#            'handlers': ['console'],
+#            'level': 'INFO',
+#        }
+#    }
+#}
+
+
 connect('sitseg')
 
 try:

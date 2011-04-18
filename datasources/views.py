@@ -1,29 +1,34 @@
 # -*- coding: utf-8 -*-
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from models import DataSource
 from forms import DataSourceForm
+
 def index(request):
+    
+    form = DataSourceForm()
+
+    if request.method == 'POST':
+       form = DataSourceForm(request.POST, request.FILES)
+
+       if form.is_valid():
+            data = form.cleaned_data
+            datasource = DataSource()
+            datasource.name = data['name']
+            import ipdb; ipdb.set_trace()
+            datasource.attach = data['attach'].read()
+            datasource.attach.content_type = data['attach'].content_type
+            datasource.author = data['author']
+     
+            datasource.save()
+       return redirect("/")
+
     return render(
         request,
         'index.html',
-        {'datasource_list': DataSource.objects}
+        {
+            'datasource_list': DataSource.objects,
+            'form': form,
+        }
     )
 
-def create(request):
-
-    if request.method == 'POST':
-       form = DataSourceForm(request.POST)
-       
-       if form.is_valid():
-           form.save()
-       return HttpResponseRedirect("/")
-
-    else:
-        form = DataSourceForm()
-        
-    return render(
-        request,
-        'datasource_create.html',
-        {'form': form}
-    )

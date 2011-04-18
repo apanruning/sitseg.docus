@@ -1,7 +1,7 @@
 {% extends '' %}
 {% block page %}
     <form method="post" action=".">
-        <input type="hidden" name="author" value="{{request.user}}"/>
+        <input type="hidden" name="author" value="{{user|default:'anon'}}"/>
         {{ form.as_p }}
         <input type="submit" name="save" value="Submit"/>
     </form>
