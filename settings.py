@@ -29,9 +29,10 @@ USE_L10N = True
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-MEDIA_URL = '/media/'
+# Cambiar en local_settings para que apunte al nginx que sirve los archivos
+# ej: 'http://gridfs.localhost:9000'
 
-ADMIN_MEDIA_PREFIX = '/media/'
+MEDIA_URL = '/media/' 
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 

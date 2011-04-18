@@ -47,10 +47,9 @@ class DataSource(Document):
             self.slug = new_slug
 
         return super(DataSource, self).save()
-
+    
 
 #    def get_absolute_url(self):
-
 #        return reverse('datasources.views.detail', kwargs={'slug': self.slug})
 
 

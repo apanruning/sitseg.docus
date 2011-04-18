@@ -33,12 +33,14 @@
         <input type="submit" name="Guardar" value="Submit"/>
     </form>
     </header>
-    {% block page %}
+    {% block page %} 
+        <ul>
         {% for datasource in datasource_list %}
-        {{datasource.name}} - {{datasource.attach.path}}
+        <li><h1>{{datasource.name}}</h1> {{datasource.created}} - {{datasource.author}} <a href="{{MEDIA_URL}}/{{datasource.attach.grid_id}}"> Descargar</a></li>
         {% empty %}
-        <h1>No hay registros</h1>
+        <li>No hay registros</li>
         {% endfor %}        
+        </ul>
     {% endblock %}
     </body>
 </html>
