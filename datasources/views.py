@@ -10,23 +10,12 @@ def index(request):
     form = DataSourceForm()
 
     if request.method == 'POST':
-       form = DataSourceForm(request.POST, request.FILES)
+        form = DataSourceForm(request.POST, request.FILES)
+        import ipdb; ipdb.set_trace()
+        if form.is_valid():
+            form.save()
 
-       if form.is_valid():
-            data = form.cleaned_data
-            attach = data['attach']
-            datasource = DataSource()
-            datasource.name = data['name']
-            datasource.attach.put(
-                attach.read(), 
-                content_type=attach.content_type, 
-                filename=attach.name,
-            )
-            import ipdb; ipdb.set_trace()
-            datasource.author = User.objects.get(username=data['author'])
-            datasource.save()
-
-       return redirect("/")
+        return redirect("/")
 
 
     return render(
