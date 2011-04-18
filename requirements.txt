@@ -1,6 +1,8 @@
 Django
 mongoengine
 
-django-mongoforms
 django-tagging
+
+git+git://github.com/darvin/django-mongoforms.git
+
 
