@@ -1,3 +1,6 @@
 Django
-django-mongoforms
 mongoengine
+
+django-mongoforms
+django-tagging
+

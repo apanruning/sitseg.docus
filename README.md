@@ -2,6 +2,10 @@ Requerimientos:
 
 - MongoDB (http://www.mongodb.org/)
 - django (http://django-project.com)
+- mongoengine (http://mongoengine.org/)
+
+Opcional, para servir archivos desde el gridfs:
+
 - nginx (http://nginx.org/)
 - nginx-gridfs (https://github.com/mdirolf/nginx-gridfs)
 
@@ -19,6 +23,13 @@ Establecer el entorno para django:
     $ . bin/activate 
     $ git clone git@github.com:Inventta/sitseg.docus.git docus
     $ pip install -r docus/requirements.txt
+
+Correr el servidor de desarrollo
+-----------------------
+
+    $ cd docus
+    $ git checkout dev
+    $ ./manage.py runserver
     
 Configurar nginx para servir los archivos desde el GridFS
 -----------------------
