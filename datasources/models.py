@@ -1,36 +1,41 @@
 # -*- coding: utf-8 -*-
-
-from mongoengine import EmbeddedDocument, Document, fields
-from mongoengine.django.auth import User
+from django.db import models
+from djangotoolbox.fields import EmbeddedModelField, ListField
 from datetime import datetime
 from django.template.defaultfilters import slugify
+from django.contrib.auth.models import User
+from django.contrib import admin
 
 
-class Annotation(EmbeddedDocument):
+class Annotation(models.Model):
 
-    text = fields.StringField(required=True)
-    author = fields.StringField(required=True)
+    text = models.CharField(max_length=1024)
+    author = models.CharField(max_length=1024)
+    created = models.DateTimeField(auto_now_add=True, editable = False)
+    changed = models.DateTimeField(auto_now=True, editable = False)
+    datasource = models.ForeignKey('DataSource')    
 
+class Column(models.Model):
 
-class Column(EmbeddedDocument):
-
-    name = fields.StringField(required=True)
-    data_type = fields.StringField(required=True)
-    is_key = fields.BooleanField()
+    name = models.CharField(max_length=1024)
+    data_type = models.CharField(max_length=1024)
+    is_key = models.BooleanField()
+    datasource = models.ForeignKey('DataSource')    
     
-    
-class DataSource(Document):
+class DataSource(models.Model):
 
-    name = fields.StringField(required=True)
-    slug = fields.StringField(required=True)
-    attach = fields.FileField(required=True)
-    columns = fields.EmbeddedDocumentField(Column)
-    annotations = fields.EmbeddedDocumentField(Annotation)
-    created = fields.DateTimeField(required=True)
-    author = fields.ReferenceField(User, required=True)
+    name = models.CharField(max_length=1024)
+    slug = models.SlugField(editable=False)
+    attach = models.FileField(upload_to='upload')
+
+    created = models.DateTimeField(auto_now_add=True, editable = False)
+    changed = models.DateTimeField(auto_now=True, editable = False)
+    author = models.ForeignKey(User)
+
+    def __unicode__(self):
+        return self.name
 
     def save(self):
-        self.created = datetime.now()
         if self.slug is None:
             slug = slugify(self.name)
             new_slug = slug
@@ -48,9 +53,32 @@ class DataSource(Document):
 
         return super(DataSource, self).save()
     
-
-#    def get_absolute_url(self):
-#        return reverse('datasources.views.detail', kwargs={'slug': self.slug})
+    @models.permalink
+    def get_absolute_url(self):
+        return ('datasources.views.detail', [{'slug': self.slug}])
 
 
 __all__ = ['DataSource', 'Column', 'Annotation']
+
+class AnnotationAdminInLine(admin.TabularInline):
+    model = Annotation
+    extra = 1
+
+class ColumnAdminInLine(admin.TabularInline):
+    model = Column
+    extra = 4
+
+class DataSourceAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'author', 'created')
+    list_filter = ('author', 'created')
+    inlines = [ColumnAdminInLine, AnnotationAdminInLine]
+
+class ColumnAdmin(admin.ModelAdmin):
+    list_filter = ('name', )
+
+class AnnotationAdmin(admin.ModelAdmin):
+    list_filter = ('author', )
+
+admin.site.register(DataSource, DataSourceAdmin)
+admin.site.register(Column, ColumnAdmin)
+admin.site.register(Annotation, AnnotationAdmin)

@@ -3,7 +3,6 @@
 from django.shortcuts import render, redirect
 from models import DataSource
 from forms import DataSourceForm
-from mongoengine.django.auth import User
 
 def index(request):
     

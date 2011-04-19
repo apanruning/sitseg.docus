@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
 
 import os
-from mongoengine import connect
+
 
 BASE_DIR = os.path.dirname(__file__)
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+
+DATABASES = {
+   'default' : {
+      'ENGINE' : 'django_mongodb_engine',
+      'NAME' : 'sitseg',
+   }
+}
 
 ADMINS = (
     ('tutuca', 'maturburu@gmail.com'),
@@ -20,8 +27,6 @@ TIME_ZONE = 'America/Argentina/Cordoba'
 
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'es-AR'
-
-SITE_ID = 1
 
 USE_I18N = True
 
@@ -74,19 +79,13 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.admin',
     'datasources',
 )
 
-AUTHENTICATION_BACKENDS = (
-    'mongoengine.django.auth.MongoEngineBackend',
-)
-
-SESSION_ENGINE = 'mongoengine.django.sessions'
-
-DEFAULT_FILE_STORAGE = 'mongoengine.django.GridFSStorage'
+AUTHENTICATION_BACKENDS = ('permission_backend_nonrel.backends.NonrelPermissionBackend',)
 
 #LOGGING = {
 #    'version': 1,
@@ -110,8 +109,6 @@ DEFAULT_FILE_STORAGE = 'mongoengine.django.GridFSStorage'
 #    }
 #}
 
-
-connect('sitseg')
 
 try:
     from local_settings import *

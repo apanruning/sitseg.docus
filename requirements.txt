@@ -1,8 +1,3 @@
-Django
-mongoengine
-
-django-tagging
-
-git+git://github.com/darvin/django-mongoforms.git
-
-
+git+git://github.com/adieu/django-nonrel.git
+git+https://bitbucket.org/fhahn/django-permission-backend-nonrel
+hg+https://bitbucket.org/fhahn/django-permission-backend-nonrel

@@ -14,8 +14,11 @@
     <body>
     <header>
     <form method="post" action="." enctype="multipart/form-data">{% csrf_token %}
-    
-
+        <ul class="error-list">
+        {% for error in form.errors %}
+            <li>{{error}}</li>
+        {% endfor %}
+        <ul>
         <p class="{{form.name.errors|yesno:'errors,valid'}}">
             {{form.name.errors}}
             <label for="id_name">Nombre</label>
@@ -27,8 +30,14 @@
             {{form.attach}}
         </p>   
         <p class="{{form.author.errors|yesno:'errors,valid'}}">
+            {{form.author.errors}}
             <label for="id_{{form.author.name}}">Autor</label>
             {{form.author}}
+        </p>
+        <p class="{{form.annotations.errors|yesno:'errors,valid'}}">
+            {{form.annotations.errors}}
+            <label for="id_{{form.annotations.name}}">Anotations</label>
+            {{form.annotations}}
         </p>
         <input type="submit" name="Guardar" value="Submit"/>
     </form>
@@ -36,7 +45,7 @@
     {% block page %} 
         <ul>
         {% for datasource in datasource_list %}
-        <li><h1>{{datasource.name}}</h1> {{datasource.created}} - {{datasource.author}} <a title="{{datasource.attach.name}}" href="{{MEDIA_URL}}/{{datasource.attach.grid_id}}"> Descargar</a></li>
+        <li><h1>{{datasource.name}}</h1> {{datasource.created}} - {{datasource.author}} <a title="{{datasource.attach.name}}" href="{{STATIC_URL}}{{datasource.attach.name}}"> Descargar</a></li>
         {% empty %}
         <li>No hay registros</li>
         {% endfor %}        
