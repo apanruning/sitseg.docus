@@ -24,8 +24,8 @@ class DataSource(Document):
     name = fields.StringField(required=True)
     slug = fields.StringField(required=True)
     attach = fields.FileField(required=True)
-    columns = fields.EmbeddedDocumentField(Column)
-    annotations = fields.EmbeddedDocumentField(Annotation)
+    columns = fields.ListField(fields.EmbeddedDocumentField(Column))
+    annotations = fields.ListField(fields.EmbeddedDocumentField(Annotation))
     created = fields.DateTimeField(required=True)
     author = fields.ReferenceField(User, required=True)
 

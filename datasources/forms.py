@@ -4,7 +4,7 @@ from django import forms
 from tagging.fields import TagField
 from mongoengine.django.auth import User
 from mongoforms import MongoForm
-from models import DataSource
+from models import DataSource, Annotation, Column
 
 class DataSourceForm(MongoForm):
     name = forms.CharField()
@@ -26,8 +26,12 @@ class DataSourceForm(MongoForm):
         return super(DataSourceForm, self).save(self)
 
         
-class AnnotationForm(forms.Form):
-
-    text = forms.CharField(label=u'Anotación', widget=forms.Textarea)
-    author = forms.ChoiceField(choices=((x.username,x.username) for x in User.objects), label="Autor")
-
+class AnnotationForm(MongoForm):
+    class Meta:
+        document = Annotation
+        
+class ColumnForm(MongoForm):
+    class Meta:
+        document = Column
+    
+    
