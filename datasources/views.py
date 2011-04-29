@@ -15,7 +15,6 @@ def index(request):
             data = form.cleaned_data
             datasource = DataSource()
             datasource.name = data['name']
-            import ipdb; ipdb.set_trace()
             datasource.attach = data['attach'].read()
             datasource.attach.content_type = data['attach'].content_type
             datasource.author = data['author']
