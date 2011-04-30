@@ -31,7 +31,10 @@ class AnnotationForm(MongoForm):
         document = Annotation
         
 class ColumnForm(MongoForm):
+    name = forms.CharField()
+    data_type = forms.CharField()
     class Meta:
         document = Column
-    
+
+ColumnFormSet = forms.formsets.formset_factory(ColumnForm, extra=3)
     

@@ -1,11 +1,23 @@
 body {
-    font: 100% sans-serif;
+    font: 100% monospace;
 }
 
 form {
-    float:right;
-    width: 20em;
+    position:fixed;
+    top:1em;
+    right: 1em; 
+}
+fieldset p {
+    float:left;
+    margin-right: 1em;
 }
 form label {
     display: block;
+}
+form.inline{
+    float:none;
+    display:inline;
+}
+fieldset {
+    clear: both;
 }

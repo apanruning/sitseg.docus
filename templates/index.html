@@ -5,17 +5,26 @@
         <title>{% block title %}Bienvenido{% endblock %} sitseg</title>
         <meta name="description" content="Sistema Tecnológico de Seguridad" />
         <link rel="stylesheet" href="/static/css/style.css" type="text/css" media="screen" />
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
         <!--[if IE]>
           <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js">
           </script>
         <![endif]-->
-
+       <script type="text/javascript" language="javascript">
+            $(document).ready(function(){
+                $('#add-column').click(function(){
+                    fieldset = $('form fieldset').last()[0];
+                    new_fieldset = $(fieldset).clone();
+                    $(new_fieldset).insertAfter(fieldset);
+                    return false;
+                })
+            })
+        </script>
     </head>
     <body>
     <header>
     <form method="post" action="." enctype="multipart/form-data">{% csrf_token %}
-    
-
+        {{ column_form.management_form }}
         <p class="{{form.name.errors|yesno:'errors,valid'}}">
             {{form.name.errors}}
             <label for="id_name">Nombre</label>
@@ -29,6 +38,15 @@
         <p class="{{form.author.errors|yesno:'errors,valid'}}">
             <label for="id_{{form.author.name}}">Autor</label>
             {{form.author}}
+        </p>
+        {% for inline_form in column_form %}
+        <fieldset>
+        <legend>Columna {{forloop.counter}}</legend>
+                {{ inline_form.as_p }}            
+        </fieldset>
+        {% endfor %}
+        <p>
+        <a href="#" id="add-column">Add another</a>
         </p>
         <input type="submit" name="Guardar" value="Submit"/>
     </form>
