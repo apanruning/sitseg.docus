@@ -32,19 +32,32 @@ Correr el servidor de desarrollo
     $ pip install -r docus/requirements.txt
     $ ./manage.py runserver
 
-Crear usuario inicial
+Crear usuario inicial (necesario para poder usar el formulario)
 -----------------------
     $ ./manage.py shell
     >>> from mongoengine.django.auth import User
     >>> User.create_user('nombre', 'pass')
 
+Correr mongodb en el entorno local
+-----------------------
+    $ mkdir db
+    $ mongod --dbpath=./db
+    Sun May  8 16:55:15 MongoDB starting : pid=17436 port=27017 dbpath=./db 32-bit 
+
+Esto permite tener la base de datos aislada en la carpeta db, para luego poder hacer
+backups o levantar un entorno con datos cargados.
+
+
 Correr el servidor de produccion
 -----------------------
 TBD
 
-    
+
+
 Configurar nginx para servir los archivos desde el GridFS
 -----------------------
+NOTA: Para el sitio en desarrollo no es necesario utilizarlo.
+
 
 Obtener dependencias y las fuentes de nginx
 
