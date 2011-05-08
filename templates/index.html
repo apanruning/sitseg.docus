@@ -54,7 +54,7 @@
     {% block page %} 
         <ul>
         {% for datasource in datasource_list %}
-        <li><h1>{{datasource.name}}</h1> {{datasource.created}} - {{datasource.author}} <a title="{{datasource.attach.name}}" href="{{MEDIA_URL}}/{{datasource.attach.grid_id}}">Descargar: </a></li>
+        <li><h1>{{datasource.name}}</h1> {{datasource.created}} - {{datasource.author}} <a title="{{datasource.attach.name}}" href="datasource/download_attach?id={{datasource.id}}">Descargar: </a></li>
         {% empty %}
         <li>No hay registros</li>
         {% endfor %}        
