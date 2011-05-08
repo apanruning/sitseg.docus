@@ -1,8 +1,9 @@
 Django
 mongoengine
-
+simplejson
 django-tagging
-
+django-debug-toolbar
 git+git://github.com/darvin/django-mongoforms.git
+ipdb
 
 
