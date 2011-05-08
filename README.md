@@ -22,14 +22,26 @@ Establecer el entorno para django:
     $ cd sitseg
     $ . bin/activate 
     $ git clone git@github.com:Inventta/sitseg.docus.git docus
-    $ pip install -r docus/requirements.txt
+
 
 Correr el servidor de desarrollo
 -----------------------
 
     $ cd docus
     $ git checkout dev
+    $ pip install -r docus/requirements.txt
     $ ./manage.py runserver
+
+Crear usuario inicial
+-----------------------
+    $ ./manage.py shell
+    >>> from mongoengine.django.auth import User
+    >>> User.create_user('nombre', 'pass')
+
+Correr el servidor de produccion
+-----------------------
+TBD
+
     
 Configurar nginx para servir los archivos desde el GridFS
 -----------------------
