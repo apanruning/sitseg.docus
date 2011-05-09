@@ -49,4 +49,9 @@ def download_attach(request):
 
     return response
 
+def autogenerate_columns(request):
+    datasource_id = request.GET.get('id', '')
+    datasource = DataSource.objects.get(id=datasource_id)    
+    datasource.import_columns()
+    return redirect("/")
 

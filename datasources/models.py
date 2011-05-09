@@ -4,7 +4,8 @@ from mongoengine import EmbeddedDocument, Document, fields
 from mongoengine.django.auth import User
 from datetime import datetime
 from django.template.defaultfilters import slugify
-
+from csv import reader
+from StringIO import StringIO
 
 class Annotation(EmbeddedDocument):
 
@@ -15,8 +16,10 @@ class Annotation(EmbeddedDocument):
 class Column(EmbeddedDocument):
 
     name = fields.StringField(required=True)
+    # Valid data types are:
+    # str, date, time, datetime, int, float, dict, point
     data_type = fields.StringField(required=True)
-    is_key = fields.BooleanField()
+    is_key = fields.BooleanField(default=False)
     
     
 class DataSource(Document):
@@ -48,7 +51,26 @@ class DataSource(Document):
 
         return super(DataSource, self).save()
     
+    @property
+    def attach_columns(self):
+        """ returns the number of columns for attach """
+        csv = reader(StringIO(self.attach.read()))
+        first_column = csv.next()
+        return len(first_column)
 
+    def import_columns(self):
+        """ assume that the first column has the headers title.
+            WARNING: It removes previous columns. Use with care.
+        """
+        csv = reader(StringIO(self.attach.read()))
+        first_column = csv.next()
+        # Check: Is deleting the previous fields?
+        self.columns = []
+        for column in first_column:
+            new_column = Column(name= unicode(column, 'utf-8'), data_type="str")
+            self.columns.append(new_column) 
+        self.save()
+        
 #    def get_absolute_url(self):
 #        return reverse('datasources.views.detail', kwargs={'slug': self.slug})
 

@@ -40,7 +40,11 @@ Crear usuario inicial (necesario para poder usar el formulario)
 
 Correr mongodb en el entorno local
 -----------------------
+Si es la primera vez que se corre:    
     $ mkdir db
+
+Para correrlo:
+    
     $ mongod --dbpath=./db
     Sun May  8 16:55:15 MongoDB starting : pid=17436 port=27017 dbpath=./db 32-bit 
 

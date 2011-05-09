@@ -8,7 +8,7 @@ from models import DataSource, Annotation, Column
 
 class DataSourceForm(MongoForm):
     name = forms.CharField()
-    attach = forms.FileField(label="Archivo")
+    attach = forms.FileField(label="Archivo CSV")
 
     class Meta:
         fields = ('name', 'author')

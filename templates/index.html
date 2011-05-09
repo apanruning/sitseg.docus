@@ -18,7 +18,7 @@
                     $(new_fieldset).insertAfter(fieldset);
                     return false;
                 })
-            })
+            });
         </script>
     </head>
     <body>
@@ -54,9 +54,27 @@
     {% block page %} 
         <ul>
         {% for datasource in datasource_list %}
-        <li><h1>{{datasource.name}}</h1> {{datasource.created}} - {{datasource.author}} <a title="{{datasource.attach.name}}" href="datasource/download_attach?id={{datasource.id}}">Descargar: </a></li>
+            <li>
+                <h1>{{datasource.name}}</h1> 
+                {{datasource.created}} - {{datasource.author}} 
+                <a title="{{datasource.attach.name}}" 
+                   href="datasource/download_attach?id={{datasource.id}}">
+                    Descargar Fuente
+                </a>
+                <ul>
+                {% for column in datasource.columns %}
+                    <li>
+                        <b>{{column.name}}</b> ({{ column.data_type}})
+                    </li>
+                {% empty %}
+                    <li>
+                        <a href="datasource/autogenerate_columns?id={{datasource.id}}">Autogenerar usando primera fila.</a>
+                    </li>
+                {% endfor %}
+                </ul>
+            </li>
         {% empty %}
-        <li>No hay registros</li>
+            <li>No hay registros</li>
         {% endfor %}        
         </ul>
     {% endblock %}
