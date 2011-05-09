@@ -38,9 +38,20 @@ def index(request):
         }
     )
 
-def download_attach(request):
-    datasource_id = request.GET.get('id', '')
-    datasource = DataSource.objects.get(id=datasource_id)
+def detail(request, id):
+    datasource = DataSource.objects.get(id=id)
+    return render(
+        request,
+        'detail.html',
+        {
+            'datasource': datasource,
+        }
+    )
+    
+
+def download_attach(request, id):
+
+    datasource = DataSource.objects.get(id=id)
     attach = datasource.attach.read()
     name = datasource.slug
     
@@ -49,9 +60,42 @@ def download_attach(request):
 
     return response
 
-def autogenerate_columns(request):
-    datasource_id = request.GET.get('id', '')
-    datasource = DataSource.objects.get(id=datasource_id)    
+def autogenerate_columns(request, id):
+    datasource = DataSource.objects.get(id=id)    
     datasource.import_columns()
     return redirect("/")
+
+def import_data(request, id):
+    datasource = DataSource.objects.get(id=id)    
+    datasource.generate_documents()
+    return redirect("/")
+
+
+def data_formatted(data, columns_dict):
+    """ takes a plain data and columns info and generate a list of labeled values"""
+    for document in data:
+        doc_formatted = []
+        for key, column in columns_dict.iteritems():
+        
+            doc_formatted.append(dict(
+                label = column['name'],
+                key = key,
+                value = document[key],
+                field_type = column['data_type']
+            ))
+        yield doc_formatted
+
+def show_data(request, id):
+    datasource = DataSource.objects.get(id=id)    
+    data = datasource.find()[:10]
+    #import ipdb; ipdb.set_trace()
+    return render(
+        request,
+        'data.html',
+        {
+            'datasource': datasource,
+            'data': data_formatted(data, datasource.columns_dict)
+        }
+    )
+
 

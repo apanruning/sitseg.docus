@@ -21,3 +21,16 @@ form.inline{
 fieldset {
     clear: both;
 }
+.data_column {
+    float: left;
+    width: 500px;
+    border: #aaaaaa solid;
+    background-color:#fae2f0;
+}
+.data_document {
+    float: left;
+    width: 500px;
+    border: #ff00ff solid;
+    background-color:#fae2f0;
+    margin:4px;
+}

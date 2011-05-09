@@ -55,23 +55,12 @@
         <ul>
         {% for datasource in datasource_list %}
             <li>
-                <h1>{{datasource.name}}</h1> 
-                {{datasource.created}} - {{datasource.author}} 
+                <h1><a href="datasource/{{datasource.id}}">{{datasource.name}}</a></h1> 
+                {{datasource.created}} - {{datasource.author}} ({{datasource.columns.count }} columnas)
                 <a title="{{datasource.attach.name}}" 
-                   href="datasource/download_attach?id={{datasource.id}}">
+                   href="datasource/{{datasource.id}}/download_attach">
                     Descargar Fuente
                 </a>
-                <ul>
-                {% for column in datasource.columns %}
-                    <li>
-                        <b>{{column.name}}</b> ({{ column.data_type}})
-                    </li>
-                {% empty %}
-                    <li>
-                        <a href="datasource/autogenerate_columns?id={{datasource.id}}">Autogenerar usando primera fila.</a>
-                    </li>
-                {% endfor %}
-                </ul>
             </li>
         {% empty %}
             <li>No hay registros</li>

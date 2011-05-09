@@ -34,6 +34,7 @@ class ColumnForm(MongoForm):
     name = forms.CharField()
     data_type = forms.CharField()
     class Meta:
+        fields = ('is_key',)    
         document = Column
 
 ColumnFormSet = forms.formsets.formset_factory(ColumnForm, extra=3)
