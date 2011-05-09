@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang='es'>
+    <head>
+        <meta charset="utf-8" />
+        <title>{% block title %}Bienvenido{% endblock %} sitseg</title>
+        <meta name="description" content="Sistema Tecnológico de Seguridad" />
+        <link rel="stylesheet" href="/static/css/style.css" type="text/css" media="screen" />
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+        <!--[if IE]>
+          <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js">
+          </script>
+        <![endif]-->
+       <script type="text/javascript" language="javascript">
+       </script>
+    </head>
+    <body>
+
+    <h1>{{datasource.name}}</h1> 
+    {{datasource.created}} - {{datasource.author}} 
+    |
+    <a title="{{datasource.attach.name}}" 
+       href="/datasource/{{datasource.id}}/download_attach">
+        Descargar Fuente</a>
+    |
+    <a title="Ver Datos" 
+       href="/datasource/{{datasource.id}}/data">
+        Ver algunos datos importados</a>
+    |
+    <a title="Index" 
+       href="/">
+        Volver</a>
+    |
+
+    <ul>
+    {% for column in datasource.columns %}
+        <li class="data_column">
+            <b>{{column.name}}</b> ({{ column.data_type }})
+        </li>
+    {% empty %}
+        <li>
+            <a href="datasource/{{datasource.id}}/autogenerate_columns">Autogenerar usando primera fila.</a>
+        </li>
+    {% endfor %}
+    </ul>
+    </body>
+</html>
+
