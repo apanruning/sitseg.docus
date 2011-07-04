@@ -1,5 +1,5 @@
 body {
-    font: 100% monospace;
+    font: 100% "Droid Sans", "Lucida Grande", Verdana, sans-serif;
 }
 header { 
     display:block;
@@ -21,8 +21,8 @@ ul {
 }
 .data_column{
     float: left;
-    width:40%;
-    margin:0.5em 10% 0.5em 0;
+    width:45%;
+    margin:0.5em 2em 0.5em 0;
 }
 .column_form {
     float:right;

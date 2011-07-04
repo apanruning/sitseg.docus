@@ -3,7 +3,6 @@
 from django.shortcuts import render, redirect
 from models import DataSource, Column
 from forms import DataSourceForm, ColumnFormSet, ColumnForm
-from mongoengine.django.auth import User
 from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse
 
@@ -48,6 +47,7 @@ def detail(request, id):
     
 def column(request, id):
     instance = Column.objects.get(id=id)
+    import ipdb; ipdb.set_trace()
     #XXX: Recuperar todos los datos que tienen en esta columna y devolverlo al
     #XXX: contexto
     if id and request.method == "POST":

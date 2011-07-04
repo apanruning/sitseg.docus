@@ -12,6 +12,7 @@ urlpatterns = patterns('datasources.views',
     (r'^datasource/(?P<id>\w+)/download_attach$', 'download_attach', {}, 'download_attach'),    
     (r'^datasource/(?P<id>\w+)/autogenerate_columns$', 'autogenerate_columns', {}, 'autogenerate_columns'),    
     (r'^datasource/(?P<id>\w+)/import_data$', 'import_data', {}, 'import_data'),    
+    (r'^datasource/(?P<id>\w+)/data$', 'show_data', {}, 'show_data'),    
     (r'^column/(?P<id>\w+)$', 'column', {}, 'column'),
 
     (r'^admin/', include(admin.site.urls)),

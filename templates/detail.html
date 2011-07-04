@@ -6,7 +6,7 @@
            href="/datasource/{{datasource.id}}/download_attach">
             Descargar Fuente</a> |
         <a title="Ver Datos" 
-           href="/datasource/{{datasource.id}}/document">
+           href="/datasource/{{datasource.id}}/data">
             Ver algunos datos importados</a> |
         <a title="Index"
            href="/">
@@ -22,7 +22,8 @@
     <ul>
     {% for column in columns %}
         <li class="data_column">
-            {{column.pk}}. <a href="/column/{{column.pk}}">{{column.name}}</a>
+            <h3>{{column.pk}}. <a href="/column/{{column.pk}}">{{column.name}}</a></h3>
+            <a href="/column/{{column.pk}}">Registros con esta columna</a>
             <form action="/column/{{column.pk}}" method="post" class="column_form">
             {% csrf_token %}
             <input type="hidden" name="object_id" value="{{column.pk}}"/>
@@ -30,7 +31,7 @@
             <select name="data_type">
                 <option value="{{ column.data_type }}" selected>{{ column.data_type }}</option>
             </select>
-            <label for="id_has_geodata">mapa</label><input type="checkbox" id="id_has_geodata" name="has_geodata" {% if column.has_geodata %}checked{% endif %}/>
+            <label for="id_has_geodata">geografico</label><input type="checkbox" id="id_has_geodata" name="has_geodata" {% if column.has_geodata %}checked{% endif %}/>
             <label for="id_is_available">disponible</label><input type="checkbox" id="is_available" name="is_available"  {% if column.is_available %}checked{% endif %}/>
             </form>
         </li>
