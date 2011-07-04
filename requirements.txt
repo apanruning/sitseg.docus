@@ -5,5 +5,7 @@ django-tagging
 django-debug-toolbar
 git+git://github.com/darvin/django-mongoforms.git
 ipdb
-
-
+ipython
+svn+http://django-mptt.googlecode.com/svn/trunk/#egg=mptt
+psycopg2
+PIL
