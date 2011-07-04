@@ -1,40 +1,43 @@
 # -*- coding: utf-8 -*-
 
-from mongoengine import EmbeddedDocument, Document, fields
-from mongoengine.django.auth import User
+#from mongoengine import EmbeddedDocument, Document, fields
+#from mongoengine.django.auth import User
 from datetime import datetime
 from django.template.defaultfilters import slugify
 from csv import reader
 from StringIO import StringIO
 from mongoengine import connection
+from maap.models import MaapModel
+from django.db import models
+from django.contrib.auth.models import User
+# datasource Objects
 
-class Annotation(EmbeddedDocument):
+class Annotation(models.Model):
 
-    text = fields.StringField(required=True)
-    author = fields.StringField(required=True)
+    text = models.TextField()
+    author = models.CharField(max_length=50)
+    datasource = models.ForeignKey('DataSource')
 
+class Column(models.Model):
 
-class Column(EmbeddedDocument):
-
-    name = fields.StringField(required=True)
-    label = fields.StringField(required=True)
-    created = fields.DateTimeField(required=True)
+    name = models.CharField(max_length=50)
+    label = models.CharField(max_length=50)
+    created = models.CharField(max_length=50)
     # Valid data types are:
     # str, date, time, datetime, int, float, dict, point
-    data_type = fields.StringField(required=True)
-    is_key = fields.BooleanField(default=False)
+    data_type = models.CharField(max_length=50)
+    is_key = models.BooleanField(default=False)
+    datasource = models.ForeignKey('DataSource')
+    has_geodata = models.BooleanField(default=False)
+    is_available = models.BooleanField(default=False)
     
+class DataSource(models.Model):
 
-
-class DataSource(Document):
-
-    name = fields.StringField(required=True)
-    slug = fields.StringField(required=True)
-    attach = fields.FileField(required=True)
-    columns = fields.ListField(fields.EmbeddedDocumentField(Column))
-    annotations = fields.ListField(fields.EmbeddedDocumentField(Annotation))
-    created = fields.DateTimeField(required=True)
-    author = fields.ReferenceField(User, required=True)
+    name = models.CharField(max_length=50)
+    slug = models.CharField(max_length=50)
+    attach = models.FileField(upload_to="docs")
+    created = models.DateTimeField()
+    author = models.CharField(max_length=50)
 
     def save(self):
         self.created = datetime.now()
@@ -81,14 +84,13 @@ class DataSource(Document):
         csv_attach = reader(StringIO(self.attach.read()))
         first_column = csv_attach.next()
         # Check: Is deleting the previous fields?
-        self.columns = []
+        #self.columns = []
         for column in first_column:
             new_column = Column(name= unicode(column, 'utf-8'), data_type="str")
             new_column.created = datetime.now()
             new_column.label = slugify(new_column.name)
-            self.columns.append(new_column) 
-
-        self.save()
+            new_column.datasource = self 
+            new_column.save()
 
     def _cast_value(self, data_type, value):
         if (data_type == "float"):
@@ -116,10 +118,10 @@ class DataSource(Document):
         
         for row in csv_attach:
             params = {'_datasource_id': self.id}
-            
-            for i in range(0, len(self.columns)):
-                params[self.columns[i].label] = self._cast_value(
-                                                   self.columns[i].data_type, row[i])
+            columns = self.column_set.all()
+            for i, column in enumerate(columns):
+                params[column.label] = self._cast_value(
+                                                  column.data_type, row[i])
             
             data_collection.insert(params)
 

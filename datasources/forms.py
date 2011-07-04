@@ -6,36 +6,36 @@ from mongoengine.django.auth import User
 from mongoforms import MongoForm
 from models import DataSource, Annotation, Column
 
-class DataSourceForm(MongoForm):
+class DataSourceForm(forms.ModelForm):
     name = forms.CharField()
-    attach = forms.FileField(label="Archivo CSV")
+    #attach = forms.FileField(label="Archivo CSV")
 
     class Meta:
-        fields = ('name', 'author')
-        document = DataSource
+        fields = ('name', 'author','attach')
+        model = DataSource
+        widgets = {'attach': forms.FileInput}
+    #def save(self, commit=True):
 
-    def save(self, commit=True):
+        #attach = self.files['attach']
+        #self.instance.attach.put(
+        #    attach.read(),
+        #    content_tyle=attach.content_type,
+        #    filename=attach.name
+        #)
 
-        attach = self.files['attach']
-        self.instance.attach.put(
-            attach.read(),
-            content_tyle=attach.content_type,
-            filename=attach.name
-        )
-
-        return super(DataSourceForm, self).save(self)
+    #    return super(DataSourceForm, self).save(self)
 
         
-class AnnotationForm(MongoForm):
+class AnnotationForm(forms.ModelForm):
     class Meta:
-        document = Annotation
-        
-class ColumnForm(MongoForm):
+        model = Annotation
+
+class ColumnForm(forms.ModelForm):
     name = forms.CharField()
     data_type = forms.CharField()
     class Meta:
         fields = ('is_key',)    
-        document = Column
+        model = Column
 
 ColumnFormSet = forms.formsets.formset_factory(ColumnForm, extra=3)
     

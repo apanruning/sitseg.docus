@@ -14,15 +14,19 @@ def index(request):
     if request.method == 'POST':
         form = DataSourceForm(request.POST, request.FILES)
         column_form = ColumnFormSet(request.POST)
+        #import ipdb; ipdb.set_trace()
         if form.is_valid():
             datasource = form.save()
-            for column in column_form.forms:
-                if column.is_valid():
-                    column_instance = Column(**column.cleaned_data)
-                    datasource.columns.append(column.instance)
-                    datasource.save()
+            #datasource.attach = request.FILES.read()
+            #datasource.save()
+            #for column in column_form.forms:
+            #    if column.is_valid():
+            #        column_instance = Column(**column.cleaned_data)
+            #        datasource.columns.append(column.instance)
+            #        datasource.save()
         else:
-            import ipdb; ipdb.set_trace()  
+            pass
+            #import ipdb; ipdb.set_trace()  
       
         
         return redirect("/")
@@ -45,6 +49,7 @@ def detail(request, id):
         'detail.html',
         {
             'datasource': datasource,
+            'columns': datasource.column_set.all()
         }
     )
     
@@ -63,7 +68,7 @@ def download_attach(request, id):
 def autogenerate_columns(request, id):
     datasource = DataSource.objects.get(id=id)    
     datasource.import_columns()
-    return redirect("/")
+    return redirect('detail', datasource.pk)
 
 def import_data(request, id):
     datasource = DataSource.objects.get(id=id)    
@@ -71,30 +76,32 @@ def import_data(request, id):
     return redirect("/")
 
 
-def data_formatted(data, columns_dict):
+def data_formatted(data, datasource):
     """ takes a plain data and columns info and generate a list of labeled values"""
     for document in data:
         doc_formatted = []
-        for key, column in columns_dict.iteritems():
-        
+        for column in datasource.column_set.all():
+            #import ipdb; ipdb.set_trace()                
             doc_formatted.append(dict(
-                label = column['name'],
-                key = key,
-                value = document[key],
-                field_type = column['data_type']
+                label = column.name,
+                key = column.label,
+                value = document[column.label],
+                field_type = column.data_type
             ))
+            
         yield doc_formatted
 
 def show_data(request, id):
     datasource = DataSource.objects.get(id=id)    
-    data = datasource.find()[:10]
+    data = datasource.find()[:1]
     #import ipdb; ipdb.set_trace()
     return render(
         request,
         'data.html',
         {
             'datasource': datasource,
-            'data': data_formatted(data, datasource.columns_dict)
+            'columns':datasource.column_set.all(),            
+            'data': data_formatted(data, datasource),
         }
     )
 
