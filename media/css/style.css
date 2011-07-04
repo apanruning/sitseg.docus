@@ -1,7 +1,9 @@
 body {
     font: 100% monospace;
 }
-
+header { 
+    display:block;
+}
 form {
     position:fixed;
     top:1em;
