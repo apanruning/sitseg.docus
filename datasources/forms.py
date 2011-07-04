@@ -14,27 +14,25 @@ class DataSourceForm(forms.ModelForm):
         fields = ('name', 'author','attach')
         model = DataSource
         widgets = {'attach': forms.FileInput}
-    #def save(self, commit=True):
-
-        #attach = self.files['attach']
-        #self.instance.attach.put(
-        #    attach.read(),
-        #    content_tyle=attach.content_type,
-        #    filename=attach.name
-        #)
-
-    #    return super(DataSourceForm, self).save(self)
-
         
 class AnnotationForm(forms.ModelForm):
     class Meta:
         model = Annotation
 
 class ColumnForm(forms.ModelForm):
-    name = forms.CharField()
-    data_type = forms.CharField()
+    data_type = forms.ChoiceField(
+        choices=[
+            (0,'str'), 
+            (1,'date'), 
+            (2,'time'),
+            (3,'datetime'), 
+            (4,'int'), 
+            ('5','float'), 
+            (6,'dict'), 
+            (7,'point')
+        ]
+    )
     class Meta:
-        fields = ('is_key',)    
         model = Column
 
 ColumnFormSet = forms.formsets.formset_factory(ColumnForm, extra=3)

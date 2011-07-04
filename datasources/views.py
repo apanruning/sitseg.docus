@@ -2,7 +2,7 @@
 
 from django.shortcuts import render, redirect
 from models import DataSource, Column
-from forms import DataSourceForm, ColumnFormSet
+from forms import DataSourceForm, ColumnFormSet, ColumnForm
 from mongoengine.django.auth import User
 from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse
@@ -14,21 +14,10 @@ def index(request):
     if request.method == 'POST':
         form = DataSourceForm(request.POST, request.FILES)
         column_form = ColumnFormSet(request.POST)
-        #import ipdb; ipdb.set_trace()
         if form.is_valid():
             datasource = form.save()
-            #datasource.attach = request.FILES.read()
-            #datasource.save()
-            #for column in column_form.forms:
-            #    if column.is_valid():
-            #        column_instance = Column(**column.cleaned_data)
-            #        datasource.columns.append(column.instance)
-            #        datasource.save()
         else:
             pass
-            #import ipdb; ipdb.set_trace()  
-      
-        
         return redirect("/")
 
 
@@ -43,16 +32,38 @@ def index(request):
     )
 
 def detail(request, id):
+    column_form = ColumnForm()
     datasource = DataSource.objects.get(id=id)
     return render(
         request,
         'detail.html',
         {
             'datasource': datasource,
-            'columns': datasource.column_set.all()
+            'columns': datasource.column_set.all(),
+            'column_form':column_form,
+            
         }
     )
     
+    
+def column(request, id):
+    instance = Column.objects.get(id=id)
+    #XXX: Recuperar todos los datos que tienen en esta columna y devolverlo al
+    #XXX: contexto
+    if id and request.method == "POST":
+        instance.has_geodata = request.POST.get('has_geodata')
+        instance.is_available = request.POST.get('is_available')
+        instance.save()
+        
+        return redirect('detail', instance.datasource_id)
+    return render(
+        request,
+        'column.html',
+        {
+            'column':instance,
+            'dataset': []
+        }
+    )
 
 def download_attach(request, id):
 
@@ -65,13 +76,14 @@ def download_attach(request, id):
 
     return response
 
+
 def autogenerate_columns(request, id):
-    datasource = DataSource.objects.get(id=id)    
+    datasource = DataSource.objects.get(id=id)
     datasource.import_columns()
     return redirect('detail', datasource.pk)
 
 def import_data(request, id):
-    datasource = DataSource.objects.get(id=id)    
+    datasource = DataSource.objects.get(id=id)
     datasource.generate_documents()
     return redirect("/")
 
@@ -81,7 +93,6 @@ def data_formatted(data, datasource):
     for document in data:
         doc_formatted = []
         for column in datasource.column_set.all():
-            #import ipdb; ipdb.set_trace()                
             doc_formatted.append(dict(
                 label = column.name,
                 key = column.label,
@@ -92,15 +103,14 @@ def data_formatted(data, datasource):
         yield doc_formatted
 
 def show_data(request, id):
-    datasource = DataSource.objects.get(id=id)    
+    datasource = DataSource.objects.get(id=id)
     data = datasource.find()[:1]
-    #import ipdb; ipdb.set_trace()
     return render(
         request,
         'data.html',
         {
             'datasource': datasource,
-            'columns':datasource.column_set.all(),            
+            'columns':datasource.column_set.all(),
             'data': data_formatted(data, datasource),
         }
     )

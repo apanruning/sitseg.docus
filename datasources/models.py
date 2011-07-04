@@ -22,21 +22,24 @@ class Column(models.Model):
 
     name = models.CharField(max_length=50)
     label = models.CharField(max_length=50)
-    created = models.CharField(max_length=50)
+    created = models.DateTimeField(auto_now_add=True, editable = False)
     # Valid data types are:
     # str, date, time, datetime, int, float, dict, point
     data_type = models.CharField(max_length=50)
-    is_key = models.BooleanField(default=False)
+    is_key = models.NullBooleanField(default=False,)
     datasource = models.ForeignKey('DataSource')
-    has_geodata = models.BooleanField(default=False)
-    is_available = models.BooleanField(default=False)
-    
+    has_geodata = models.NullBooleanField(default=False,)
+    is_available = models.NullBooleanField(default=True,)
+    class Meta:
+        ordering = ['id',]
+        
+        
 class DataSource(models.Model):
 
     name = models.CharField(max_length=50)
     slug = models.CharField(max_length=50)
     attach = models.FileField(upload_to="docs")
-    created = models.DateTimeField()
+    created = models.DateTimeField(auto_now_add=True, editable = False)
     author = models.CharField(max_length=50)
 
     def save(self):
