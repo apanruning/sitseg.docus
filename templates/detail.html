@@ -26,22 +26,22 @@
        href="/datasource/{{datasource.id}}/data">
         Ver algunos datos importados</a>
     |
-    <a title="Index" 
+    <a title="Index"
        href="/">
         Volver</a>
     |
 
-    <ul>
-    {% for column in datasource.columns %}
+    <ol>
+    {% for column in columns %}
         <li class="data_column">
             <b>{{column.name}}</b> ({{ column.data_type }})
         </li>
     {% empty %}
         <li>
-            <a href="datasource/{{datasource.id}}/autogenerate_columns">Autogenerar usando primera fila.</a>
+            <a href="/datasource/{{datasource.id}}/autogenerate_columns">Autogenerar usando primera fila.</a>
         </li>
     {% endfor %}
-    </ul>
+    </ol>
     </body>
 </html>
 

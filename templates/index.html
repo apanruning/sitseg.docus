@@ -39,15 +39,8 @@
             <label for="id_{{form.author.name}}">Autor</label>
             {{form.author}}
         </p>
-        {% for inline_form in column_form %}
-        <fieldset>
-        <legend>Columna {{forloop.counter}}</legend>
-                {{ inline_form.as_p }}            
-        </fieldset>
-        {% endfor %}
-        <p>
-        <a href="#" id="add-column">Add another</a>
-        </p>
+       
+
         <input type="submit" name="Guardar" value="Submit"/>
     </form>
     </header>
@@ -55,12 +48,14 @@
         <ul>
         {% for datasource in datasource_list %}
             <li>
-                <h1><a href="datasource/{{datasource.id}}">{{datasource.name}}</a></h1> 
+                <h1><a href="/datasource/{{datasource.id}}">{{datasource.name}}</a></h1> 
                 {{datasource.created}} - {{datasource.author}} ({{datasource.columns.count }} columnas)
                 <a title="{{datasource.attach.name}}" 
-                   href="datasource/{{datasource.id}}/download_attach">
+                   href="/datasource/{{datasource.id}}/download_attach">
                     Descargar Fuente
-                </a>
+                </a> &nbsp;{% if not datasource.column_set.all %}
+                <a href="/datasource/{{datasource.id}}/autogenerate_columns">Autogenerar usando primera fila.</a>
+                {% endif%}
             </li>
         {% empty %}
             <li>No hay registros</li>
