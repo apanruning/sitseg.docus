@@ -6,6 +6,8 @@ from forms import DataSourceForm, ColumnFormSet
 from mongoengine.django.auth import User
 from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse
+from mongoengine import connection
+from bson.objectid import ObjectId
 
 def index(request):
     
@@ -76,11 +78,11 @@ def import_data(request, id):
     return redirect("/")
 
 
-def data_formatted(data, datasource):
+def data_formatted(data, doclist):
     """ takes a plain data and columns info and generate a list of labeled values"""
     for document in data:
         doc_formatted = []
-        for column in datasource.column_set.all():
+        for column in doclist:
             #import ipdb; ipdb.set_trace()                
             doc_formatted.append(dict(
                 label = column.name,
@@ -91,18 +93,51 @@ def data_formatted(data, datasource):
             
         yield doc_formatted
 
-def show_data(request, id):
-    datasource = DataSource.objects.get(id=id)    
-    data = datasource.find()[:1]
-    #import ipdb; ipdb.set_trace()
+#def show_data(request, id):
+#    datasource = DataSource.objects.get(id=id)    
+#    data = datasource.find()[:1]
+#
+#    return render(
+#        request,
+#        'data.html',
+#        {
+#            'datasource': datasource,
+#            'columns':datasource.column_set.all(),            
+#            'data': data_formatted(data, datasource),
+#        }
+#    )
+
+def document_list(request, datasource_id):
+    datasource = DataSource.objects.get(id=datasource_id)    
+    data = datasource.find()[:100]
+    columns = datasource.column_set.all()[:3]
     return render(
         request,
-        'data.html',
+        'document_list.html',
         {
             'datasource': datasource,
-            'columns':datasource.column_set.all(),            
-            'data': data_formatted(data, datasource),
+            'columns': columns,            
+            
+            'data': data_formatted(data, columns),
         }
     )
 
+
+
+def geometry_append(request, datasource_id, id):
+    conn = connection._get_connection()
+    db = conn['sitseg']
+    # This create the collection if not exists previously
+    data_collection = db['data']
+    
+    column_id = request.get("column_id", "")
+    maapmodel_id = request.get("maapmodel_id", "")
+    
+    oid = ObjectId(id)
+    document_args = dict()
+    document_args[column_id+"_geom_id"] = maapmodel_id
+    
+    data_collection.find_one({"_id": oid}).update(document_args)
+    
+    return redirect('detail', id)
 

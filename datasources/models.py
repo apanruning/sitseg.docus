@@ -129,6 +129,14 @@ class DataSource(models.Model):
         params.update({"_datasource_id": self.id})
         data_collection = self._data_collection()
         return data_collection.find(params)
+
+#class DataSourceDocument(object):
+#    
+#    def __init__(self, datasource):
+#        self._datasource = datasource
+#    
+#    def             
+    
       
 #    def get_absolute_url(self):
 #        return reverse('datasources.views.detail', kwargs={'slug': self.slug})
