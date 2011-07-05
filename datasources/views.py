@@ -95,8 +95,6 @@ def data_formatted(data, doclist):
     for document in data:
         doc_formatted = []
         for column in doclist:
-            #import ipdb; ipdb.set_trace()                
-        for column in datasource.column_set.all():
             doc_formatted.append(dict(
                 label = column.name,
                 key = column.label,
