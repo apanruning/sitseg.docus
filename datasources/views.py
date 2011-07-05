@@ -3,7 +3,7 @@
 from django.shortcuts import render, redirect
 from models import DataSource, Column
 from forms import DataSourceForm, ColumnFormSet, ColumnForm
-from mongoengine.django.auth import User
+
 from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse
 from mongoengine import connection
@@ -94,12 +94,9 @@ def data_formatted(data, doclist):
     """ takes a plain data and columns info and generate a list of labeled values"""
     for document in data:
         doc_formatted = []
-<<<<<<< HEAD
         for column in doclist:
             #import ipdb; ipdb.set_trace()                
-=======
         for column in datasource.column_set.all():
->>>>>>> 5d1174c7fe0aaabd416ed9e5ce2c9ac64443a14a
             doc_formatted.append(dict(
                 label = column.name,
                 key = column.label,
@@ -109,7 +106,6 @@ def data_formatted(data, doclist):
             
         yield doc_formatted
 
-<<<<<<< HEAD
 #def show_data(request, id):
 #    datasource = DataSource.objects.get(id=id)    
 #    data = datasource.find()[:1]
@@ -128,28 +124,22 @@ def document_list(request, datasource_id):
     datasource = DataSource.objects.get(id=datasource_id)    
     data = datasource.find()[:100]
     columns = datasource.column_set.all()[:3]
-=======
+
 def show_data(request, id):
     datasource = DataSource.objects.get(id=id)
     data = datasource.find()[:1]
->>>>>>> 5d1174c7fe0aaabd416ed9e5ce2c9ac64443a14a
+
     return render(
         request,
         'document_list.html',
         {
             'datasource': datasource,
-<<<<<<< HEAD
             'columns': columns,            
-            
             'data': data_formatted(data, columns),
-=======
             'columns':datasource.column_set.all(),
             'data': data_formatted(data, datasource),
->>>>>>> 5d1174c7fe0aaabd416ed9e5ce2c9ac64443a14a
         }
     )
-
-
 
 def geometry_append(request, datasource_id, id):
     conn = connection._get_connection()

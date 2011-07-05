@@ -6,7 +6,7 @@ from datetime import datetime
 from django.template.defaultfilters import slugify
 from csv import reader
 from StringIO import StringIO
-from mongoengine import connection
+from mongoengine import connect
 from maap.models import MaapModel
 from django.db import models
 from django.contrib.auth.models import User
@@ -107,8 +107,7 @@ class DataSource(models.Model):
 
     def _data_collection(self):
         # Check: If database name changes the next will crash
-        conn = connection._get_connection()
-        db = conn['sitseg']
+        db = connect('sitseg')
         
         # This create the collection if not exists previously
         data_collection = db['data']    
