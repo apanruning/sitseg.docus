@@ -22,9 +22,13 @@ ul {
 .data_column{
     float: left;
     width:45%;
-    margin:0.5em 2em 0.5em 0;
+    padding:0.5em 2em 0.5em 0.5em;
 }
 .column_form {
     float:right;
     clear:right;
+}
+.disabled {
+    opacity:0.5;
+    background: #EBEBEB;
 }

@@ -21,7 +21,7 @@
     </details>
     <ul>
     {% for column in columns %}
-        <li class="data_column">
+        <li class="data_column {% if not column.is_available %}disabled{% endif %}">
             <h3>{{column.pk}}. <a href="/column/{{column.pk}}">{{column.name}}</a></h3>
             <a href="/column/{{column.pk}}">Registros con esta columna</a>
             <form action="/column/{{column.pk}}" method="post" class="column_form">
