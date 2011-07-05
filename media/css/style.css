@@ -4,17 +4,9 @@ body {
 header { 
     display:block;
 }
-form {
-    position:fixed;
-    top:1em;
-    right: 1em; 
-}
 fieldset p {
     float:left;
     margin-right: 1em;
-}
-form label {
-    display: block;
 }
 form.inline{
     float:none;
@@ -23,16 +15,16 @@ form.inline{
 fieldset {
     clear: both;
 }
-.data_column {
-    float: left;
-    width: 500px;
-    border: #aaaaaa solid;
-    background-color:#fae2f0;
+ul {
+    list-style:none;
+    overflow:hidden;
 }
-.data_document {
+.data_column{
     float: left;
-    width: 500px;
-    border: #ff00ff solid;
-    background-color:#fae2f0;
-    margin:4px;
+    width:40%;
+    margin:0.5em 10% 0.5em 0;
+}
+.column_form {
+    float:right;
+    clear:right;
 }
