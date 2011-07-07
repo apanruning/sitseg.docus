@@ -121,10 +121,12 @@ class DataSource(models.Model):
         for row in csv_attach:
             params = {'_datasource_id': self.id}
             columns = self.column_set.all()
+
             for i, column in enumerate(columns):
-                params[column.label] = self._cast_value(
-                                                  column.data_type, row[i])
-            
+                try:
+                    params[column.label] = self._cast_value(column.data_type, row[i])                    
+                except IndexError:
+                    pass
             data_collection.insert(params)
 
     def find(self, params={}):

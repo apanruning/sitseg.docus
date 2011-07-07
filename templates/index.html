@@ -51,7 +51,7 @@
         {% for datasource in datasource_list %}
             <li>
                 <h1><a href="/datasource/{{datasource.id}}">{{datasource.name}}</a></h1> 
-                {{datasource.created}} - {{datasource.author}} ({{datasource.columns.count }} columnas)
+                {{datasource.created}} - {{datasource.author}} ({{datasource.column_set.count }} columnas)
                 <a title="{{datasource.attach.name}}" 
                    href="/datasource/{{datasource.id}}/download_attach">
                     Descargar Fuente
