@@ -1,18 +1,12 @@
 body {
-    font: 100% monospace;
+    font: 100% "Droid Sans", "Lucida Grande", Verdana, sans-serif;
 }
-
-form {
-    position:fixed;
-    top:1em;
-    right: 1em; 
+header { 
+    display:block;
 }
 fieldset p {
     float:left;
     margin-right: 1em;
-}
-form label {
-    display: block;
 }
 form.inline{
     float:none;
@@ -21,16 +15,24 @@ form.inline{
 fieldset {
     clear: both;
 }
-.data_column {
-    float: left;
-    width: 500px;
-    border: #aaaaaa solid;
-    background-color:#fae2f0;
+ul {
+    list-style:none;
+    overflow:hidden;
 }
-.data_document {
+.data_column{
     float: left;
-    width: 500px;
-    border: #ff00ff solid;
-    background-color:#fae2f0;
-    margin:4px;
+    width:45%;
+    padding:0.5em 2em 0.5em 0.5em;
+}
+.column_form {
+    float:right;
+    clear:right;
+}
+.disabled {
+    opacity:0.5;
+    background: #EBEBEB;
+}
+.clear {
+    display: block;
+    clear: both;
 }

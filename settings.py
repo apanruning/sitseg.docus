@@ -12,8 +12,24 @@ ADMINS = (
     ('monetti', 'onetti.martin@gmail.com'),
     ('etnalubma', 'francisco.herrero@gmail.com'),
 )
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.request",
+    "django.core.context_processors.static",
+)
 
 MANAGERS = ADMINS
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.sqlite3',
+        'NAME': 'sitseg',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST':'',
+        'PORT':''
+    }
+}
 
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 TIME_ZONE = 'America/Argentina/Cordoba'
@@ -27,7 +43,10 @@ USE_I18N = True
 
 USE_L10N = True
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'media')
+
+# Default Space Projection
+DEFAULT_SRID = 900913
 
 # Cambiar en local_settings para que apunte al nginx que sirve los archivos
 # ej: 'http://gridfs.localhost:9000'
@@ -72,47 +91,29 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+    'django.contrib.admin',
+    'django.contrib.admindocs',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
     'debug_toolbar',
     'datasources',
+    'maap',
+    'mptt',
 )
 
 AUTHENTICATION_BACKENDS = (
-    'mongoengine.django.auth.MongoEngineBackend',
+    "django.contrib.auth.backends.ModelBackend",
 )
-
-SESSION_ENGINE = 'mongoengine.django.sessions'
-
-DEFAULT_FILE_STORAGE = 'mongoengine.django.GridFSStorage'
-
-#LOGGING = {
-#    'version': 1,
-#    'disable_existing_loggers': True,
-#    'handlers': {
-#        'console':{
-#            'level':'DEBUG',
-#            'class':'logging.StreamHandler',
-#        },
-#    },
-#    'loggers': {
-#        'django': {
-#            'handlers':['null'],
-#            'propagate': True,
-#            'level':'INFO',
-#        },
-#        'django.debug': {
-#            'handlers': ['console'],
-#            'level': 'INFO',
-#        }
-#    }
-#}
-
 INTERNAL_IPS = ('127.0.0.1',)
+
+DEBUG_TOOLBAR_CONFIG = {
+    'INTERCEPT_REDIRECTS': False,
+}
 
 connect('sitseg')
 
