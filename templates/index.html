@@ -39,12 +39,6 @@
             <label for="id_{{form.author.name}}">Autor</label>
             {{form.author}}
         </p>
-        {% for inline_form in column_form %}
-        <fieldset>
-        <legend>Columna {{forloop.counter}}</legend>
-                {{ inline_form.as_p }}            
-        </fieldset>
-        {% endfor %}
         <p>
         <a href="#" id="add-column">Add another</a>
         </p>
