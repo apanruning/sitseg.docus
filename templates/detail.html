@@ -1,21 +1,6 @@
 {% extends "index.html" %}
 {% block page %}
     <h1>{{datasource.name}}</h1> 
-    {{datasource.created}} - {{datasource.author}} 
-    |
-    <a title="{{datasource.attach.name}}" 
-       href="/datasource/{{datasource.id}}/download_attach">
-        Descargar Fuente</a>
-    |
-    <a title="Ver Datos" 
-       href="/datasource/{{datasource.id}}/data">
-        Ver algunos datos importados</a>
-    |
-    <a title="Index"
-       href="/">
-        Volver</a>
-    |
-    <ol>
     <p>{{datasource.created}} - {{datasource.author}} |
         <a title="{{datasource.attach.name}}" 
            href="/datasource/{{datasource.id}}/download_attach">
