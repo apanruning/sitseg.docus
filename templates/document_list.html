@@ -1,5 +1,5 @@
 {% extends "index.html" %}
-{% block page %}
+{% block page %} 
     <h1>Documentos de {{datasource.name}}</h1> 
     {{datasource.created}} - {{datasource.author}}     
     | <a title="{{datasource.attach.name}}" 
@@ -7,19 +7,15 @@
     |
     </div>
     {% for document in data %}
-    <div class="data_document">            
-        <ul>
         {% for column in document %}
-
+        <ul>            
             <li>
                 <b>{{column.label}}:</b> {{ column.value }}
             </li>
+        </ul>
         {% endfor %}
-        </ul>        
-    </div>
     {% empty %}
-            No hay datos importados aún.
-            <a href="/datasource/{{datasource.id}}/import_data">Importar desde el archivo.</a>
+            No hay datos importados ahun.
+            <a href="/datasource/{{datasource.id}}/import_data">Autogenerar usando primera fila.</a>
     {% endfor %}
-
 {% endblock %}

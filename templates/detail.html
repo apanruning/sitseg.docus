@@ -8,6 +8,8 @@
         <a title="Ver Datos" 
            href="/datasource/{{datasource.id}}/data">
             Ver algunos datos importados</a> |
+        <a href="/datasource/{{datasource.id}}/import_data">
+            Importar desde el archivo.</a> |
         <a title="Index"
            href="/">
             Volver</a>
@@ -20,25 +22,33 @@
         </form>
     </details>
     <ul>
+
     {% for column in columns %}
         <li class="data_column {% if not column.is_available %}disabled{% endif %}">
             <h3>{{column.pk}}. <a href="/column/{{column.pk}}">{{column.name}}</a></h3>
             <a href="/column/{{column.pk}}">Registros con esta columna</a>
             <form action="/column/{{column.pk}}" method="post" class="column_form">
             {% csrf_token %}
-            <input type="hidden" name="object_id" value="{{column.pk}}"/>
+            <input type="hidden" name="object_id"  value="{{column.pk}}"/>
+            <input type="hidden" name="name"  value="{{column.name}}"/>
             <input type="hidden" name="next" value="{{request.path}}"/>
             <select name="data_type">
                 <option value="{{ column.data_type }}" selected>{{ column.data_type }}</option>
             </select>
-            <label for="id_has_geodata">geografico</label><input type="checkbox" id="id_has_geodata" name="has_geodata" {% if column.has_geodata %}checked{% endif %}/>
-            <label for="id_is_available">disponible</label><input type="checkbox" id="is_available" name="is_available"  {% if column.is_available %}checked{% endif %}/>
+            <label >geografico</label><input type="checkbox" name="has_geodata" {% if column.has_geodata %}checked{% endif %}/>
+            <label >disponible</label><input type="checkbox" name="is_available"  {% if column.is_available %}checked{% endif %}/>
             </form>
         </li>
     {% empty %}
         <li>
             <a href="/datasource/{{datasource.id}}/autogenerate_columns">Autogenerar usando primera fila.</a>
         </li>
-    {% endfor %}
+    {% endfor %}        
+    
+
     </ul>    
+    <form action="/datasource/{{datasource.id}}/import_data" id="import_form" method="post">{% csrf_token %}
+            <input type="hidden" name="object_id" id="import_{{column_name}}_id" value="{{column.pk}}"/>
+        <p class="clear"><input type="submit" value="Importar columnas seleccionadas" /></p>
+    </form>
 {% endblock %}

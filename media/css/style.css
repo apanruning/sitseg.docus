@@ -32,3 +32,7 @@ ul {
     opacity:0.5;
     background: #EBEBEB;
 }
+.clear {
+    display: block;
+    clear: both;
+}

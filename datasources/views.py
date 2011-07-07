@@ -93,6 +93,8 @@ def autogenerate_columns(request, id):
     return redirect('detail', datasource.pk)
 
 def import_data(request, id):
+    if request.method == 'POST':
+        import ipdb; ipdb.set_trace()
     datasource = DataSource.objects.get(id=id)
     datasource.generate_documents()
     return redirect("/")
@@ -134,10 +136,11 @@ def document_detail(request):
     
 def document_add(request):
     pass
-def document_list(request, datasource_id):
-    datasource = DataSource.objects.get(id=datasource_id)    
-    data = datasource.find()[:100]
-    columns = datasource.column_set.all()[:3]
+
+#def document_list(request, datasource_id):
+#    datasource = DataSource.objects.get(id=datasource_id)    
+#    data = datasource.find()[:100]
+#    columns = datasource.column_set.all()[:3]
 
 def show_data(request, id):
     datasource = DataSource.objects.get(id=id)
