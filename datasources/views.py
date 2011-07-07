@@ -49,7 +49,7 @@ def detail(request, id):
     
     
 def column(request, id):
-    instance = Column.objects.get(id=id)
+    instance = Column.objects.get(pk=id)
     #XXX: Recuperar todos los datos que tienen en esta columna y devolverlo al
     #XXX: contexto
     if id and request.method == "POST":
