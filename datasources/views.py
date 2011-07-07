@@ -6,7 +6,7 @@ from forms import DataSourceForm, ColumnFormSet, ColumnForm
 
 from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse
-from mongoengine import connection
+from mongoengine import connect
 from bson.objectid import ObjectId
 
 def index(request):
@@ -50,8 +50,14 @@ def detail(request, id):
     
 def column(request, id):
     instance = Column.objects.get(pk=id)
-    #XXX: Recuperar todos los datos que tienen en esta columna y devolverlo al
-    #XXX: contexto
+    db = connect('sitseg')
+    dataset = db.data.group(
+        key={instance.label:1},
+        condition={'datasource_id':3},
+        initial={'count':0},
+        reduce="function(obj,prev){prev.count ++;}"
+    )
+    dataindex = dict([(d[instance.label],d['count']) for d in dataset]) 
     if id and request.method == "POST":
         instance.has_geodata = request.POST.get('has_geodata')
         instance.is_available = request.POST.get('is_available')
@@ -63,7 +69,9 @@ def column(request, id):
         'column.html',
         {
             'column':instance,
-            'dataset': []
+            'dataset': dataindex,
+            'label':instance.label,
+            
         }
     )
 
@@ -146,8 +154,7 @@ def show_data(request, id):
     )
 
 def geometry_append(request, datasource_id, id):
-    conn = connection._get_connection()
-    db = conn['sitseg']
+    db = connect('sitseg')
     # This create the collection if not exists previously
     data_collection = db['data']
     
