@@ -28,8 +28,8 @@ class Column(models.Model):
     data_type = models.CharField(max_length=50)
     is_key = models.NullBooleanField(default=False,)
     datasource = models.ForeignKey('DataSource')
-    has_geodata = models.NullBooleanField(default=False,)
-    is_available = models.NullBooleanField(default=True,)
+    has_geodata = models.BooleanField(default=False,)
+    is_available = models.BooleanField(default=True,)
     class Meta:
         ordering = ['id',]
         

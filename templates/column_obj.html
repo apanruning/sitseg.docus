@@ -1,0 +1,16 @@
+<li class="data_column {% if not column.is_available %}disabled{% endif %}">
+    <h3>{{column.pk}}. <a href="/column/{{column.pk}}">{{column.name}}</a></h3>
+    <a href="/column/{{column.pk}}">Registros con esta columna</a>
+    <form action="/column/{{column.pk}}" method="post" class="column_form">
+    {% csrf_token %}
+    <input type="hidden" name="object_id"  value="{{column.pk}}"/>
+    <input type="hidden" name="name"  value="{{column.name}}"/>
+    <input type="hidden" name="label"  value="{{column.label}}"/>
+    <input type="hidden" name="datasource"  value="{{column.datasource.id}}"/>
+    <input type="hidden" name="next" value="{{request.path}}"/>
+    {{ column_form.data_type }}
+            <label>geografico</label><input type="checkbox" name="has_geodata" {% if column.has_geodata %}checked{% endif %}/>
+            <label>disponible</label><input type="checkbox" name="is_available"  {% if column.is_available %}checked{% endif %}/>
+    <a href="#plot" class="plot-trigger">plotear</a>
+    </form>
+</li>

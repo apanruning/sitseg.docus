@@ -24,6 +24,10 @@ ul {
     width:45%;
     padding:0.5em 2em 0.5em 0.5em;
 }
+.data_column:hover {
+    cursor:pointer;
+    background:#FAFAFA;
+}
 .column_form {
     float:right;
     clear:right;

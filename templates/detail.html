@@ -31,10 +31,10 @@
             {% csrf_token %}
             <input type="hidden" name="object_id"  value="{{column.pk}}"/>
             <input type="hidden" name="name"  value="{{column.name}}"/>
+            <input type="hidden" name="label"  value="{{column.label}}"/>
+            <input type="hidden" name="datasource"  value="{{column.datasource.id}}"/>
             <input type="hidden" name="next" value="{{request.path}}"/>
-            <select name="data_type">
-                <option value="{{ column.data_type }}" selected>{{ column.data_type }}</option>
-            </select>
+            {{ column_form.data_type }}
             <label>geografico</label><input type="checkbox" name="has_geodata" {% if column.has_geodata %}checked{% endif %}/>
             <label>disponible</label><input type="checkbox" name="is_available"  {% if column.is_available %}checked{% endif %}/>
             <a href="#plot" class="plot-trigger">plotear</a>

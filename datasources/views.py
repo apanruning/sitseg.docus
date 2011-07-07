@@ -3,11 +3,11 @@
 from django.shortcuts import render, redirect
 from models import DataSource, Column
 from forms import DataSourceForm, ColumnFormSet, ColumnForm
-
 from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse
 from mongoengine import connect
 from bson.objectid import ObjectId
+import simplejson
 
 def index(request):
  
@@ -59,6 +59,20 @@ def column(request, id):
     )
     dataindex = dict([(d[instance.label],d['count']) for d in dataset]) 
     if id and request.method == "POST":
+        column_form = ColumnForm(request.POST, instance=instance )
+
+        if request.is_ajax() and column_form.is_valid():
+            instance = column_form.save()
+
+        return render(
+            request,
+            'column_obj.html',
+            {
+                'column':instance,
+                'column_form':column_form
+            }
+        )
+
         instance.has_geodata = request.POST.get('has_geodata')
         instance.is_available = request.POST.get('is_available')
         instance.save()
