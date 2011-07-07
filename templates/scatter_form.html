@@ -1,0 +1,85 @@
+{% extends "index.html" %}
+{% block js %}
+<script type="text/javascript" language="javascript">
+    google.load("visualization", "1", {packages:["corechart"]});
+    google.setOnLoadCallback(draw_chart)
+    function draw_chart(){
+        var data = new google.visualization.DataTable();
+
+        {% for label in labels %}
+            data.addColumn('number', '{{label}}');
+        {% endfor %}
+
+        data.addRows({{dataset|length}});
+        {% for data in scatterdata %}
+            {% for label, item in data.iteritems %}              
+                data.setValue({{forloop.counter0}},0,{{label}})
+                data.setValue({{forloop.counter0}},1,{{item|floatformat}})
+
+            {% endfor %}    
+        {% endfor %}
+        var chart = new google.visualization.ScatterChart(document.getElementById('chart'));
+        chart.draw(data, {
+                width: 1200, 
+                height: 240, 
+                xAxis: {
+                    title: 'cantidad', 
+                    minValue: 0,
+                    maxValue: {{dataset|length}},
+                },
+                vAxis: {
+                    title: '{{label}}', 
+                    minValue: 0,
+                    maxValue: 50,
+                }
+                
+             });
+    };
+ 
+ 
+</script>
+    
+{% endblock %}
+{% if scatterdata %}
+    {% for data in scatterdata %}
+        {% for label, item in data.iteritems %}
+            {{label}}:{{item}}
+        {% endfor %}
+    {% endfor %}
+{% endif %}
+
+
+{% block page %}
+
+<details>
+    <summary>Elejir Columnas</summary>
+    <form action="/datasource/{{datasource.pk}}/plot/scatter" method="post">{% csrf_token %}
+    <select name="column1">
+    {% for column in columns %}
+        <option value="{{column.label}}">{{column.name}}</option>    
+    {% empty %}
+        <option value="">
+            foreveralone
+        </option>
+    {% endfor %}
+    </select>
+    <select name="column2">
+    {% for column in columns %}
+        <option value="{{column.label}}">{{column.name}}</option>    
+    {% empty %}
+        <option value="">
+            foreveralone
+        </option>
+    {% endfor %}
+    </select>    
+        <p><input type="submit" value="Graficar" /></p>
+    </form>
+</details>
+<p>
+    <a title="Index"
+       href="/">
+        Volver</a>
+</p>
+<div id="chart"></div>
+
+{% endblock %}

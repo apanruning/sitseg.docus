@@ -22,14 +22,14 @@ class AnnotationForm(forms.ModelForm):
 class ColumnForm(forms.ModelForm):
     data_type = forms.ChoiceField(
         choices=[
-            (0,'str'), 
-            (1,'date'), 
-            (2,'time'),
-            (3,'datetime'), 
-            (4,'int'), 
-            ('5','float'), 
-            (6,'dict'), 
-            (7,'point')
+            ('str','str'), 
+            ('date','date'), 
+            ('time','time'),
+            ('datetime','datetime'), 
+            ('int','int'), 
+            ('float','float'), 
+            ('dict','dict'), 
+            ('point','point')
         ]
     )
     class Meta:
