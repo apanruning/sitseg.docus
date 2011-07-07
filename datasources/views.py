@@ -186,3 +186,32 @@ def geometry_append(request, datasource_id, id):
     
     return redirect('detail', id)
 
+
+def scatter_plot(request, datasource_id):
+    datasource = DataSource.objects.get(pk=datasource_id)
+
+    columns = datasource.column_set.all()
+    context = {
+        'datasource': datasource,
+        'columns': columns,            
+    }
+
+    if request.method == 'POST':
+        db = connect('sitseg')
+        column1 = request.POST.get('column1', None)
+        column2 = request.POST.get('column2', None)
+        
+        data = db.data.find({'datasource_id': int(datasource_id)}, {column1:1,column2:1})
+        datalist = [{
+                column1:item[column1],
+                column2:item[column2],                
+            } for item in data]
+        
+        context['scatterdata'] = datalist
+        context['labels'] = [column1, column2]
+    return render(
+        request,
+        'scatter_form.html',
+        context,
+    )    
+
