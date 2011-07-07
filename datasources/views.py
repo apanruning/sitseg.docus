@@ -104,20 +104,28 @@ def data_formatted(data, doclist):
             
         yield doc_formatted
 
-#def show_data(request, id):
-#    datasource = DataSource.objects.get(id=id)    
-#    data = datasource.find()[:1]
-#
-#    return render(
-#        request,
-#        'data.html',
-#        {
-#            'datasource': datasource,
-#            'columns':datasource.column_set.all(),            
-#            'data': data_formatted(data, datasource),
-#        }
-#    )
+def show_data(request, id):
+    datasource = DataSource.objects.get(id=id)    
+    data = datasource.find()[:1]
 
+    return render(
+        request,
+        'data.html',
+        {
+            'datasource': datasource,
+            'columns':datasource.column_set.all(),            
+            'data': data_formatted(data, datasource),
+        }
+    )
+
+def document_edit(request):
+    pass
+
+def document_detail(request):
+    pass
+    
+def document_add(request):
+    pass
 def document_list(request, datasource_id):
     datasource = DataSource.objects.get(id=datasource_id)    
     data = datasource.find()[:100]
@@ -126,7 +134,7 @@ def document_list(request, datasource_id):
 def show_data(request, id):
     datasource = DataSource.objects.get(id=id)
     data = datasource.find()[:1]
-
+    columns = datasource.column_set.all()[:3]
     return render(
         request,
         'document_list.html',
