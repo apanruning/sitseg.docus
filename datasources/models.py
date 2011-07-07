@@ -119,7 +119,7 @@ class DataSource(models.Model):
         data_collection = self._data_collection()
         
         for row in csv_attach:
-            params = {'_datasource_id': self.id}
+            params = {'datasource.id': self.pk}
             columns = self.column_set.all()
             for i, column in enumerate(columns):
                 params[column.label] = self._cast_value(
