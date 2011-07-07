@@ -119,7 +119,7 @@ class DataSource(models.Model):
         data_collection = self._data_collection()
         
         for row in csv_attach:
-            params = {'datasource.id': self.pk}
+            params = {'datasource_id': self.pk}
             columns = self.column_set.all()
             for i, column in enumerate(columns):
                 params[column.label] = self._cast_value(
@@ -128,7 +128,7 @@ class DataSource(models.Model):
             data_collection.insert(params)
 
     def find(self, params={}):
-        params.update({"_datasource_id": self.id})
+        params.update({"datasource_id": self.id})
         data_collection = self._data_collection()
         return data_collection.find(params)
 
