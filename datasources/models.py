@@ -10,6 +10,8 @@ from mongoengine import connect
 from maap.models import MaapModel
 from django.db import models
 from django.contrib.auth.models import User
+from django.forms.models import model_to_dict
+
 # datasource Objects
 
 class Annotation(models.Model):
@@ -134,16 +136,7 @@ class DataSource(models.Model):
         data_collection = self._data_collection()
         return data_collection.find(params)
 
-#class DataSourceDocument(object):
-#    
-#    def __init__(self, datasource):
-#        self._datasource = datasource
-#    
-#    def             
-    
-      
-#    def get_absolute_url(self):
-#        return reverse('datasources.views.detail', kwargs={'slug': self.slug})
+
 
 
 __all__ = ['DataSource', 'Column', 'Annotation']

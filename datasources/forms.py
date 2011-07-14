@@ -36,4 +36,12 @@ class ColumnForm(forms.ModelForm):
         model = Column
 
 ColumnFormSet = forms.formsets.formset_factory(ColumnForm, extra=3)
-    
+
+#class DocumentForm(forms.Form):
+#    def __init__(self, data_id, *args, **kwargs):
+#        super(DocumentForm, self).__init__(*args, **kwargs)
+#        data = DataSource.objects.all()
+#
+#            self.fields['captcha'] = CaptchaField()
+
+
