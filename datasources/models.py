@@ -10,6 +10,7 @@ from mongoengine import connect
 from maap.models import MaapModel
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
 from django.forms.models import model_to_dict
 
 # datasource Objects
@@ -120,7 +121,7 @@ class DataSource(models.Model):
 
     def _data_collection(self):
         # Check: If database name changes the next will crash
-        db = connect('sitseg')
+        db = settings.DB
         
         # This create the collection if not exists previously
         data_collection = db['data']    
