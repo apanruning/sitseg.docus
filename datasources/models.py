@@ -11,6 +11,8 @@ from maap.models import MaapModel
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.forms.models import model_to_dict
+
 # datasource Objects
 
 class Annotation(models.Model):
@@ -139,13 +141,18 @@ class DataSource(models.Model):
             columns = self.column_set.all()
 
         for row in csv_attach:
-            params = {'datasource_id': self.pk}            
+            params = {
+                'datasource_id': self.pk,
+                'columns': [],
+            }            
             for column in columns:
                 try:
-                    params[column.label] = self._cast_value(
+                    values = model_to_dict(column);
+                    values['value'] = self._cast_value(
                         column.data_type, 
                         row[column.csv_index]
                     )
+                    params['columns'].append(values)
                 except IndexError:
                     errors.append('{attach} has no column "{column}"'.format({
                         'attach':csv_attach,
@@ -167,6 +174,5 @@ class DataSource(models.Model):
         params.update({"datasource_id": self.id})
         data_collection = self._data_collection()
         return data_collection.find(params)
-
 
 __all__ = ['DataSource', 'Column', 'Annotation']

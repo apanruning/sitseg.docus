@@ -13,7 +13,7 @@ class ColumnAdmin(admin.ModelAdmin):
     list_display = ('name', 'label', 'data_type','is_key')
     list_filter = ('datasource', 'data_type')
     ordering = ('-id',)
-    search_fields = ('label','name',)
+    search_fields = ('label','name')
 
 
 admin.site.register(DataSource)
