@@ -8,8 +8,6 @@
         <a title="Ver Datos" 
            href="/datasource/{{datasource.id}}/data">
             Ver algunos datos importados</a> |
-        <a href="/datasource/{{datasource.id}}/import_data">
-            Importar desde el archivo.</a> |
         <a href="/datasource/{{datasource.id}}/plot/scatter">
             Scatter Plot.</a> |            
         <a title="Index"
@@ -54,7 +52,7 @@
     <form action="/datasource/{{datasource.id}}/import_data" id="import_form" method="post">{% csrf_token %}
     {% for column in columns  %}
         {% if column.is_available %}
-        <input type="hidden" name="object_id" value="{{column.pk}}"/>                    
+        <input type="hidden" name="object_id" value="{{column.pk}}"/>
         {% endif %}
     {% endfor %}
 

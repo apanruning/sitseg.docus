@@ -30,8 +30,14 @@ class Column(models.Model):
     datasource = models.ForeignKey('DataSource')
     has_geodata = models.BooleanField(default=False,)
     is_available = models.BooleanField(default=True,)
+    csv_index = models.IntegerField()
     class Meta:
-        ordering = ['id',]
+        ordering = ['csv_index',]
+
+    def save(self):
+        self.datasource.is_dirty = True
+        self.datasource.save()
+        return super(Column,self).save()
         
         
 class DataSource(models.Model):
@@ -41,8 +47,12 @@ class DataSource(models.Model):
     attach = models.FileField(upload_to="docs")
     created = models.DateTimeField(auto_now_add=True, editable = False)
     author = models.CharField(max_length=50)
+    #first_import = models.BooleanField(default=True)
+    is_dirty = models.BooleanField(default=True)
+    
 
     def save(self):
+
         self.created = datetime.now()
         if self.slug is None:
             slug = slugify(self.name)
@@ -88,10 +98,11 @@ class DataSource(models.Model):
         first_column = csv_attach.next()
         # Check: Is deleting the previous fields?
         #self.columns = []
-        for column in first_column:
+        for i, column in enumerate(first_column):
             new_column = Column(name= unicode(column, 'utf-8'), data_type="str")
             new_column.created = datetime.now()
             new_column.label = slugify(new_column.name)
+            new_column.csv_index = i
             new_column.datasource = self 
             new_column.save()
 
@@ -113,37 +124,48 @@ class DataSource(models.Model):
         data_collection = db['data']    
         return data_collection
 
-    def generate_documents(self):
+    def generate_documents(self, columns=None):
+        data_collection = self._data_collection()
+
+        # Clear previous documents
+        data_collection.remove({'datasource_id':self.pk})
         csv_attach = reader(StringIO(self.attach.read()))
         first_column = csv_attach.next() # skip the title column.
-        data_collection = self._data_collection()
-        
-        for row in csv_attach:
-            params = {'datasource_id': self.pk}
+        errors = []
+        if columns is not None:
+            columns = self.column_set.filter(pk__in=columns)
+        else:
             columns = self.column_set.all()
 
-            for i, column in enumerate(columns):
+        for row in csv_attach:
+            params = {'datasource_id': self.pk}            
+            for column in columns:
                 try:
-                    params[column.label] = self._cast_value(column.data_type, row[i])                    
+                    params[column.label] = self._cast_value(
+                        column.data_type, 
+                        row[column.csv_index]
+                    )
                 except IndexError:
-                    pass
+                    errors.append('{attach} has no column "{column}"'.format({
+                        'attach':csv_attach,
+                        'column':column,
+                    }))
             data_collection.insert(params)
-
+        
+        if not (len(errors) > 1):
+            self.is_dirty = False 
+            self.save() 
+        
+        return {
+            'columns':columns,
+            'errors':errors
+        }
+        
+        
     def find(self, params={}):
         params.update({"datasource_id": self.id})
         data_collection = self._data_collection()
         return data_collection.find(params)
-
-#class DataSourceDocument(object):
-#    
-#    def __init__(self, datasource):
-#        self._datasource = datasource
-#    
-#    def             
-    
-      
-#    def get_absolute_url(self):
-#        return reverse('datasources.views.detail', kwargs={'slug': self.slug})
 
 
 __all__ = ['DataSource', 'Column', 'Annotation']
