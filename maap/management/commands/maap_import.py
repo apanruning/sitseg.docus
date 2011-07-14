@@ -1,7 +1,7 @@
 from django.contrib.gis.geos import Point, LineString,MultiLineString, Polygon, GEOSGeometry
 from django.contrib.gis.gdal import OGRGeometry, SpatialReference
 from django.core.management.base import BaseCommand, CommandError
-from maap.models import MaapZone, MaapArea, MaapPoint, MaapMultiLine, MaapCategory, Icon
+from maap.models import MaapArea, MaapPoint, MaapMultiLine, MaapCategory, Icon
 from osm.parser import OSMXMLFile
 from settings import DEFAULT_SRID
 from djangoosm import OSM_SRID
@@ -98,7 +98,7 @@ class Command(BaseCommand):
                     maap_area.category.add(category)
                     areas_count += 1
                 else:
-                    maap_zone, created = MaapZone.objects.get_or_create(
+                    maap_zone, created = MaapArea.objects.get_or_create(
                         name = way.tags['name'],                   
                         defaults = dict(
                             geom = geom,

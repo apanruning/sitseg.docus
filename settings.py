@@ -117,6 +117,9 @@ DEBUG_TOOLBAR_CONFIG = {
 
 DB = connect('sitseg')
 
+# OSM absolute path to csv sources
+OSM_CSV_ROOT = os.path.join(os.path.dirname(__file__), 'csv')
+
 try:
     from local_settings import *
 except ImportError:

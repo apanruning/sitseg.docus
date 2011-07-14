@@ -1,4 +1,5 @@
 from django.contrib.gis import admin
+from django.contrib import admin as simple_admin
 from models import *
 from django.conf.urls.defaults import *
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -159,7 +160,7 @@ class GeoCordobaAdmin(admin.OSMGeoAdmin):
         obj.save()
         
    
-admin.site.register(MaapCategory, MaapCategoryAdmin)
+admin.site.register(MaapCategory, simple_admin.ModelAdmin)
 admin.site.register(MaapPoint, GeoCordobaAdmin)
 admin.site.register(Icon, admin.GeoModelAdmin)
 admin.site.register(MaapArea, GeoCordobaAdmin)
