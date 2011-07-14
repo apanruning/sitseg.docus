@@ -115,7 +115,7 @@ DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
 }
 
-connect('sitseg')
+DB = connect('sitseg')
 
 try:
     from local_settings import *

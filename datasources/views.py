@@ -48,12 +48,12 @@ def detail(request, id):
     )
     
     
-def column(request, id):
+def column(request, id,):
     instance = Column.objects.get(pk=id)
     db = connect('sitseg')
     dataset = db.data.group(
         key={instance.label:1},
-        condition={'datasource_id':3},
+        condition={'datasource_id':instance.datasource_id},
         initial={'count':0},
         reduce="function(obj,prev){prev.count ++;}"
     )
@@ -73,11 +73,6 @@ def column(request, id):
             }
         )
 
-        instance.has_geodata = request.POST.get('has_geodata')
-        instance.is_available = request.POST.get('is_available')
-        instance.save()
-        
-        return redirect('detail', instance.datasource_id)
     return render(
         request,
         'column.html',
@@ -107,15 +102,29 @@ def autogenerate_columns(request, id):
     return redirect('detail', datasource.pk)
 
 def import_data(request, id):
-    if request.method == 'POST':
-        import ipdb; ipdb.set_trace()
     datasource = DataSource.objects.get(id=id)
-    datasource.generate_documents()
-    return redirect("/")
+
+    if request.method == 'POST':
+        object_ids = request.POST.lists()[1][1] #XXX OSHIIIBLE
+
+        if type(object_ids) == list:
+            columns = object_ids
+        elif type(object_ids) == unicode:
+            columns = [object_ids]
+
+        import_result = datasource.generate_documents(
+            columns=columns
+            )
+
+    else:
+        datasource.generate_documents()
+    return redirect("detail", id)
 
 
 def data_formatted(data, doclist):
-    """ takes a plain data and columns info and generate a list of labeled values"""
+    """ takes a plain data and columns info and generate a list of 
+        labeled values
+    """
     for document in data:
         doc_formatted = []
         for column in doclist:
@@ -201,7 +210,12 @@ def scatter_plot(request, datasource_id):
         column1 = request.POST.get('column1', None)
         column2 = request.POST.get('column2', None)
         
-        data = db.data.find({'datasource_id': int(datasource_id)}, {column1:1,column2:1})
+        data = db.data.find(
+            {
+                'datasource_id': int(datasource_id)}, 
+                {column1:1,column2:1
+            }
+        )
         datalist = [{
                 column1:item[column1],
                 column2:item[column2],                
