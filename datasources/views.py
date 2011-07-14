@@ -7,6 +7,8 @@ from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse
 from mongoengine import connect
 from bson.objectid import ObjectId
+from django.conf import settings
+
 import simplejson
 
 def index(request):
@@ -50,7 +52,7 @@ def detail(request, id):
     
 def column(request, id,):
     instance = Column.objects.get(pk=id)
-    db = connect('sitseg')
+    db = settings.DB
     dataset = db.data.group(
         key={instance.label:1},
         condition={'datasource_id':instance.datasource_id},
@@ -180,7 +182,7 @@ def show_data(request, id):
     )
 
 def geometry_append(request, datasource_id, id):
-    db = connect('sitseg')
+    db = settings.DB
     # This create the collection if not exists previously
     data_collection = db['data']
     
@@ -198,7 +200,7 @@ def geometry_append(request, datasource_id, id):
 
 def scatter_plot(request, datasource_id):
     datasource = DataSource.objects.get(pk=datasource_id)
-
+    db = settings.DB
     columns = datasource.column_set.all()
     context = {
         'datasource': datasource,
@@ -206,7 +208,7 @@ def scatter_plot(request, datasource_id):
     }
 
     if request.method == 'POST':
-        db = connect('sitseg')
+
         column1 = request.POST.get('column1', None)
         column2 = request.POST.get('column2', None)
         
