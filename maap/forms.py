@@ -40,7 +40,6 @@ class MaapPointForm(forms.ModelForm):
         )
         
     def save(self, *args, **kwargs):
-        import ipdb; ipdb.set_trace()
 
         if not self.instance.creator_id:
             self.instance.creator_id = self.data['user']
