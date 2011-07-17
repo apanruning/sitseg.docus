@@ -40,8 +40,8 @@
     
     <form action="/datasource/{{datasource.id}}/import_data" id="import_form" method="post">{% csrf_token %}
     {% for column in columns  %}
-        {% if column.is_available %}
-        <input type="hidden" name="object_id" value="{{column.pk}}"/>
+        {% if column.instance.is_available %}
+        <input type="hidden" name="object_id" value="{{column.instance.pk}}"/>
         {% endif %}
     {% endfor %}
 
