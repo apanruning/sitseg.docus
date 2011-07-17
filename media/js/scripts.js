@@ -1,8 +1,6 @@
 $('document').ready(function(){
     $('.column_form :input').change(function(){
         form = $(this).parent('form');
-        /*FIXME: capturar el objeto desde el servidor y hacer la comparación
-        con los campos que hay en #import form*/
         data = $(form).serializeArray();
         target = $(form).attr('action');
         $.post(

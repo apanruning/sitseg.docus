@@ -20,7 +20,6 @@ ul {
     overflow:hidden;
 }
 .data_column{
-    float: left;
     width:45%;
     padding:0.5em 2em 0.5em 0.5em;
 }
@@ -39,4 +38,7 @@ ul {
 .clear {
     display: block;
     clear: both;
+}
+.ui-selected{
+    background: #FFFFEB;
 }
