@@ -4,6 +4,9 @@ body {
 header { 
     display:block;
 }
+h1, h2, h3 {
+    margin:0 0 1em;
+}
 fieldset p {
     float:left;
     margin-right: 1em;
@@ -31,6 +34,14 @@ ul {
     float:right;
     clear:right;
 }
+
+.add-form label {
+    float:left;
+    text-align:right;
+    width: 8em;
+    margin-right: 1em;
+   
+}
 .disabled {
     opacity:0.5;
     background: #EBEBEB;
@@ -39,6 +50,13 @@ ul {
     display: block;
     clear: both;
 }
+.data_column {
+   border: 1px solid transparent;
+}
 .ui-selected{
-    background: #FFFFEB;
+    background: #FFE;
+    border: 1px solid #FE0;
+    border-radius:0.2em;
+
+    
 }

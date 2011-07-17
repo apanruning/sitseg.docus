@@ -29,9 +29,19 @@ class ColumnForm(forms.ModelForm):
             ('int','int'), 
             ('float','float'), 
             ('dict','dict'), 
-            ('point','point')
         ]
     )
+    geodata_type = forms.ChoiceField(
+        choices=[
+            ('','-------'),  
+            ('punto','Lugar'), 
+            ('barrio','Barrio'), 
+            ('ciudad','Ciudad'),
+            ('provincia','Provincia'), 
+        ],
+        required=False
+    )
+
     class Meta:
         model = Column
 
