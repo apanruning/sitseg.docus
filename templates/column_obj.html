@@ -4,10 +4,12 @@
     {% if not column.instance.is_available %} disabled{% endif %}
     {% if column.errors %}error{%endif%}">
 {%endspaceless%}
-    <h3>{{column.instance.pk}}. <a href="/column/{{column.instance.pk}}">{{column.instance.name}}</a></h3>
-    <a href="/column/{{column.instance.pk}}">Registros con esta columna</a>
-    <form action="/column/{{column.instance.pk}}" method="post" class="column_form">
-    {% csrf_token %}
+    <form action="/column/{{column.instance.pk}}" method="post" class="column_form">{% csrf_token %}
+    <h3>
+        <input type="checkbox" name="is_available"  {% if column.instance.is_available %}checked{% endif %}/>
+        {{column.instance.pk}}.<a href="/column/{{column.instance.pk}}">{{column.instance.name}}</a>
+    </h3>
+    
     <input type="hidden" name="object_id"  value="{{column.instance.pk}}"/>
     <input type="hidden" name="name"  value="{{column.instance.name}}"/>
     <input type="hidden" name="label"  value="{{column.instance.label}}"/>
@@ -15,8 +17,10 @@
     <input type="hidden" name="next" value="{{request.path}}"/>
     {{ column.data_type }}
             <label>geografico</label><input type="checkbox" name="has_geodata" {% if column.instance.has_geodata %}checked{% endif %}/>
-            <label>disponible</label><input type="checkbox" name="is_available"  {% if column.instance.is_available %}checked{% endif %}/>
+    {% if column.instance.has_geodata %}
     {{ column.geodata_type }}
+    {% endif %}
     </form>
     {{form.errors}}
+
 </li>

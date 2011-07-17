@@ -1,7 +1,7 @@
 $('document').ready(function(){
     $('ul').selectable();
     function column_form_change(){
-        form = $(this).parent('form');
+        form = $(this).parents('form');
         data = $(form).serializeArray();
         target = $(form).attr('action');
         $.post(
