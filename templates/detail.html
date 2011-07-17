@@ -1,48 +1,37 @@
 {% extends "index.html" %}
 {% block page %}
     <h1>{{datasource.name}}</h1> 
-    <p>{{datasource.created}} - {{datasource.author}} |
+    <p>
+        <a title="Index"
+           href="/">
+            Volver</a> | 
+        {{datasource.created}} - {{datasource.author}} |
+
         <a title="{{datasource.attach.name}}" 
            href="/datasource/{{datasource.id}}/download_attach">
             Descargar Fuente</a> |
         <a title="Ver Datos" 
            href="/datasource/{{datasource.id}}/data">
             Ver algunos datos importados</a> |
-        <a href="/datasource/{{datasource.id}}/plot/scatter">
-            Scatter Plot.</a> |            
-        <a title="Index"
-           href="/">
-            Volver</a>
+        <a 
+           tile="Se va a usar la primera fila"
+           href="/datasource/{{datasource.id}}/import_data">Generar columnas</a> |
+
+
     </p>
-    <details>
-        <summary>Nueva Columna</summary>
-        <form action="/column/" method="post">{% csrf_token %}
+
+        <form class="add-form" action="/column/" method="post">{% csrf_token %}
+            <legend>Nueva Columna</legend>
             {{column_form.as_p}}
             <p><input type="submit" value="Guardar" /></p>
         </form>
-    </details>
     <ul>
 
     {% for column in columns %}
-        <li class="data_column {% if not column.is_available %}disabled{% endif %}">
-            <h3>{{column.pk}}. <a href="/column/{{column.pk}}">{{column.name}}</a></h3>
-            <a href="/column/{{column.pk}}">Registros con esta columna</a>
-            <form action="/column/{{column.pk}}" method="post" class="column_form">
-            {% csrf_token %}
-            <input type="hidden" name="object_id"  value="{{column.pk}}"/>
-            <input type="hidden" name="name"  value="{{column.name}}"/>
-            <input type="hidden" name="label"  value="{{column.label}}"/>
-            <input type="hidden" name="datasource"  value="{{column.datasource.id}}"/>
-            <input type="hidden" name="next" value="{{request.path}}"/>
-            {{ column_form.data_type }}
-            <label>geografico</label><input type="checkbox" name="has_geodata" {% if column.has_geodata %}checked{% endif %}/>
-            <label>disponible</label><input type="checkbox" name="is_available"  {% if column.is_available %}checked{% endif %}/>
-            <a href="#plot" class="plot-trigger">plotear</a>
-            </form>
-        </li>
+        {% include "column_obj.html" %}
     {% empty %}
         <li>
-            <a href="/datasource/{{datasource.id}}/autogenerate_columns">Autogenerar usando primera fila.</a>
+            <a href="/datasource/{{datasource.id}}/autogenerate_columns">Generar columnas.</a>
         </li>
     {% endfor %}        
     

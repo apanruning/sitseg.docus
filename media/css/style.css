@@ -4,6 +4,9 @@ body {
 header { 
     display:block;
 }
+h1, h2, h3 {
+    margin:0;
+}
 fieldset p {
     float:left;
     margin-right: 1em;
@@ -18,19 +21,29 @@ fieldset {
 ul {
     list-style:none;
     overflow:hidden;
+    padding:0;
 }
 .data_column{
-    float: left;
-    width:45%;
-    padding:0.5em 2em 0.5em 0.5em;
+    width:50%;
+    padding:0.5em;
+    border: 1px solid transparent;
 }
 .data_column:hover {
     cursor:pointer;
-    background:#FAFAFA;
+    background: #FFE;
 }
-.column_form {
-    float:right;
-    clear:right;
+.column_form  h3{
+    float:left;
+    clear:left;
+    width: 58%;
+}
+
+.add-form label {
+    float:left;
+    text-align:right;
+    width: 8em;
+    margin-right: 1em;
+   
 }
 .disabled {
     opacity:0.5;
@@ -39,4 +52,12 @@ ul {
 .clear {
     display: block;
     clear: both;
+}
+.ui-selected{
+    background: #FFE;
+    border: 1px solid #FE0;
+    box-shadow:1px 1px 1px #FF0, -1px -1px 1px #FF0;
+    border-radius:0.2em;
+
+    
 }

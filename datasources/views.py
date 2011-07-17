@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from models import DataSource, Column
 from forms import DataSourceForm, ColumnFormSet, ColumnForm
 from django.core.servers.basehttp import FileWrapper
@@ -11,7 +11,7 @@ from django.conf import settings
 
 import simplejson
 
-def index(request):
+def datasource(request):
  
     form = DataSourceForm()
     column_form = ColumnFormSet()
@@ -29,29 +29,30 @@ def index(request):
         request,
         'index.html',
         {
-            'datasource_list': DataSource.objects.order_by('created'),
+            'datasource_list': DataSource.objects.order_by('-created'),
             'form': form,
             'column_form': column_form
         }
     )
 
-def detail(request, id):
+def datasource_detail(request, id):
     column_form = ColumnForm()
-    datasource = DataSource.objects.get(id=id)
+    instance = get_object_or_404(DataSource, pk=id)
+    columns = (ColumnForm(instance=column) for column in instance.column_set.all())
     return render(
         request,
         'detail.html',
         {
-            'datasource': datasource,
-            'columns': datasource.column_set.all(),
+            'datasource': instance,
+            'columns': columns,
             'column_form':column_form,
             
         }
     )
     
     
-def column(request, id,):
-    instance = Column.objects.get(pk=id)
+def column_detail(request, id,):
+    instance = get_object_or_404(Column, pk=id)
     db = settings.DB
     dataset = db.data.group(
         key={instance.label:1},
@@ -62,16 +63,14 @@ def column(request, id,):
     dataindex = dict([(d[instance.label],d['count']) for d in dataset]) 
     if id and request.method == "POST":
         column_form = ColumnForm(request.POST, instance=instance )
-
-        if request.is_ajax() and column_form.is_valid():
+        if column_form.is_valid():
             instance = column_form.save()
 
         return render(
             request,
             'column_obj.html',
             {
-                'column':instance,
-                'column_form':column_form
+                'column':column_form,
             }
         )
 

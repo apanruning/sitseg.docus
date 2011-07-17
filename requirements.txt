@@ -1,11 +1,12 @@
-jango
+django
 mongoengine
 simplejson
 django-tagging
 django-debug-toolbar
-git+git://github.com/darvin/django-mongoforms.git
 ipdb
 ipython
 svn+http://django-mptt.googlecode.com/svn/trunk/#egg=mptt
+git+git://github.com/etnalubma/python-osm.git#egg=osm
+git+git://github.com/etnalubma/django-osm.git#egg=djangoosm
 psycopg2
 PIL

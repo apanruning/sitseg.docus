@@ -9,6 +9,15 @@
         <script type="text/javascript" src="/static/js/jquery.ui.js"></script>
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" language="javascript" src="/static/js/scripts.js"/></script>
+        <script src="{{STATIC_URL}}js/OpenLayers.js"></script>
+        <script src="{{STATIC_URL}}js/OpenStreetMap.js"></script>
+        <script src="{{STATIC_URL}}modules/base.js"></script>
+        <script src="{{STATIC_URL}}modules/state.js"></script>
+        <script src="{{STATIC_URL}}modules/point.js"></script>
+        <script src="{{STATIC_URL}}modules/multiline.js"></script>
+        <script src="{{STATIC_URL}}modules/area.js"></script>
+        <script src="{{STATIC_URL}}modules/layer.js"></script>
+        <script src="{{STATIC_URL}}modules/init.js"></script>
         <!--[if IE]>
           <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js">
           </script>
@@ -31,9 +40,9 @@
     <body>
     <header>
     {% block page %} 
-        <details>
-        <summary>Nueva Fuente de Datos</summary>
-        <form method="post" action="." enctype="multipart/form-data">{% csrf_token %}
+
+        <form class="add-form" method="post" action="." enctype="multipart/form-data">{% csrf_token %}
+            <legend>Nueva Fuente de Datos</legend>
             {{ column_form.management_form }}
             <p class="{{form.name.errors|yesno:'errors,valid'}}">
                 {{form.name.errors}}

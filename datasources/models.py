@@ -24,16 +24,17 @@ class Annotation(models.Model):
 class Column(models.Model):
 
     name = models.CharField(max_length=50)
-    label = models.CharField(max_length=50)
+    label = models.CharField(max_length=50, editable=False)
     created = models.DateTimeField(auto_now_add=True, editable = False)
     # Valid data types are:
     # str, date, time, datetime, int, float, dict, point
     data_type = models.CharField(max_length=50)
-    is_key = models.NullBooleanField(default=False,)
-    datasource = models.ForeignKey('DataSource')
+    is_key = models.NullBooleanField(default=False, )
+    datasource = models.ForeignKey('DataSource', editable=False)
     has_geodata = models.BooleanField(default=False,)
     is_available = models.BooleanField(default=True,)
-    csv_index = models.IntegerField()
+    csv_index = models.IntegerField(editable=False)
+    geodata_type = models.CharField(max_length=50, null=True, blank=True)
     class Meta:
         ordering = ['csv_index',]
 
