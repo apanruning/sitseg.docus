@@ -7,9 +7,9 @@
     <form action="/column/{{column.instance.pk}}" method="post" class="column_form">{% csrf_token %}
     <h3>
         <input type="checkbox" name="is_available"  {% if column.instance.is_available %}checked{% endif %}/>
-        {{column.instance.pk}}.<a href="/column/{{column.instance.pk}}">{{column.instance.name}}</a>
+        <a href="/column/{{column.instance.pk}}">{{column.instance.name}}</a>
     </h3>
-    
+    <p>    
     <input type="hidden" name="object_id"  value="{{column.instance.pk}}"/>
     <input type="hidden" name="name"  value="{{column.instance.name}}"/>
     <input type="hidden" name="label"  value="{{column.instance.label}}"/>
@@ -20,7 +20,9 @@
     {% if column.instance.has_geodata %}
     {{ column.geodata_type }}
     {% endif %}
-    </form>
+    <p>
     {{form.errors}}
+    </form>
+
 
 </li>

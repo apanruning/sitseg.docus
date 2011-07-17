@@ -27,6 +27,7 @@ ul {
     width:50%;
     padding:0.5em;
     border: 1px solid transparent;
+    overflow: hidden;
 }
 .data_column:hover {
     cursor:pointer;
@@ -36,6 +37,12 @@ ul {
     float:left;
     clear:left;
     width: 58%;
+}
+.column_form p {
+    float:right;
+    clear:right;
+    margin:0;
+
 }
 
 .add-form label {
@@ -56,7 +63,6 @@ ul {
 .ui-selected{
     background: #FFE;
     border: 1px solid #FE0;
-    box-shadow:1px 1px 1px #FF0, -1px -1px 1px #FF0;
     border-radius:0.2em;
 
     
