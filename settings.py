@@ -104,6 +104,7 @@ INSTALLED_APPS = (
     'datasources',
     'maap',
     'mptt',
+    'sessions'
 )
 
 AUTHENTICATION_BACKENDS = (

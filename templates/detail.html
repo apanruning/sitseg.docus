@@ -1,4 +1,7 @@
 {% extends "index.html" %}
+{% block title %}
+    Ver e Importar Columnas
+{% endblock %}
 {% block page %}
     <h1>{{datasource.name}}</h1> 
     <p>
@@ -25,7 +28,7 @@
             {{column_form.as_p}}
             <p><input type="submit" value="Guardar" /></p>
         </form>
-    <ul>
+    <ul class="list">
 
     {% for column in columns %}
         {% include "column_obj.html" %}

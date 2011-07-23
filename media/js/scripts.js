@@ -1,5 +1,4 @@
 $('document').ready(function(){
-    $('ul').selectable();
     function column_form_change(){
         form = $(this).parents('form');
         data = $(form).serializeArray();

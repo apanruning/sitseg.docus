@@ -22,19 +22,7 @@
           <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js">
           </script>
         <![endif]-->
-
         {% block js %}{% endblock %}
-       <script type="text/javascript" language="javascript">
-            $(document).ready(function(){
-
-
-                $('#add-column').click(function(){
-                    fieldset = $('form fieldset').last()[0];
-                    new_fieldset = $(fieldset).clone();
-                    $(new_fieldset).insertAfter(fieldset);
-                    return false;
-                })
-            });
         </script>
     </head>
     <body>

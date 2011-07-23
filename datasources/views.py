@@ -38,7 +38,7 @@ def datasource(request):
 def datasource_detail(request, id):
     column_form = ColumnForm()
     instance = get_object_or_404(DataSource, pk=id)
-    columns = (ColumnForm(instance=column) for column in instance.column_set.all())
+    columns = [ColumnForm(instance=column) for column in instance.column_set.all()]
     return render(
         request,
         'detail.html',
@@ -55,7 +55,7 @@ def column_detail(request, id,):
     instance = get_object_or_404(Column, pk=id)
     db = settings.DB
     dataset = db.data.group(
-        key={instance.label:1},
+        key={'columns':1},
         condition={'datasource_id':instance.datasource_id},
         initial={'count':0},
         reduce="function(obj,prev){prev.count ++;}"
@@ -106,7 +106,7 @@ def import_data(request, id):
     datasource = DataSource.objects.get(id=id)
 
     if request.method == 'POST':
-        object_ids = request.POST.lists()[1][1] #XXX OSHIIIBLE
+        object_ids = request.POST.getlist('object_id')
 
         if type(object_ids) == list:
             columns = object_ids
@@ -121,34 +121,15 @@ def import_data(request, id):
         datasource.generate_documents()
     return redirect("detail", id)
 
-
-def data_formatted(data, doclist):
-    """ takes a plain data and columns info and generate a list of 
-        labeled values
-    """
-    for document in data:
-        doc_formatted = []
-        for column in doclist:
-            doc_formatted.append(dict(
-                label = column.name,
-                key = column.label,
-                value = document[column.label],
-                field_type = column.data_type
-            ))
-            
-        yield doc_formatted
-
 def show_data(request, id):
     datasource = DataSource.objects.get(id=id)    
-    data = datasource.find()[:1]
-
+    data = datasource.find()
     return render(
         request,
         'data.html',
         {
             'datasource': datasource,
-            'columns':datasource.column_set.all(),            
-            'data': data_formatted(data, datasource),
+            'data': data,
         }
     )
 
@@ -160,25 +141,6 @@ def document_detail(request):
     
 def document_add(request):
     pass
-
-#def document_list(request, datasource_id):
-#    datasource = DataSource.objects.get(id=datasource_id)    
-#    data = datasource.find()[:100]
-#    columns = datasource.column_set.all()[:3]
-
-def show_data(request, id):
-    datasource = DataSource.objects.get(id=id)
-    data = datasource.find()[:1]
-    columns = datasource.column_set.all()
-    return render(
-        request,
-        'document_list.html',
-        {
-            'datasource': datasource,
-            'columns': columns,            
-            'data': data_formatted(data, columns),
-        }
-    )
 
 def geometry_append(request, datasource_id, id):
     db = settings.DB

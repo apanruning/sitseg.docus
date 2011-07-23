@@ -1,4 +1,7 @@
 {% extends "index.html" %}
+{% block title %}
+    Cantidades por {{label}}
+{% endblock %}
 {% block js %}
 <script type="text/javascript" language="javascript">
     google.load("visualization", "1", {packages:["corechart"]});
@@ -8,9 +11,9 @@
         data.addColumn('string', 'Label');
         data.addColumn('number', '{{label}}');
         data.addRows({{dataset|length}});
-        {% for key, item in dataset.iteritems %}
-        data.setValue({{forloop.counter0}},0,'{{key}}')
-        data.setValue({{forloop.counter0}},1,{{item|floatformat}})
+        {% for item in dataset %}
+        data.setValue({{forloop.counter0}},0,'{{item.label}}')
+        data.setValue({{forloop.counter0}},1,{{item.value}})
 
         {% endfor %}
         var chart = new google.visualization.ColumnChart(document.getElementById('chart'));
@@ -23,8 +26,6 @@
                 
              });
     };
-
-
 </script>
     
 {% endblock %}
