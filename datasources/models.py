@@ -108,7 +108,7 @@ class DataSource(models.Model):
             new_column.label = slugify(new_column.name)
             new_column.csv_index = i
             new_column.datasource = self 
-            new_columns.is_available=True
+            new_column.is_available=True
             new_column.save()
 
     def _cast_value(self, data_type, value):
