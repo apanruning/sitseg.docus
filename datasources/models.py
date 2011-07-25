@@ -154,7 +154,8 @@ class DataSource(models.Model):
                         column.data_type, 
                         row[column.csv_index]
                     )
-                    params['columns'].append(values)
+                    label = slugify(values['name'])
+                    params[label] = values
                 except IndexError:
                     errors.append('{attach} has no column "{column}"'.format({
                         'attach':csv_attach,

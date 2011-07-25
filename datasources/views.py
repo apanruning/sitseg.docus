@@ -55,12 +55,11 @@ def column_detail(request, id,):
     instance = get_object_or_404(Column, pk=id)
     db = settings.DB
     dataset = db.data.group(
-        key={'columns':1},
+        key={instance.label:1},
         condition={'datasource_id':instance.datasource_id},
         initial={'count':0},
         reduce="function(obj,prev){prev.count ++;}"
     )
-    dataindex = dict([(d[instance.label],d['count']) for d in dataset]) 
     if id and request.method == "POST":
         column_form = ColumnForm(request.POST, instance=instance )
         if column_form.is_valid():
@@ -79,7 +78,7 @@ def column_detail(request, id,):
         'column.html',
         {
             'column':instance,
-            'dataset': dataindex,
+            'dataset': dataset,
             'label':instance.label,
             
         }
