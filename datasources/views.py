@@ -57,8 +57,11 @@ def column_detail(request, id,):
     dataset = db.data.group(
         key={instance.label:1},
         condition={'datasource_id':instance.datasource_id},
-        initial={'count':0},
-        reduce="function(obj,prev){prev.count ++;}"
+        initial={
+            'count':0,
+            'value': ''
+        },
+        reduce='function(obj,prev){prev.value=obj.%s["value"];prev.count++; }' % instance.label
     )
     if id and request.method == "POST":
         column_form = ColumnForm(request.POST, instance=instance )
@@ -72,7 +75,6 @@ def column_detail(request, id,):
                 'column':column_form,
             }
         )
-
     return render(
         request,
         'column.html',

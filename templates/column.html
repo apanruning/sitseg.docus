@@ -12,9 +12,8 @@
         data.addColumn('number', '{{label}}');
         data.addRows({{dataset|length}});
         {% for item in dataset %}
-        data.setValue({{forloop.counter0}},0,'{{item.label}}')
-        data.setValue({{forloop.counter0}},1,{{item.value}})
-
+        data.setValue({{forloop.counter0}},0,'{{item.value}}')
+        data.setValue({{forloop.counter0}},1,{{item.count}})
         {% endfor %}
         var chart = new google.visualization.ColumnChart(document.getElementById('chart'));
         chart.draw(data, {
