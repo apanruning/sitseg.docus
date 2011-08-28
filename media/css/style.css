@@ -50,6 +50,27 @@ ul {
 
     
 }
+#messages {
+    text-align:left;
+    background: #FE9;
+    border: 1px solid #FC0;
+    font-size:80%;
+    margin:0;
+    padding:0 1em;
+    position:fixed;
+    left:0;
+    top:0;
+    width:100%;
+    z-index:100;
+    list-style:none;
+}
+#messages li {
+    padding: 0.25em 2em;
+    position: relative;
+}
+#messages .control {
+    float:right;
+}
 
 
 
@@ -97,3 +118,4 @@ fieldset {
 #add-form input[type="submit"] {
     float:right;
 }
+

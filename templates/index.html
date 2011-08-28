@@ -27,6 +27,14 @@
     </head>
     <body>
     <header>
+      {% if messages %}
+      <ul id="messages">
+        {% for message in messages %}
+        <li class="{{message.tags}}"><a href="#messages" class="control">X</a>{{message}}</li>
+        {% endfor %}
+
+      </ul>
+      {% endif %}      
       <menu>
         <a href="#add-form" class="control">Agregar</a>
       </menu>

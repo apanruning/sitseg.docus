@@ -31,5 +31,8 @@ $('document').ready(function(){
         return false;
         
     });
+//    window.setTimeout(function(){
+//        $('#messages .control').click()
+//    }, 3000);
     
 })
