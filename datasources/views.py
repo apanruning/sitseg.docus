@@ -70,7 +70,7 @@ def column_detail(request, id):
                 'column':column_form,
             }
         )
-    if instance.is_available:
+    try:
         db = settings.DB
         dataset = db.data.group(
             key={instance.label:1},
@@ -81,6 +81,10 @@ def column_detail(request, id):
             },
             reduce='function(obj,prev){prev.value=obj.%s["value"];prev.count++; }' % instance.label
         )
+    except Exception, e:
+        messages.error(request, e)
+        return redirect('/')
+    else:
         return render(
             request,
             'column.html',
@@ -91,9 +95,6 @@ def column_detail(request, id):
                 
             }
         )
-    else:
-        messages.error(request, u'La columna no está disponible')
-        return redirect('/')
 
 
 def import_data(request, id):
