@@ -31,7 +31,16 @@
 <h1><a title="Index"href="/">home</a>/<a href="{% url detail column.datasource_id %}">{{column.datasource.name}}</a>/Cantidades por {{label}}</h1>
 {% endblock %}    
 {% block page %}
-  
+{% if column.has_geodata %}
+<ul id="sort">
+  <li><a href="{{request.full_path}}">Todos</a></li>
+  <li><a href="?multiple">Ambiguos</a></li>
+  <li><a href="?empty">No encontrados</a></li>
+  <li><a href="?full">Sólo encontrados</a></li>  
+</ul>  
+{% endif %}
+
+
 <div id="chart"></div>
     
 {% endblock %}

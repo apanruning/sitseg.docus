@@ -2,25 +2,26 @@
 {% block title %}
     Documentos en la columna {{datasource.name}}
 {% endblock %}
+{% block head %}
+<h1><a title="Index"href="/">home</a>/<a href="{% url detail datasource.id %}">{{datasource.name}}</a>/Documentos</h1>
+{% endblock %}
 {% block page %}
-    <h1>Documentos en la columna <strong>{{datasource.name}}</strong></h1> 
+  
     {{datasource.created}} - {{datasource.author}}     
     | <a title="{{datasource.attach.name}}" 
        href="/datasource/{{datasource.id}}">Volver a Detalles</a>
     |
+    <ul>
     {% for document in data %}
-    <div class="data_document">            
-        <ul>
-        {% for column in document%}
-            <li>
-                {{column.label}}:{{ column.value }}
-            </li>
-        {% endfor %}
-        </ul>        
-    </div>
+      <li class="data_document">
+          <h3>{{document.nombre.value}}</h3>
+          {% if document.map_url %}
+          <img src="{{ document.map_url }}">            
+          {% endif %}
+      </li>
     {% empty %}
             No hay datos importados aún.
             <a href="/datasource/{{datasource.id}}/import_data">Importar desde el archivo.</a>
     {% endfor %}
-
+    </ul>
 {% endblock %}

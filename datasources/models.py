@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-#from mongoengine import EmbeddedDocument, Document, fields
-#from mongoengine.django.auth import User
 from datetime import datetime
 from django.template.defaultfilters import slugify
 from csv import reader
@@ -12,7 +10,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.forms.models import model_to_dict
+from googlemaps import GoogleMaps
 
+gmaps = GoogleMaps(settings.GOOGLEMAPS_API_KEY)
 # datasource Objects
 
 class Annotation(models.Model):
@@ -131,7 +131,9 @@ class DataSource(models.Model):
 
     def generate_documents(self, columns=None):
         data_collection = self._data_collection()
-
+        region = settings.TIME_ZONE.split('/')[-2:] #XXX: debería ir ajustando la región en base a las columnas
+        region.reverse()
+        region = ', '.join(region)
         # Clear previous documents
         data_collection.remove({'datasource_id':self.pk})
         csv_attach = reader(StringIO(self.attach.read()))
@@ -154,6 +156,29 @@ class DataSource(models.Model):
                         column.data_type, 
                         row[column.csv_index]
                     )
+
+                    if values['has_geodata'] and values['geodata_type']=='punto':
+                        #FIXME usar una señal y mover esta lógica a Column
+                        #TODO manejar otros tipos
+                        #TODO Debería tomar un orden de precedencia para los 
+                        #      valores geográficos buscar primero el pais, si 
+                        #      existe, luego la provincia, luego la ciudad,
+                        #      si no existen valores usar `region`
+                        local_search = gmaps.local_search('%s %s' %(values['value'], region))
+
+                        
+                        if len(local_search['responseData']['results']) == 0:
+                            params['map_empty'] = True
+                        elif len(local_search['responseData']['results']) > 1:
+                            params['map_multiple'] = True
+                            params['map_data'] = local_search['responseData']['results']
+                        elif len(local_search['responseData']['results']) == 1:
+                            result = local_search['responseData']['results'][0]
+                            params['map_data'] = result
+                            params['map_url'] = result['staticMapUrl']
+                            params['lat'] = result['lat']
+                            params['lng'] = result['lng']
+
                     label = slugify(values['name'])
                     params[label] = values
                 except IndexError:
