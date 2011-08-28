@@ -5,6 +5,7 @@ django-tagging
 django-debug-toolbar
 ipdb
 ipython
+googlemaps
 svn+http://django-mptt.googlecode.com/svn/trunk/#egg=mptt
 git+git://github.com/etnalubma/python-osm.git#egg=osm
 git+git://github.com/etnalubma/django-osm.git#egg=djangoosm
