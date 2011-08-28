@@ -2,40 +2,33 @@
 {% block title %}
     Ver e Importar Columnas
 {% endblock %}
-{% block page %}
-    <h1>{{datasource.name}}</h1> 
+{% block head %}
+    <h1><a href="/">home</a>/{{datasource.name}}</h1>
     <p>
-        <a title="Index"
-           href="/">
-            Volver</a> | 
-        {{datasource.created}} - {{datasource.author}} |
-
-        <a title="{{datasource.attach.name}}" 
-           href="/datasource/{{datasource.id}}/download_attach">
-            Descargar Fuente</a> |
-        <a title="Ver Datos" 
-           href="/datasource/{{datasource.id}}/data">
-            Ver algunos datos importados</a> |
-        <a 
-           tile="Se va a usar la primera fila"
-           href="/datasource/{{datasource.id}}/import_data">Generar columnas</a> |
-
-
+      <a title="Index"
+         href="/">
+          Volver</a> | 
+      {{datasource.created}} - {{datasource.author}} |
+      <a title="{{datasource.attach.name}}" 
+         href="/datasource/{{datasource.id}}/download_attach">
+          Descargar Fuente</a> |
+      <a title="Ver Datos" 
+         href="/datasource/{{datasource.id}}/data">
+          Ver algunos datos importados</a>
     </p>
+    <form id="add-form" action="/column/" method="post">{% csrf_token %}
+        <legend>Nueva Columna</legend>
+        {{column_form.as_p}}
+        <input type="submit" value="Guardar" />
+    </form>
+{% endblock %}
+{% block page %}
+  
 
-        <form class="add-form" action="/column/" method="post">{% csrf_token %}
-            <legend>Nueva Columna</legend>
-            {{column_form.as_p}}
-            <p><input type="submit" value="Guardar" /></p>
-        </form>
     <ul class="list">
 
     {% for column in columns %}
         {% include "column_obj.html" %}
-    {% empty %}
-        <li>
-            <a href="/datasource/{{datasource.id}}/autogenerate_columns">Generar columnas.</a>
-        </li>
     {% endfor %}        
     
 

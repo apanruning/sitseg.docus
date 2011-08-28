@@ -26,15 +26,12 @@
              });
     };
 </script>
-    
-{% endblock %}
+{% endblock %}    
+{% block head %}
+<h1><a title="Index"href="/">home</a>/<a href="{% url detail column.datasource_id %}">{{column.datasource.name}}</a>/Cantidades por {{label}}</h1>
+{% endblock %}    
 {% block page %}
-<h1>Cantidades por {{label}}</h1>
-<p>
-    <a title="Index"
-       href="/">
-        Volver</a>
-</p>
+  
 <div id="chart"></div>
     
 {% endblock %}

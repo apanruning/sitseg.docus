@@ -1,22 +1,24 @@
 body {
     font: 100% "Droid Sans", "Lucida Grande", Verdana, sans-serif;
 }
-header { 
+header, section, footer, article, menu, nav{ 
     display:block;
 }
 h1, h2, h3 {
     margin:0;
 }
-fieldset p {
-    float:left;
-    margin-right: 1em;
+menu {
+    float:right;
+    font-size:2em;
+    margin:0;
 }
-form.inline{
-    float:none;
-    display:inline;
+a {
+    color:#06C;
+    text-decoration:none;
 }
-fieldset {
-    clear: both;
+
+a:hover {
+    text-shadow: 1px 1px 1px #999;
 }
 ul {
     list-style:none;
@@ -33,25 +35,6 @@ ul {
     cursor:pointer;
     background: #FFE;
 }
-.column_form  h3{
-    float:left;
-    clear:left;
-    width: 58%;
-}
-.column_form p {
-    float:right;
-    clear:right;
-    margin:0;
-
-}
-
-.add-form label {
-    float:left;
-    text-align:right;
-    width: 8em;
-    margin-right: 1em;
-   
-}
 .disabled {
     opacity:0.5;
     background: #EBEBEB;
@@ -66,4 +49,51 @@ ul {
     border-radius:0.2em;
 
     
+}
+
+
+
+/*Forms*/
+label {
+    float:left;
+    margin-right: 1em;
+    width:8em;
+    text-align:right;
+}
+
+fieldset p {
+    float:left;
+    margin-right: 1em;
+}
+form.inline{
+    float:none;
+    display:inline;
+}
+fieldset {
+    clear: both;
+}
+.column_form  h3{
+    float:left;
+    clear:left;
+    width: 58%;
+}
+.column_form p {
+    float:right;
+    clear:right;
+    margin:0;
+
+}
+#add-form {
+    display:none;
+    width: 30em;
+    overflow:hidden;
+    position:absolute;
+    right:0;
+    top: 3em;
+    background:#EEE;
+    padding:1em;
+}
+
+#add-form input[type="submit"] {
+    float:right;
 }

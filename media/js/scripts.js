@@ -24,4 +24,12 @@ $('document').ready(function(){
 
     }
     $('.column_form :input').live('change', column_form_change)
+    $('.control').click(function(){
+        target = $(this).attr('href');
+        $(this).toggleClass('active');
+        $(target).toggle('blind', 300);
+        return false;
+        
+    });
+    
 })

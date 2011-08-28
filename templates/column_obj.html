@@ -16,7 +16,7 @@
     <input type="hidden" name="datasource"  value="{{column.instance.datasource.id}}"/>
     <input type="hidden" name="next" value="{{request.path}}"/>
     {{ column.data_type }}
-            <label>geografico</label><input type="checkbox" name="has_geodata" {% if column.instance.has_geodata %}checked{% endif %}/>
+            geografico<input type="checkbox" name="has_geodata" {% if column.instance.has_geodata %}checked{% endif %}/>
     {% if column.instance.has_geodata %}
     {{ column.geodata_type }}
     {% endif %}

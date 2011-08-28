@@ -27,30 +27,34 @@
     </head>
     <body>
     <header>
-    {% block page %} 
-
-        <form class="add-form" method="post" action="." enctype="multipart/form-data">{% csrf_token %}
-            <legend>Nueva Fuente de Datos</legend>
-            {{ column_form.management_form }}
-            <p class="{{form.name.errors|yesno:'errors,valid'}}">
-                {{form.name.errors}}
-                <label for="id_name">Nombre</label>
-                {{form.name}}
-            </p>
-            <p class="{{form.attach.errors|yesno:'errors,valid'}}">
-                {{form.attach.errors}}
-                <label for="id_{{form.attach.name}}">Archivo</label>
-                {{form.attach}}
-            </p>   
-            <p class="{{form.author.errors|yesno:'errors,valid'}}">
-                <label for="id_{{form.author.name}}">Autor</label>
-                {{form.author}}
-            </p>
-           
-
-            <input type="submit" name="Guardar" value="Submit"/>
-        </form>
-        </details>
+      <menu>
+        <a href="#add-form" class="control">Agregar</a>
+      </menu>
+    {% block head %} 
+      <h1>home/</h1>
+      <form id="add-form" method="post" action="." enctype="multipart/form-data">{% csrf_token %}
+          <legend>Nueva Fuente de Datos</legend>
+          {{ column_form.management_form }}
+          <p class="{{form.name.errors|yesno:'errors,valid'}}">
+              {{form.name.errors}}
+              <label for="id_name">Nombre</label>
+              {{form.name}}
+          </p>
+          <p class="{{form.attach.errors|yesno:'errors,valid'}}">
+              {{form.attach.errors}}
+              <label for="id_{{form.attach.name}}">Archivo</label>
+              {{form.attach}}
+          </p>   
+          <p class="{{form.author.errors|yesno:'errors,valid'}}">
+              <label for="id_{{form.author.name}}">Autor</label>
+              {{form.author}}
+          </p>
+          <input type="submit" name="Guardar" value="Submit"/>
+      </form>
+    {% endblock %}
+    </header>
+    <section>
+    {% block page %}
         <ul>
         {% for datasource in datasource_list %}
             <li>
@@ -60,7 +64,6 @@
                    href="/datasource/{{datasource.id}}/download_attach">
                     Descargar Fuente
                 </a> &nbsp;{% if not datasource.column_set.all %}
-                <a href="/datasource/{{datasource.id}}/autogenerate_columns">Autogenerar usando primera fila.</a>
                 {% endif%}
             </li>
         {% empty %}
@@ -68,6 +71,9 @@
         {% endfor %}        
         </ul>
     {% endblock %}
+    </section>
+    <footer>
+    </footer>
     </body>
 </html>
 
