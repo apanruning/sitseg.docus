@@ -8,22 +8,25 @@ from django.http import HttpResponse
 from mongoengine import connect
 from bson.objectid import ObjectId
 from django.conf import settings
+from django.contrib import messages
 
 import simplejson
 
 def datasource(request):
- 
+
     form = DataSourceForm()
     column_form = ColumnFormSet()
     if request.method == 'POST':
         form = DataSourceForm(request.POST, request.FILES)
         column_form = ColumnFormSet(request.POST)
+
         if form.is_valid():
             datasource = form.save()
+            datasource.import_columns()
         else:
-            pass
-        return redirect("/")
+            return redirect("/")
 
+        return redirect('detail', datasource.pk)
 
     return render(
         request,
@@ -36,9 +39,11 @@ def datasource(request):
     )
 
 def datasource_detail(request, id):
+
     column_form = ColumnForm()
     instance = get_object_or_404(DataSource, pk=id)
     columns = [ColumnForm(instance=column) for column in instance.column_set.all()]
+
     return render(
         request,
         'detail.html',
@@ -51,19 +56,9 @@ def datasource_detail(request, id):
     )
     
     
-def column_detail(request, id,):
+def column_detail(request, id):
     instance = get_object_or_404(Column, pk=id)
-    db = settings.DB
-    dataset = db.data.group(
-        key={instance.label:1},
-        condition={'datasource_id':instance.datasource_id},
-        initial={
-            'count':0,
-            'value': ''
-        },
-        reduce='function(obj,prev){prev.value=obj.%s["value"];prev.count++; }' % instance.label
-    )
-    if id and request.method == "POST":
+    if request.method == "POST":
         column_form = ColumnForm(request.POST, instance=instance )
         if column_form.is_valid():
             instance = column_form.save()
@@ -75,47 +70,39 @@ def column_detail(request, id,):
                 'column':column_form,
             }
         )
-    return render(
-        request,
-        'column.html',
-        {
-            'column':instance,
-            'dataset': dataset,
-            'label':instance.label,
-            
-        }
-    )
+    if instance.is_available:
+        db = settings.DB
+        dataset = db.data.group(
+            key={instance.label:1},
+            condition={'datasource_id':instance.datasource_id},
+            initial={
+                'count':0,
+                'value': ''
+            },
+            reduce='function(obj,prev){prev.value=obj.%s["value"];prev.count++; }' % instance.label
+        )
+        return render(
+            request,
+            'column.html',
+            {
+                'column':instance,
+                'dataset': dataset,
+                'label':instance.label,
+                
+            }
+        )
+    else:
+        messages.error(request, u'La columna no está disponible')
+        return redirect('/')
 
-def download_attach(request, id):
-
-    datasource = DataSource.objects.get(id=id)
-    attach = datasource.attach.read()
-    name = datasource.slug
-    
-    response = HttpResponse(attach, mimetype='application/force-download')
-    response['Content-Disposition'] = 'attachment; filename=%s' % name
-
-    return response
-
-
-def autogenerate_columns(request, id):
-    datasource = DataSource.objects.get(id=id)
-    datasource.import_columns()
-    return redirect('detail', datasource.pk)
 
 def import_data(request, id):
     datasource = DataSource.objects.get(id=id)
 
     if request.method == 'POST':
-        object_ids = request.POST.getlist('object_id')
-
-        if type(object_ids) == list:
-            columns = object_ids
-        elif type(object_ids) == unicode:
-            columns = [object_ids]
 
         import_result = datasource.generate_documents(
-            columns=columns
+            columns=request.POST.getlist('object_id')
             )
 
     else:
@@ -134,14 +121,6 @@ def show_data(request, id):
         }
     )
 
-def document_edit(request):
-    pass
-
-def document_detail(request):
-    pass
-    
-def document_add(request):
-    pass
 
 def geometry_append(request, datasource_id, id):
     db = settings.DB
@@ -160,36 +139,14 @@ def geometry_append(request, datasource_id, id):
     return redirect('detail', id)
 
 
-def scatter_plot(request, datasource_id):
-    datasource = DataSource.objects.get(pk=datasource_id)
-    db = settings.DB
-    columns = datasource.column_set.all()
-    context = {
-        'datasource': datasource,
-        'columns': columns,            
-    }
+def download_attach(request, id):
 
-    if request.method == 'POST':
+    datasource = DataSource.objects.get(id=id)
+    attach = datasource.attach.read()
+    name = datasource.slug
+    
+    response = HttpResponse(attach, mimetype='application/force-download')
+    response['Content-Disposition'] = 'attachment; filename=%s' % name
 
-        column1 = request.POST.get('column1', None)
-        column2 = request.POST.get('column2', None)
-        
-        data = db.data.find(
-            {
-                'datasource_id': int(datasource_id)}, 
-                {column1:1,column2:1
-            }
-        )
-        datalist = [{
-                column1:item[column1],
-                column2:item[column2],                
-            } for item in data]
-        
-        context['scatterdata'] = datalist
-        context['labels'] = [column1, column2]
-    return render(
-        request,
-        'scatter_form.html',
-        context,
-    )    
+    return response
 
