@@ -1,14 +1,12 @@
 {% extends "index.html" %}
+{% load pagination_tags %}
 {% block title %}
-    Ver e Importar Columnas
+    Detalles de {{datasource.name}}
 {% endblock %}
 {% block head %}
-    <h1><a href="/">home</a>/{{datasource.name}}</h1>
+    <h1><a href="/">Indice</a>/{{datasource.name}}</h1>
     <p>
-      <a title="Index"
-         href="/">
-          Volver</a> | 
-      {{datasource.created}} - {{datasource.author}} |
+      {{datasource.created|date}} - {{datasource.author}} - {{datasource.find.count}} registros |
       <a title="{{datasource.attach.name}}" 
          href="/datasource/{{datasource.id}}/download_attach">
           Descargar Fuente</a> |

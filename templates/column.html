@@ -28,7 +28,7 @@
 </script>
 {% endblock %}    
 {% block head %}
-<h1><a title="Index"href="/">home</a>/<a href="{% url detail column.datasource_id %}">{{column.datasource.name}}</a>/Cantidades por {{label}}</h1>
+<h1><a title="Index"href="/">Indice</a>/<a href="{% url detail column.datasource_id %}">{{column.datasource.name}}</a>/Cantidades por {{label}}</h1>
 {% endblock %}    
 {% block page %}
 {% if column.has_geodata %}

@@ -43,6 +43,9 @@ USE_I18N = True
 
 USE_L10N = True
 
+ROOT_URLCONF = 'docus.urls'
+
+
 MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'media')
 
 # Default Space Projection
@@ -69,9 +72,15 @@ STATICFILES_FINDERS = (
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'f@-#g0%bc3prc_71=jzw^jefos5&c(f4oa$dqeovq84i4y@r-f'
 
+
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
+)
+
+TEMPLATE_DIRS = (
+    'templates',
+    os.path.join(BASE_DIR, 'templates')
 )
 
 MIDDLEWARE_CLASSES = (
@@ -81,14 +90,11 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'pagination.middleware.PaginationMiddleware',
 )
 
-ROOT_URLCONF = 'docus.urls'
 
-TEMPLATE_DIRS = (
-    'templates',
-    os.path.join(BASE_DIR, 'templates')
-)
+PAGINATION_DEFAULT_WINDOW = 2
 
 INSTALLED_APPS = (
     'django.contrib.admin',
@@ -101,6 +107,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.gis',
     'debug_toolbar',
+    'pagination',
     'datasources',
     'maap',
     'mptt',
