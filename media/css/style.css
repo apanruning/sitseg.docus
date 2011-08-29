@@ -7,7 +7,7 @@ header, section, footer, article, menu, nav{
     display:block;
 }
 header, section {
-    padding:1em;
+    margin:1em;
 }
 h1, h2, h3 {
     margin:0;
@@ -128,6 +128,9 @@ fieldset {
     top: 3em;
     background:#EEE;
     padding:1em;
+}
+#add-form.errors {
+    display:block;
 }
 
 #add-form input[type="submit"] {

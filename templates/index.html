@@ -24,16 +24,23 @@
         {% for message in messages %}
         <li class="{{message.tags}}"><a href="#messages" class="control">X</a>{{message}}</li>
         {% endfor %}
-
       </ul>
       {% endif %}      
-    {% block head %} 
+    {% block head %}
+      {% if request.user.is_staff %}
       <menu>
         <a href="#add-form" class="control">Agregar fuente</a>
       </menu>
+      {% endif %}
       <h1>Indice/</h1>
-      <form id="add-form" method="post" action="." enctype="multipart/form-data">{% csrf_token %}
+      {% if request.user.is_staff %}
+      <form id="add-form" method="post" action="." 
+            class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
+          <input type="hidden" name="author" value="{{request.user.id}}"/>
           <legend>Nueva Fuente de Datos</legend>
+          {% for error in form.errors %}
+            <p class="error">{{error}}</p>
+          {% endfor %}
           {{ column_form.management_form }}
           <p class="{{form.name.errors|yesno:'errors,valid'}}">
               {{form.name.errors}}
@@ -45,12 +52,9 @@
               <label for="id_{{form.attach.name}}">Archivo</label>
               {{form.attach}}
           </p>   
-          <p class="{{form.author.errors|yesno:'errors,valid'}}">
-              <label for="id_{{form.author.name}}">Autor</label>
-              {{form.author}}
-          </p>
           <input type="submit" name="Guardar" value="Submit"/>
       </form>
+      {% endif %}
     {% endblock %}
     </header>
     <section>
@@ -76,8 +80,10 @@
     </section>
     <footer>
     {% if request.user.is_authenticated %}
-      <a href="/logout?next={{request.path}}">Cerrar sesión</a>
-      <a href="/user/{{request.user.username}}">{{request.user}}</a>
+      {% if request.user.is_staff %}
+      <a href="/admin">Administración</a>
+      {% endif %}
+      {{request.user}} <a href="/logout?next={{request.path}}">Cerrar sesión</a>
     {%else%}
       <a href="/login?next={{request.path}}">Iniciar sesión</a>
     {% endif %}

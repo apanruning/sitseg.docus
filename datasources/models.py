@@ -49,7 +49,7 @@ class DataSource(models.Model):
     slug = models.CharField(max_length=50)
     attach = models.FileField(upload_to="docs")
     created = models.DateTimeField(auto_now_add=True, editable = False)
-    author = models.CharField(max_length=50)
+    author = models.ForeignKey('auth.User')
     #first_import = models.BooleanField(default=True)
     is_dirty = models.BooleanField(default=True)
     
