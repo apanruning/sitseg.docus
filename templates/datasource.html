@@ -4,15 +4,19 @@
     Detalles de {{datasource.name}}
 {% endblock %}
 {% block head %}
-    <h1><a href="/">Indice</a>/{{datasource.name}}</h1>
-    <p>
-      {{datasource.created|date}} - {{datasource.author}} - {{datasource.find.count}} registros |
+    <menu>
+      <a href="#add-form" class="control">Agregar columna</a> |
       <a title="{{datasource.attach.name}}" 
          href="/datasource/{{datasource.id}}/download_attach">
           Descargar Fuente</a> |
       <a title="Ver Datos" 
          href="/datasource/{{datasource.id}}/data">
-          Ver algunos datos importados</a>
+          Explorar datos</a>
+
+    </menu>
+    <h1><a href="/">Indice</a>/{{datasource.name}}</h1>
+    <p>
+      {{datasource.created|date}} - {{datasource.author}} - {{datasource.find.count}} registros |
     </p>
     <form id="add-form" action="/column/" method="post">{% csrf_token %}
         <legend>Nueva Columna</legend>
@@ -21,10 +25,7 @@
     </form>
 {% endblock %}
 {% block page %}
-  
-
     <ul class="list">
-
     {% for column in columns %}
         {% include "column_obj.html" %}
     {% endfor %}        

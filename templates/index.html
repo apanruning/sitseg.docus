@@ -27,10 +27,10 @@
 
       </ul>
       {% endif %}      
-      <menu>
-        <a href="#add-form" class="control">Agregar</a>
-      </menu>
     {% block head %} 
+      <menu>
+        <a href="#add-form" class="control">Agregar fuente</a>
+      </menu>
       <h1>Indice/</h1>
       <form id="add-form" method="post" action="." enctype="multipart/form-data">{% csrf_token %}
           <legend>Nueva Fuente de Datos</legend>
@@ -75,6 +75,12 @@
     {% endblock %}
     </section>
     <footer>
+    {% if request.user.is_authenticated %}
+      <a href="/logout?next={{request.path}}">Cerrar sesión</a>
+      <a href="/user/{{request.user.username}}">{{request.user}}</a>
+    {%else%}
+      <a href="/login?next={{request.path}}">Iniciar sesión</a>
+    {% endif %}
     </footer>
     </body>
 </html>
