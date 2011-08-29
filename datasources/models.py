@@ -5,7 +5,6 @@ from django.template.defaultfilters import slugify
 from csv import reader
 from StringIO import StringIO
 from mongoengine import connect
-from maap.models import MaapModel
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -156,7 +155,8 @@ class DataSource(models.Model):
                         column.data_type, 
                         row[column.csv_index]
                     )
-
+                    label = slugify(values['name'])
+                    params[label] = values
                     if values['has_geodata'] and values['geodata_type']=='punto':
                         #FIXME usar una señal y mover esta lógica a Column
                         #TODO manejar otros tipos
@@ -179,8 +179,7 @@ class DataSource(models.Model):
                             params['lat'] = result['lat']
                             params['lng'] = result['lng']
 
-                    label = slugify(values['name'])
-                    params[label] = values
+
                 except IndexError:
                     errors.append('{attach} has no column "{column}"'.format({
                         'attach':csv_attach,

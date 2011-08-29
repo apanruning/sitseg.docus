@@ -43,10 +43,9 @@ def datasource_detail(request, id):
     column_form = ColumnForm()
     instance = get_object_or_404(DataSource, pk=id)
     columns = [ColumnForm(instance=column) for column in instance.column_set.all()]
-
     return render(
         request,
-        'detail.html',
+        'datasource.html',
         {
             'datasource': instance,
             'columns': columns,
