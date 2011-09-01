@@ -110,8 +110,9 @@ def import_data(request, id):
     return redirect("detail", id)
 
 def show_data(request, id):
-    datasource = DataSource.objects.get(id=id)    
-    data = datasource.find()
+    datasource = DataSource.objects.get(id=id)
+    db = settings.DB
+    data = db['data'].find(datasource_id=id)
     return render(
         request,
         'data.html',

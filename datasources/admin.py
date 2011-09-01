@@ -10,8 +10,8 @@ from django.contrib import admin
 
 class ColumnAdmin(admin.ModelAdmin):
     model = 'Column'
-    list_display = ('name', 'label', 'data_type','is_key')
-    list_filter = ('datasource', 'data_type')
+    list_display = ('name', 'label', 'is_key')
+    list_filter = ('datasource', )
     ordering = ('-id',)
     search_fields = ('label','name')
 
