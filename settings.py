@@ -93,7 +93,7 @@ MIDDLEWARE_CLASSES = (
     'pagination.middleware.PaginationMiddleware',
 )
 
-
+DEFAULT_REGION = 'Cordoba, Argentina'
 PAGINATION_DEFAULT_WINDOW = 2
 
 INSTALLED_APPS = (
@@ -109,6 +109,7 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'pagination',
     'datasources',
+    'django_ztask',
     'maap',
     'mptt',
 )

@@ -8,11 +8,8 @@ from mongoengine import connect
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
-from django.forms.models import model_to_dict
 from dateutil.parser import parse as date_parser
-from googlemaps import GoogleMaps
 
-gmaps = GoogleMaps(settings.GOOGLEMAPS_API_KEY)
 
 class Annotation(models.Model):
     text = models.TextField()
@@ -49,6 +46,18 @@ class DataSource(models.Model):
     #first_import = models.BooleanField(default=True)
     is_dirty = models.BooleanField(default=True)
     
+    def _cast_value(self, value):
+        tests = (
+            int,
+            float,
+            lambda value: date_parser(value)
+        )
+        for test in tests:
+            try:
+                return test(value)
+            except ValueError:
+                continue
+        return value
 
     def save(self):
         self.created = datetime.now()
@@ -79,92 +88,12 @@ class DataSource(models.Model):
         # Check: Is deleting the previous fields?
         #self.columns = []
         for i, column in enumerate(first_column):
-            new_column = Column(name= unicode(column, 'utf-8'))
+            new_column = Column(name=unicode(column, 'utf-8'))
             new_column.created = datetime.now()
             new_column.label = slugify(new_column.name)
             new_column.csv_index = i
             new_column.datasource = self 
-            new_column.is_available=True
+            new_column.is_available = True
             new_column.save()
-
-    def _cast_value(self, value):
-        tests = (
-            int,
-            float,
-            lambda value: date_parser(value)
-        )
-        for test in tests:
-            try:
-                return test(value)
-            except ValueError:
-                continue
-        return value
-
-
-    def generate_documents(self, columns=None):
-        #FIXME Usar una cola de tareas
-        db = settings.DB
-        data_collection = db['data']
-        region = settings.TIME_ZONE.split('/')[-2:] #XXX: debería ir ajustando la región en base a las columnas
-        region.reverse()
-        region = ', '.join(region)
-        # Clear previous documents
-        data_collection.remove({'datasource_id':self.pk})
-        csv_attach = reader(StringIO(self.attach.read()))
-        first_column = csv_attach.next() # skip the title column.
-        errors = []
-        if columns is not None:
-            columns = self.column_set.filter(pk__in=columns)
-        else:
-            columns = self.column_set.all()
-
-        for row in csv_attach:
-            params = {
-                'datasource_id': self.pk,
-                'columns': [],
-            }            
-            for column in columns:
-                try:
-                    values = model_to_dict(column);
-                    values['value'] = self._cast_value(
-                        row[column.csv_index]
-                    )
-                    label = slugify(values['name'])
-                    params[label] = values
-                    if values['has_geodata'] and values['geodata_type']=='punto':
-                        #TODO manejar otros tipos
-                        #TODO Debería tomar un orden de precedencia para los 
-                        #      valores geográficos buscar primero el pais, si 
-                        #      existe, luego la provincia, luego la ciudad,
-                        #      si no existen valores usar `region`
-                        local_search = gmaps.local_search('%s %s' %(values['value'], region))
-
-                        
-                        if len(local_search['responseData']['results']) == 0:
-                            params['map_empty'] = True
-                        elif len(local_search['responseData']['results']) > 1:
-                            params['map_multiple'] = True
-                            params['map_data'] = local_search['responseData']['results']
-                        elif len(local_search['responseData']['results']) == 1:
-                            result = local_search['responseData']['results'][0]
-                            params['map_data'] = result
-                            params['map_url'] = result['staticMapUrl']
-                            params['lat'] = result['lat']
-                            params['lng'] = result['lng']
-
-
-                except IndexError:
-                    errors.append('%s has no column "%s"' %(csv_attach,column))
-                    
-            data_collection.insert(params)
-        
-        if len(errors) == 0:
-            self.is_dirty = False 
-            self.save() 
-        
-        return {
-            'columns':columns,
-            'errors':errors
-        }
         
 __all__ = ['DataSource', 'Column', 'Annotation']
