@@ -2,6 +2,8 @@ django
 mongoengine
 simplejson
 python-dateutil==1.5
+celery
+django-celery
 django-tagging
 django-debug-toolbar
 django-pagination

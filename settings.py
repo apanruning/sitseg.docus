@@ -2,6 +2,9 @@
 
 import os
 from mongoengine import connect
+import djcelery
+
+DB = connect('sitseg')
 
 BASE_DIR = os.path.dirname(__file__)
 DEBUG = True
@@ -109,7 +112,7 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'pagination',
     'datasources',
-    'django_ztask',
+    'djcelery',
     'maap',
     'mptt',
 )
@@ -123,7 +126,17 @@ DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
 }
 
-DB = connect('sitseg')
+CELERY_RESULT_BACKEND = "mongodb"
+CELERY_MONGODB_BACKEND_SETTINGS = {
+    "host": "localhost",
+    "port": 27017,
+    "database": "queue",
+    "taskmeta_collection": "tasks",
+}
+
+BROKER_TRANSPORT = "mongodb"
+BROKER_HOST = "localhost"
+BROKER_PORT = 27017
 
 # OSM absolute path to csv sources
 OSM_CSV_ROOT = os.path.join(os.path.dirname(__file__), 'csv')
@@ -132,3 +145,5 @@ try:
     from local_settings import *
 except ImportError:
     pass
+    
+djcelery.setup_loader()

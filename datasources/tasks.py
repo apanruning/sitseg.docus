@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from django_ztask.decorators import task
+from celery.task import task
 from django.conf import settings
 from django.forms.models import model_to_dict
 from django.template.defaultfilters import slugify
 from datasources.models import DataSource
 from csv import reader
-from StringIO import StringIO
 from googlemaps import GoogleMaps
 
 
-@task()
+@task
 def generate_documents(datasource, columns=None):
     gmaps = GoogleMaps(settings.GOOGLEMAPS_API_KEY)
     #FIXME Usar una cola de tareas
@@ -20,7 +19,7 @@ def generate_documents(datasource, columns=None):
     region = settings.DEFAULT_REGION
     # Clear previous documents
     data_collection.remove({'datasource_id':datasource.pk})
-    csv_attach = reader(StringIO(datasource.attach.read()))
+    csv_attach = reader(datasource.csv_data)
     first_column = csv_attach.next() # skip the title column.
     errors = []
     if columns is not None:
@@ -69,6 +68,7 @@ def generate_documents(datasource, columns=None):
         data_collection.insert(params)
     
     if len(errors) == 0:
+        datasource.has_data = True
         datasource.is_dirty = False 
         datasource.save() 
     print columns
