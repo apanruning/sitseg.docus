@@ -27,6 +27,10 @@ class Column(models.Model):
     is_available = models.BooleanField(default=True,)
     csv_index = models.IntegerField(editable=False)
     geodata_type = models.CharField(max_length=50, null=True, blank=True)
+
+    def __unicode__(self):
+        return self.name
+        
     class Meta:
         ordering = ['csv_index',]
 
@@ -44,8 +48,14 @@ class DataSource(models.Model):
     created = models.DateTimeField(auto_now_add=True, editable = False)
     author = models.ForeignKey('auth.User')
     #first_import = models.BooleanField(default=True)
-    is_dirty = models.BooleanField(default=True)
     
+    is_dirty = models.BooleanField(default=True)
+    has_data = models.BooleanField(default=False, editable=False)
+    csv_data = models.TextField(editable=False)
+    
+    def __unicode__(self):
+        return self.name
+        
     def _cast_value(self, value):
         tests = (
             int,
@@ -61,6 +71,7 @@ class DataSource(models.Model):
 
     def save(self):
         self.created = datetime.now()
+        self.csv_data = StringIO(self.attach.read())
         if self.slug is None:
             slug = slugify(self.name)
             new_slug = slug
@@ -83,7 +94,7 @@ class DataSource(models.Model):
         """ assume that the first column has the headers title.
             WARNING: It removes previous columns. Use with care.
         """
-        csv_attach = reader(StringIO(self.attach.read()))
+        csv_attach = reader(self.csv_data)
         first_column = csv_attach.next()
         # Check: Is deleting the previous fields?
         #self.columns = []
@@ -95,5 +106,6 @@ class DataSource(models.Model):
             new_column.datasource = self 
             new_column.is_available = True
             new_column.save()
-        
+
+
 __all__ = ['DataSource', 'Column', 'Annotation']
