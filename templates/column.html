@@ -3,7 +3,7 @@
     Cantidades por {{label}}
 {% endblock %}
 {% block js %}
-<script type="text/javascript" language="javascript">
+<!--script type="text/javascript" language="javascript">
     google.load("visualization", "1", {packages:["corechart"]});
     google.setOnLoadCallback(draw_chart)
     function draw_chart(){
@@ -25,11 +25,16 @@
                 
              });
     };
-</script>
+</script-->
 {% endblock %}    
 {% block head %}
 <h1><a title="Index"href="/">Indice</a>/<a href="{% url detail column.datasource_id %}">{{column.datasource.name}}</a>/Cantidades por {{label}}</h1>
-{% endblock %}    
+{% endblock %}  
 {% block page %}
+<pre>
+{% for item in dataset %}
+{{item.count}}{{item.value}}
+{% endfor %}
+</pre>
 <div id="chart"></div>
 {% endblock %}

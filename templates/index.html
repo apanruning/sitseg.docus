@@ -19,19 +19,16 @@
     </head>
     <body>
     <header>
-      {% if messages %}
-      <ul id="messages">
-        {% for message in messages %}
-        <li class="{{message.tags}}"><a href="#messages" class="control">X</a>{{message}}</li>
-        {% endfor %}
-      </ul>
-      {% endif %}      
     {% block head %}
-      {% if request.user.is_staff %}
+
       <menu>
+        {% if request.user.is_staff %}
         <a href="#add-form" class="control">Agregar fuente</a>
+        {%else%}
+        <a href="/login?next={{request.path}}">Iniciar sesión</a>
+        {% endif %}  
       </menu>
-      {% endif %}
+  
       <h1>Indice/</h1>
       {% if request.user.is_staff %}
       <form id="add-form" method="post" action="." 
@@ -79,13 +76,26 @@
     {% endblock %}
     </section>
     <footer>
+    {% if messages %}
+    <ul id="messages">
+      {% for message in messages %}
+      <li class="{{message.tags}}">
+        {% if 'error' in message.tags %}
+        <a href="#error-{{forloop.counter}}" class="control">!</a><strong id="error-{{forloop.counter}}">{{message}}</strong></li>
+        {% else %}
+        <a href="#messages" class="control">X</a>{{message}}</li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+    {% endif %}      
+
     {% if request.user.is_authenticated %}
       {% if request.user.is_staff %}
       <a href="/admin">Administración</a>
       {% endif %}
       {{request.user}} <a href="/logout?next={{request.path}}">Cerrar sesión</a>
     {%else%}
-      <a href="/login?next={{request.path}}">Iniciar sesión</a>
+
     {% endif %}
     </footer>
     </body>

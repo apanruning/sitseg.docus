@@ -18,9 +18,9 @@
     {% for document in data %}
       <li class="data_document">
           <!--Hacer un for con esto-->
-          <h3>{{document.nombre.value}}, {{document.edad.value}}, {{document.barrio.value}}, {{document.dirrecion.value}}</h3>
+          <h3>{% for column in document.columns %}{{column.value}}, {%endfor%}</h3>
           {% if document.map_url %}
-          <img src="{{ document.map_url }}">            
+          <img src="{{ document.map_url }}">
           {% endif %}
       </li>
     {% empty %}
