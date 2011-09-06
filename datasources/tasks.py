@@ -3,11 +3,11 @@
 from celery.task import task
 from django.conf import settings
 from django.forms.models import model_to_dict
-from django.template.defaultfilters import slugify
 from datasources.models import DataSource
+from StringIO import StringIO
 from csv import reader
 from googlemaps import GoogleMaps
-
+import geojson
 
 @task
 def generate_documents(datasource, columns=None):
@@ -19,7 +19,7 @@ def generate_documents(datasource, columns=None):
     region = settings.DEFAULT_REGION
     # Clear previous documents
     data_collection.remove({'datasource_id':datasource.pk})
-    csv_attach = reader(datasource.csv_data)
+    csv_attach = reader(StringIO(datasource.attach.read()))
     first_column = csv_attach.next() # skip the title column.
     errors = []
     if columns is not None:
@@ -38,32 +38,38 @@ def generate_documents(datasource, columns=None):
                 values['value'] = datasource._cast_value(
                     row[column.csv_index]
                 )
-                label = slugify(values['name'])
-                params[label] = values
+            except IndexError:
+                errors.append('%s has no column "%s"' %(datasource.name,column))
+            else:
+                params['columns'].append(values)
                 if values['has_geodata'] and values['geodata_type']=='punto':
                     #TODO manejar otros tipos
                     #TODO Debería tomar un orden de precedencia para los 
                     #      valores geográficos buscar primero el pais, si 
                     #      existe, luego la provincia, luego la ciudad,
                     #      si no existen valores usar `region`
+
                     local_search = gmaps.local_search('%s %s' %(values['value'], region))
-
+                    results = local_search['responseData']['results']
+                    result_len = len(results)
                     
-                    if len(local_search['responseData']['results']) == 0:
+                    if result_len == 0:
                         params['map_empty'] = True
-                    elif len(local_search['responseData']['results']) > 1:
+                    elif result_len > 1:
                         params['map_multiple'] = True
-                        params['map_data'] = local_search['responseData']['results']
-                    elif len(local_search['responseData']['results']) == 1:
-                        result = local_search['responseData']['results'][0]
-                        params['map_data'] = result
-                        params['map_url'] = result['staticMapUrl']
-                        params['lat'] = result['lat']
-                        params['lng'] = result['lng']
+                        params['map_data'] = results
+                    elif result_len == 1:
+                        result = results[0]
+                        params['map_staticurl'] = result['staticMapUrl']
+                        params['geojson'] = geojson.Point(
+                            [
+                                result['lat'], 
+                                result['lng']
+                            ]
+                        )
 
 
-            except IndexError:
-                errors.append('%s has no column "%s"' %(csv_attach,column))
+
                 
         data_collection.insert(params)
     

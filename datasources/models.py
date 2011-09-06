@@ -51,7 +51,6 @@ class DataSource(models.Model):
     
     is_dirty = models.BooleanField(default=True)
     has_data = models.BooleanField(default=False, editable=False)
-    csv_data = models.TextField(editable=False)
     
     def __unicode__(self):
         return self.name
@@ -71,7 +70,6 @@ class DataSource(models.Model):
 
     def save(self):
         self.created = datetime.now()
-        self.csv_data = StringIO(self.attach.read())
         if self.slug is None:
             slug = slugify(self.name)
             new_slug = slug
@@ -94,7 +92,7 @@ class DataSource(models.Model):
         """ assume that the first column has the headers title.
             WARNING: It removes previous columns. Use with care.
         """
-        csv_attach = reader(self.csv_data)
+        csv_attach = reader(StringIO(self.attach.read()))
         first_column = csv_attach.next()
         # Check: Is deleting the previous fields?
         #self.columns = []

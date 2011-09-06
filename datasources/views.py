@@ -70,19 +70,25 @@ def column_detail(request, id):
             }
         )
     try:
+        #
         db = settings.DB
         dataset = db.data.group(
             key={instance.label:1},
             condition={'datasource_id':instance.datasource_id},
             initial={
                 'count':0,
-                'value': ''
+                'label': ''
             },
-            reduce='function(obj,prev){prev.value=obj.%s["value"];prev.count++; }' % instance.label
+            reduce='''
+                function(obj,prev){
+                    prev.value=obj;
+                    prev.count++; 
+                }'''
         )
+        import ipdb; ipdb.set_trace()
     except Exception, e:
         messages.error(request, e)
-        return redirect('/')
+        return redirect('detail', instance.datasource_id)
     else:
         return render(
             request,
