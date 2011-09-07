@@ -36,8 +36,8 @@ $('document').ready(function(){
         $('#id_name').val(value)
         
     });
-//    window.setTimeout(function(){
-//        $('#messages .control').click()
-//    }, 3000);
+    window.setTimeout(function(){
+        $('#messages .control').click()
+    }, 3000);
     
 })

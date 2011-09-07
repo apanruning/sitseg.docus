@@ -26,6 +26,7 @@
     <form id="add-form" action="/column/" class="{{form.errors|yesno:'errors,valid'}}" method="post">{% csrf_token %}
         <legend>Nueva Columna</legend>
         {{column_form.as_p}}
+        <a href="#add-form" class="control">cerrar</a>
         <input type="submit" value="Guardar" />
     </form>
     {% if request.user.is_staff %}
