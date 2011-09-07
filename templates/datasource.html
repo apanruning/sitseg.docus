@@ -4,34 +4,36 @@
     Detalles de {{datasource.name}}
 {% endblock %}
 {% block head %}
+
     <h1><a href="/">Indice</a>/{{datasource.name}}</h1>
     <p>
-      {{datasource.created|date}} - {{datasource.author}} - {{datasource.find.count}} registros |
+      {{datasource.created|date}} - {{datasource.author}} - {{datasource.find.count}} registros
+    </p>
+
+{% endblock %}
+{% block page %}
+      <menu>
+      {% if request.user.is_staff %}
+      <a href="#add-form" class="control">Agregar columna</a> |
+      {% endif %}
       <a title="{{datasource.attach.name}}" 
          href="/datasource/{{datasource.id}}/download_attach">
           Descargar Fuente</a> |
       <a title="Ver Datos" 
          href="/datasource/{{datasource.id}}/data">
-          Ver algunos datos importados</a>
-    </p>
-    <form id="add-form" action="/column/" method="post">{% csrf_token %}
+          Explorar datos</a>
+    </menu>
+    <form id="add-form" action="/column/" class="{{form.errors|yesno:'errors,valid'}}" method="post">{% csrf_token %}
         <legend>Nueva Columna</legend>
         {{column_form.as_p}}
         <input type="submit" value="Guardar" />
     </form>
-{% endblock %}
-{% block page %}
-  
-
+    {% if request.user.is_staff %}
     <ul class="list">
-
     {% for column in columns %}
         {% include "column_obj.html" %}
     {% endfor %}        
-    
-
     </ul>    
-    
     <form action="/datasource/{{datasource.id}}/import_data" id="import_form" method="post">{% csrf_token %}
     {% for column in columns  %}
         {% if column.instance.is_available %}
@@ -41,4 +43,11 @@
 
         <p class="clear"><input type="submit" value="Importar columnas seleccionadas" /></p>
     </form>
+    {% else %}
+    <ul class="list">
+    {% for column in columns %}
+        <li><a href="/column/{{column.instance.pk}}">{{column.instance.name}}</a></li>
+    {% endfor %}
+    </ul>
+    {% endif %}
 {% endblock %}

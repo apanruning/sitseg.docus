@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
 from django.shortcuts import render, redirect, get_object_or_404
-from models import DataSource, Column
-from forms import DataSourceForm, ColumnFormSet, ColumnForm
 from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse
-from mongoengine import connect
-from bson.objectid import ObjectId
 from django.conf import settings
 from django.contrib import messages
-
+from mongoengine import connect
+from bson.objectid import ObjectId
+from datasources.models import DataSource, Column
+from datasources.forms import DataSourceForm, ColumnFormSet, ColumnForm
+from datasources.tasks import generate_documents
 import simplejson
 
 def datasource(request):
@@ -70,19 +70,25 @@ def column_detail(request, id):
             }
         )
     try:
+        #
         db = settings.DB
         dataset = db.data.group(
             key={instance.label:1},
             condition={'datasource_id':instance.datasource_id},
             initial={
                 'count':0,
-                'value': ''
+                'label': ''
             },
-            reduce='function(obj,prev){prev.value=obj.%s["value"];prev.count++; }' % instance.label
+            reduce='''
+                function(obj,prev){
+                    prev.value=obj;
+                    prev.count++; 
+                }'''
         )
+        import ipdb; ipdb.set_trace()
     except Exception, e:
         messages.error(request, e)
-        return redirect('/')
+        return redirect('detail', instance.datasource_id)
     else:
         return render(
             request,
@@ -97,21 +103,21 @@ def column_detail(request, id):
 
 
 def import_data(request, id):
-    datasource = DataSource.objects.get(id=id)
-
+    columns = []
     if request.method == 'POST':
+        columns = request.POST.getlist('object_id')
 
-        import_result = datasource.generate_documents(
-            columns=request.POST.getlist('object_id')
-            )
-
-    else:
-        datasource.generate_documents()
+    generate_documents.delay(
+        datasource=id,
+        columns=columns
+    )
+    messages.info(request, u'Estamos procesando los datos')
     return redirect("detail", id)
 
 def show_data(request, id):
-    datasource = DataSource.objects.get(id=id)    
-    data = datasource.find()
+    datasource = DataSource.objects.get(id=id)
+    db = settings.DB
+    data = db['data'].find(datasource_id=id)
     return render(
         request,
         'data.html',

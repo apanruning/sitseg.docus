@@ -15,7 +15,10 @@ urlpatterns = patterns('datasources.views',
     (r'^datasource/(?P<id>\w+)/data$', 'show_data', {}, 'show_data'),
     (r'^column/(?P<id>\w+)$', 'column_detail', {}, 'column'),
 )
-
+urlpatterns += patterns('django.contrib.auth.views',
+    (r'login$', 'login', {'template_name':'login.html'}),
+    (r'logout$', 'logout'),
+)
 urlpatterns += patterns('',
     (r'^admin/', include(admin.site.urls)),
 )

@@ -1,0 +1,12 @@
+{% extends "index.html" %}
+{% block head %}
+      <h1><a href="/">Indice</a>/{{datasource.name}}</h1>
+{% endblock %}
+{% block page %}
+  <form action="/login" method="post">{% csrf_token %}
+    <input type="hidden" name="next" value="{{next}}">
+    {{form.as_p}}
+  
+    <p><input type="submit" value="ingresar" /></p>
+  </form>
+{% endblock %}

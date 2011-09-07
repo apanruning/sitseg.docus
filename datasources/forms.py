@@ -3,7 +3,6 @@
 from django import forms
 from tagging.fields import TagField
 from mongoengine.django.auth import User
-from mongoforms import MongoForm
 from models import DataSource, Annotation, Column
 
 class DataSourceForm(forms.ModelForm):
@@ -11,7 +10,7 @@ class DataSourceForm(forms.ModelForm):
     #attach = forms.FileField(label="Archivo CSV")
 
     class Meta:
-        fields = ('name', 'author','attach')
+        fields = ('attach','name', 'author')
         model = DataSource
         widgets = {'attach': forms.FileInput}
         
@@ -20,17 +19,6 @@ class AnnotationForm(forms.ModelForm):
         model = Annotation
 
 class ColumnForm(forms.ModelForm):
-    data_type = forms.ChoiceField(
-        choices=[
-            ('str','str'), 
-            ('date','date'), 
-            ('time','time'),
-            ('datetime','datetime'), 
-            ('int','int'), 
-            ('float','float'), 
-            ('dict','dict'), 
-        ]
-    )
     geodata_type = forms.ChoiceField(
         choices=[
             ('','-------'),  

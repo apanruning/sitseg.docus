@@ -27,8 +27,13 @@ $('document').ready(function(){
     $('.control').click(function(){
         target = $(this).attr('href');
         $(this).toggleClass('active');
-        $(target).toggle('blind', 300);
+        $(target).toggle('fade', 300);
         return false;
+        
+    });
+    $('input[type="file"]').change(function(){
+        value = $(this).val()
+        $('#id_name').val(value)
         
     });
 //    window.setTimeout(function(){
