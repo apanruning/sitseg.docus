@@ -10,7 +10,7 @@ class DataSourceForm(forms.ModelForm):
     #attach = forms.FileField(label="Archivo CSV")
 
     class Meta:
-        fields = ('name', 'author','attach')
+        fields = ('attach','name', 'author')
         model = DataSource
         widgets = {'attach': forms.FileInput}
         

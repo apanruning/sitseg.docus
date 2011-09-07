@@ -31,6 +31,11 @@ $('document').ready(function(){
         return false;
         
     });
+    $('input[type="file"]').change(function(){
+        value = $(this).val()
+        $('#id_name').val(value)
+        
+    });
 //    window.setTimeout(function(){
 //        $('#messages .control').click()
 //    }, 3000);

@@ -4,7 +4,15 @@
     Detalles de {{datasource.name}}
 {% endblock %}
 {% block head %}
-    <menu>
+
+    <h1><a href="/">Indice</a>/{{datasource.name}}</h1>
+    <p>
+      {{datasource.created|date}} - {{datasource.author}} - {{datasource.find.count}} registros
+    </p>
+
+{% endblock %}
+{% block page %}
+      <menu>
       {% if request.user.is_staff %}
       <a href="#add-form" class="control">Agregar columna</a> |
       {% endif %}
@@ -14,19 +22,12 @@
       <a title="Ver Datos" 
          href="/datasource/{{datasource.id}}/data">
           Explorar datos</a>
-
     </menu>
-    <h1><a href="/">Indice</a>/{{datasource.name}}</h1>
-    <p>
-      {{datasource.created|date}} - {{datasource.author}} - {{datasource.find.count}} registros
-    </p>
     <form id="add-form" action="/column/" class="{{form.errors|yesno:'errors,valid'}}" method="post">{% csrf_token %}
         <legend>Nueva Columna</legend>
         {{column_form.as_p}}
         <input type="submit" value="Guardar" />
     </form>
-{% endblock %}
-{% block page %}
     {% if request.user.is_staff %}
     <ul class="list">
     {% for column in columns %}

@@ -20,17 +20,25 @@
     <body>
     <header>
     {% block head %}
-
       <menu>
-        {% if request.user.is_staff %}
-        <a href="#add-form" class="control">Agregar fuente</a>
+        {% if request.user.is_authenticated %}
+          {% if request.user.is_staff %}
+          <a href="/admin">Administración </a>
+          {% endif %}
+          <strong>{{request.user}} </strong><a href="/logout?next={{request.path}}">(salir)</a>
         {%else%}
-        <a href="/login?next={{request.path}}">Iniciar sesión</a>
-        {% endif %}  
+            <a href="/login?next={{request.path}}">Iniciar sesión</a>
+        {% endif %}
       </menu>
-  
       <h1>Indice/</h1>
+    {% endblock %}
+    </header>
+    <section>
+    {% block page %}
       {% if request.user.is_staff %}
+      <menu>
+        <a href="#add-form" class="control">Agregar fuente</a>
+      </menu>
       <form id="add-form" method="post" action="." 
             class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
           <input type="hidden" name="author" value="{{request.user.id}}"/>
@@ -38,24 +46,22 @@
           {% for error in form.errors %}
             <p class="error">{{error}}</p>
           {% endfor %}
+          <p class="{{form.attach.errors|yesno:'errors,valid'}}">
+              {{form.attach.errors}}
+              <label for="id_{{form.attach.name}}">Archivo</label>
+              {{form.attach}}
+          </p>
           {{ column_form.management_form }}
           <p class="{{form.name.errors|yesno:'errors,valid'}}">
               {{form.name.errors}}
               <label for="id_name">Nombre</label>
               {{form.name}}
           </p>
-          <p class="{{form.attach.errors|yesno:'errors,valid'}}">
-              {{form.attach.errors}}
-              <label for="id_{{form.attach.name}}">Archivo</label>
-              {{form.attach}}
-          </p>   
+
+          <a href="#add-form" class="control">cerrar</a>   
           <input type="submit" name="Guardar" value="Submit"/>
       </form>
-      {% endif %}
-    {% endblock %}
-    </header>
-    <section>
-    {% block page %}
+      {% endif %}    
         {% autopaginate datasource_list 10 %}
         <ul>
         {% for datasource in datasource_list %}
@@ -88,15 +94,6 @@
       {% endfor %}
     </ul>
     {% endif %}      
-
-    {% if request.user.is_authenticated %}
-      {% if request.user.is_staff %}
-      <a href="/admin">Administración</a>
-      {% endif %}
-      {{request.user}} <a href="/logout?next={{request.path}}">Cerrar sesión</a>
-    {%else%}
-
-    {% endif %}
     </footer>
     </body>
 </html>
