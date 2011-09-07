@@ -42,5 +42,3 @@ ColumnFormSet = forms.formsets.formset_factory(ColumnForm, extra=3)
 #
 #            self.fields['captcha'] = CaptchaField()
 
-class DattumForm(forms.ModelForm);
-    
