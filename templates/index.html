@@ -87,11 +87,7 @@
     <ul id="messages">
       {% for message in messages %}
       <li class="{{message.tags}}">
-        {% if 'error' in message.tags %}
-        <a href="#error-{{forloop.counter}}" class="control">!</a><strong id="error-{{forloop.counter}}">{{message}}</strong></li>
-        {% else %}
-        <a href="#messages" class="control">X</a>{{message}}</li>
-        {% endif %}
+        <a href="#message-{{forloop.counter}}" class="control">!</a><strong id="message-{{forloop.counter}}">{{message}}</strong></li>
       {% endfor %}
     </ul>
     {% endif %}      
