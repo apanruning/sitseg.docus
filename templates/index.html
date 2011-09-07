@@ -19,7 +19,7 @@
     </head>
     <body>
     <header>
-    {% block head %}
+
       <menu>
         {% if request.user.is_authenticated %}
           {% if request.user.is_staff %}
@@ -30,6 +30,7 @@
             <a href="/login?next={{request.path}}">Iniciar sesión</a>
         {% endif %}
       </menu>
+    {% block head %}
       <h1>Indice/</h1>
     {% endblock %}
     </header>
