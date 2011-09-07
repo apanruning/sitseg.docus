@@ -4,7 +4,7 @@ from datetime import datetime
 from django.template.defaultfilters import slugify
 from csv import reader
 from StringIO import StringIO
-from mongoengine import connect
+from mongoengine import *
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -41,8 +41,25 @@ class Column(models.Model):
         self.datasource.is_dirty = True
         self.datasource.save()
         return super(Column,self).save()
-        
-        
+
+class Dattum(Document):
+    
+    def __init__(self,datasource,columns,label):
+        self.datasource = datasource
+        self.columns = columns
+        self.label = label
+    
+class GeoDattum(Dattum):
+
+    def __init__(self,map_empty=None,map_multiple=None,map_data=None,map_url=None,lat=None,lng=None):
+        super(Dattum,self).__init__()
+        self.map_empty = map_empty
+        self.map_multiple = map_multiple
+        self.map_data = map_data
+        self.map_url = map_url
+        self.lat = lat
+        self.lng = lng
+       
 class DataSource(models.Model):
 
     name = models.CharField(max_length=50)
@@ -147,9 +164,17 @@ class DataSource(models.Model):
             params = {
                 'datasource_id': self.pk,
                 'columns': [],
+                'map_empty':False,
+                'map_multiple':False,
+                'mapa_data':{},
+                'map_url':'',
+                'lat':0.0,
+                'lng':0.0,
             }            
             for column in columns:
                 try:
+                    dato = GeoDattum()
+                    dato.datasource = self.pk
                     values = model_to_dict(column);
                     values['value'] = self._cast_value(
                         column.data_type, 
@@ -157,6 +182,7 @@ class DataSource(models.Model):
                     )
                     label = slugify(values['name'])
                     params[label] = values
+                    dato.label = values
                     if values['has_geodata'] and values['geodata_type']=='punto':
                         #FIXME usar una señal y mover esta lógica a Column
                         #TODO manejar otros tipos
@@ -165,26 +191,38 @@ class DataSource(models.Model):
                         #      existe, luego la provincia, luego la ciudad,
                         #      si no existen valores usar `region`
                         local_search = gmaps.local_search('%s %s' %(values['value'], region))
-
-                        
+                                                
+                            
                         if len(local_search['responseData']['results']) == 0:
                             params['map_empty'] = True
+                            dato.map_empty = True
                         elif len(local_search['responseData']['results']) > 1:
                             params['map_multiple'] = True
                             params['map_data'] = local_search['responseData']['results']
+                            dato.map_multiple = True
+                            dato.map_data = local_search['responseData']['results']
                         elif len(local_search['responseData']['results']) == 1:
                             result = local_search['responseData']['results'][0]
                             params['map_data'] = result
+                            dato.map_data = result
                             params['map_url'] = result['staticMapUrl']
                             params['lat'] = result['lat']
                             params['lng'] = result['lng']
+                            dato.map_url = result['staticMapUrl']
+                            dato.lat = result['lat']
+                            dato.lng = result['lng']
 
+                        #Aqui se guarda la columna como Document en mongodb
 
+                    dato.save()
+                    
                 except IndexError:
                     errors.append('{attach} has no column "{column}"'.format({
                         'attach':csv_attach,
                         'column':column,
                     }))
+                    
+            
             data_collection.insert(params)
         
         if not (len(errors) > 1):
@@ -201,5 +239,9 @@ class DataSource(models.Model):
         params.update({"datasource_id": self.id})
         data_collection = self._data_collection()
         return data_collection.find(params)
+
+    
+    
+
 
 __all__ = ['DataSource', 'Column', 'Annotation']

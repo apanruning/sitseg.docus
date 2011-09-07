@@ -11,3 +11,4 @@ git+git://github.com/etnalubma/python-osm.git#egg=osm
 git+git://github.com/etnalubma/django-osm.git#egg=djangoosm
 psycopg2
 PIL
+django-pagination
