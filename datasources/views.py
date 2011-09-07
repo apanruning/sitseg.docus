@@ -8,6 +8,8 @@ from django.contrib import messages
 from mongoengine import connect
 from bson.objectid import ObjectId
 from datasources.models import DataSource, Column
+from datasources.documents import Dattum
+
 from datasources.forms import DataSourceForm, ColumnFormSet, ColumnForm
 from datasources.tasks import generate_documents
 import simplejson
@@ -85,7 +87,6 @@ def column_detail(request, id):
                     prev.count++; 
                 }'''
         )
-        import ipdb; ipdb.set_trace()
     except Exception, e:
         messages.error(request, e)
         return redirect('detail', instance.datasource_id)
@@ -107,7 +108,7 @@ def import_data(request, id):
     if request.method == 'POST':
         columns = request.POST.getlist('object_id')
 
-    generate_documents.delay(
+    generate_documents(
         datasource=id,
         columns=columns
     )
@@ -116,8 +117,8 @@ def import_data(request, id):
 
 def show_data(request, id):
     datasource = DataSource.objects.get(id=id)
-    db = settings.DB
-    data = db['data'].find(datasource_id=id)
+    data = Dattum.objects.filter(datasource_id=datasource.pk)
+    import ipdb; ipdb.set_trace()
     return render(
         request,
         'data.html',
