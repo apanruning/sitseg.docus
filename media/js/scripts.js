@@ -31,6 +31,7 @@ $('document').ready(function(){
         return false;
         
     });
+    $('form input[type="text"]:first').focus()
     $('input[type="file"]').change(function(){
         value = $(this).val()
         $('#id_name').val(value)
