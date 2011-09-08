@@ -6,9 +6,24 @@ from django.forms.models import model_to_dict
 from StringIO import StringIO
 from csv import reader
 from googlemaps import GoogleMaps
-import geojson
+
 from datasources.models import DataSource
-from datasources.documents import Dattum, EmbeddedColumn
+from datasources.documents import Dattum
+from dateutil.parser import parse as date_parser
+
+
+def _cast_value(value):
+    tests = (
+        int,
+        float,
+        lambda value: date_parser(value)
+    )
+    for test in tests:
+        try:
+            return test(value)
+        except ValueError:
+            continue
+    return value
 
 @task
 def generate_documents(datasource, columns=None):
@@ -16,12 +31,11 @@ def generate_documents(datasource, columns=None):
     #FIXME Usar una cola de tareas
     datasource = DataSource.objects.get(id=datasource)
     region = settings.DEFAULT_REGION
-    # Clear previous documents
-    data_collection = Dattum.objects.filter(datasource_id=datasource.pk)
-    data_collection.delete()
     csv_attach = reader(StringIO(datasource.attach.read()))
     first_column = csv_attach.next() # skip the title column.
     errors = []
+    old_dattum = Dattum.objects.filter(datasource_id=datasource.pk)
+    old_dattum.delete()
     if columns is not None:
         columns = datasource.column_set.filter(pk__in=columns)
     else:
@@ -31,43 +45,46 @@ def generate_documents(datasource, columns=None):
         dato = Dattum(datasource_id=datasource.pk)
         for column in columns:
             try:
-                col_dict = model_to_dict(column)
-                col_dict.pop('id')
-                ecol = EmbeddedColumn(**col_dict)
-                ecol.value = datasource._cast_value(
-                    row[column.csv_index]
-                )
+                ecol = model_to_dict(column)
+                ecol.pop('id')
+                ecol['datasource_id'] = datasource.pk
+                ecol['value'] = _cast_value(row[column.csv_index])
+                ecol['row'] = row.index(row[column.csv_index])
+                ecol['column'] = column.name
             except IndexError:
                 errors.append('%s has no column "%s"' %(datasource.name,column))
             else:
-                dato.columns.append(ecol)
-                if ecol.geodata_type=='punto':
-                    #TODO manejar otros tipos
-                    #TODO Debería tomar un orden de precedencia para los 
-                    #      valores geográficos buscar primero el pais, si 
-                    #      existe, luego la provincia, luego la ciudad,
-                    #      si no existen valores usar `region`
 
-                    local_search = gmaps.local_search('%s %s' %(ecol.value, region))
+                if ecol['data_type']=='point':
+                    local_search = gmaps.local_search('%s %s' %(ecol['value'], region))
                     results = local_search['responseData']['results']
                     result_len = len(results)
-                    
+                    ecol['map_multiple'] = []
+                    ecol['results'] = []
                     if result_len > 1:
-                        dato.map_multiple = True
-                        dato.map_data = results
+
+                        for res in results:
+                            ecol.map_multiple.append(
+                                (
+                                    float(result['lat']), 
+                                    float(result['lng'])
+                                )
+                            )
+                            ecol.results.append(res)
                     elif result_len == 1:
                         result = results[0]
-                        dato.map_staticurl = result['staticMapUrl']
-                        #dato.point(result['lat'], result['lng'])
-                        dato.geojson = geojson.Point(dato.point)
+                        ecol['results'].append(result)
+                        ecol['map_url'] = result['staticMapUrl']
+                        ecol['point'] = float(result['lat']), float(result['lng'])
+            
+
+                dato.columns.append(ecol)
+            dato.save()
                 
-        dato.save()
-    
     if len(errors) == 0:
         datasource.has_data = True
         datasource.is_dirty = False 
         datasource.save() 
 
-    print 'Creado %s' % dato,
-    print '%d columnas' % len(columns),
+
     print errors

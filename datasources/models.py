@@ -4,11 +4,9 @@ from datetime import datetime
 from django.template.defaultfilters import slugify
 from csv import reader
 from StringIO import StringIO
-from mongoengine import connect
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
-from dateutil.parser import parse as date_parser
 
 
 class Annotation(models.Model):
@@ -23,10 +21,10 @@ class Column(models.Model):
     created = models.DateTimeField(auto_now_add=True, editable = False)
     is_key = models.NullBooleanField(default=False, )
     datasource = models.ForeignKey('DataSource', editable=False)
-    has_geodata = models.BooleanField(default=False,)
     is_available = models.BooleanField(default=True,)
     csv_index = models.IntegerField(editable=False)
-    geodata_type = models.CharField(max_length=50, null=True, blank=True)
+    data_type = models.CharField(max_length=50, default='str')
+    has_geodata = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.name
@@ -37,6 +35,9 @@ class Column(models.Model):
     def save(self):
         self.datasource.is_dirty = True
         self.datasource.save()
+        if self.data_type in ['point', 'area']:
+            self.has_geodata = True
+
         return super(Column,self).save()
         
         
@@ -54,20 +55,8 @@ class DataSource(models.Model):
     
     def __unicode__(self):
         return self.name
-        
-    def _cast_value(self, value):
-        tests = (
-            int,
-            float,
-            lambda value: date_parser(value)
-        )
-        for test in tests:
-            try:
-                return test(value)
-            except ValueError:
-                continue
-        return value
 
+        
     def save(self):
         self.created = datetime.now()
         if self.slug is None:

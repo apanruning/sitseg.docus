@@ -1,7 +1,27 @@
+/*base*/
 body {
     font: 100% "Droid Sans", "Lucida Grande", Verdana, sans-serif;
     margin:0;
     padding:0;
+}
+h1, h2, h3 {
+    margin:0;
+}
+a {
+    color:#06C;
+    text-decoration:none;
+}
+a:hover {
+    text-shadow: 1px 1px 1px #999;
+}
+ul {
+    list-style:none;
+    padding:0;
+}
+/*layout*/
+.clear {
+    display: block;
+    clear: both;
 }
 header, section, footer, article, menu, nav{ 
     display:block;
@@ -12,9 +32,12 @@ header, section {
 section {
     margin-bottom:3em;
 }
-h1, h2, h3 {
-    margin:0;
+aside {
+    float:right;
+    width: 30%;
+    padding: 1em;
 }
+
 menu {
     float:right;
     margin:0;
@@ -30,18 +53,8 @@ footer {
 footer a {
     margin: 0.5em 1em;
 }
-a {
-    color:#06C;
-    text-decoration:none;
-}
 
-a:hover {
-    text-shadow: 1px 1px 1px #999;
-}
-ul {
-    list-style:none;
-    padding:0;
-}
+/*ui*/
 .data_column{
     width:50%;
     padding:0.5em;
@@ -56,16 +69,24 @@ ul {
     opacity:0.5;
     background: #EBEBEB;
 }
-.clear {
-    display: block;
-    clear: both;
-}
+
 .ui-selected{
     background: #FFE;
     border: 1px solid #FE0;
     border-radius:0.2em;
 
     
+}
+#list {
+    clear:both;
+
+}
+#list li {
+    border: 2px solid #FFF;
+    border-radius: 5px;
+    box-shadow: 0 1px 2px #333;
+    margin:1em 0 ;
+    padding: 1em;
 }
 #messages {
     float: left;

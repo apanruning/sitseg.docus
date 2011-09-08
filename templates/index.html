@@ -21,11 +21,11 @@
     <header>
 
       <menu>
-        {% if request.user.is_authenticated %}
-          {% if request.user.is_staff %}
+        {% if user.is_authenticated %}
+          {% if user.is_staff %}
           <a href="/admin">Administración </a>
           {% endif %}
-          <strong>{{request.user}} </strong><a href="/logout?next={{request.path}}">(salir)</a>
+          <strong>{{user}} </strong><a href="/logout?next={{request.path}}">(salir)</a>
         {%else%}
             <a href="/login?next={{request.path}}">Iniciar sesión</a>
         {% endif %}
@@ -36,13 +36,13 @@
     </header>
     <section>
     {% block page %}
-      {% if request.user.is_staff %}
+      {% if user.is_staff %}
       <menu>
         <a href="#add-form" class="control">Agregar fuente</a>
       </menu>
       <form id="add-form" method="post" action="." 
             class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
-          <input type="hidden" name="author" value="{{request.user.id}}"/>
+          <input type="hidden" name="author" value="{{user.id}}"/>
           <legend>Nueva Fuente de Datos</legend>
           {% for error in form.errors %}
             <p class="error">{{error}}</p>

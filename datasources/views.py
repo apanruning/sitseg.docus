@@ -5,13 +5,13 @@ from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse
 from django.conf import settings
 from django.contrib import messages
-from mongoengine import connect
 from bson.objectid import ObjectId
 from datasources.models import DataSource, Column
 from datasources.documents import Dattum
 
 from datasources.forms import DataSourceForm, ColumnFormSet, ColumnForm
 from datasources.tasks import generate_documents
+
 import simplejson
 
 def datasource(request):
@@ -72,21 +72,25 @@ def column_detail(request, id):
             }
         )
     try:
-        #
-        db = settings.DB
-        dataset = db.data.group(
-            key={instance.label:1},
+#        dataset = Dattum.objects.filter(datasource_id=instance.datasource_id)
+        from settings import DB
+        dataset = DB.dattum.group(
+            key={'columns':{'name':1}},
             condition={'datasource_id':instance.datasource_id},
             initial={
-                'count':0,
-                'label': ''
+                'count':10,
+                'value': ''
             },
             reduce='''
                 function(obj,prev){
-                    prev.value=obj;
+                    for (i=0; i<obj.columns.length;i++){
+                        if (obj.columns[i].name=="%s"){
+                            prev.value=obj.columns[i].value;
+                        }
+                    };
                     prev.count++; 
-                }'''
-        )
+                }
+            ''' % instance.name)
     except Exception, e:
         messages.error(request, e)
         return redirect('detail', instance.datasource_id)
@@ -118,7 +122,14 @@ def import_data(request, id):
 def show_data(request, id):
     datasource = DataSource.objects.get(id=id)
     data = Dattum.objects.filter(datasource_id=datasource.pk)
-    import ipdb; ipdb.set_trace()
+    sort_by = request.GET.get('sort_by')
+
+    if sort_by == 'empty':
+        data = data.filter(columns__point=None, columns__map_multiple__ne=True)
+    if sort_by == 'multiple':
+        data = data.filter(columns__map_multiple=True)
+    if sort_by == 'ok':
+        data = data.filter(columns__point__ne=None, columns__map_multiple__ne=True)
     return render(
         request,
         'data.html',

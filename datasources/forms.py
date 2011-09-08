@@ -19,13 +19,14 @@ class AnnotationForm(forms.ModelForm):
         model = Annotation
 
 class ColumnForm(forms.ModelForm):
-    geodata_type = forms.ChoiceField(
+    data_type = forms.ChoiceField(
         choices=[
-            ('','-------'),  
-            ('punto','Lugar'), 
-            ('barrio','Barrio'), 
-            ('ciudad','Ciudad'),
-            ('provincia','Provincia'), 
+            ('None','---------'), 
+            ('str','Texto'), 
+            ('int','Numero'), 
+            ('date','Fecha'), 
+            ('point',u'Dirección'),
+            ('area','Zona'), 
         ],
         required=False
     )

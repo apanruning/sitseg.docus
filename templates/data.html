@@ -1,27 +1,37 @@
-{% extends "index.html" %}
+{% extends "datasource.html" %}
 {% load pagination_tags %}
 {% block title %}
     Datos en {{datasource.name}}
 {% endblock %}
 {% block head %}
-<h1><a title="Index"href="/">Indice</a>/<a href="{% url detail datasource.id %}">{{datasource.name}}</a>/Datos</h1>
-<p>
-  {{datasource.created|date}} - {{datasource.author}} - {{datasource.find.count}} registros |
-  <a title="{{datasource.attach.name}}" 
-     href="/datasource/{{datasource.id}}/download_attach">
-      Descargar Fuente</a> |
-</p>
-{% endblock %}
+<h1><a title="Index"href="/">Indice</a>/<a href="{% url detail datasource.id %}">{{datasource.name}}</a>/Explorar documentos</h1>
+{% endblock %}  
 {% block page %}
-    {% autopaginate data 20 %}
-    <ul>
+      <menu>
+      {% if request.user.is_staff %}
+      <a href="?sort_by=multiple" class="control">Ambiguos</a> |
+      {% endif %}
+      <a href="?sort_by=empty">
+          Sin punto</a> |
+      <a href="?sort_by=ok">
+         Correctos</a>
+    </menu>
+
+    <ul id="list">
     {% for document in data %}
-      <li class="data_document">
-          <!--Hacer un for con esto-->
-          <h3>{% for column in document.columns %}{{column.value}}, {%endfor%}</h3>
-          {% if document.map_url %}
-          <img src="{{ document.map_url }}">
-          {% endif %}
+      <li >
+          {% for column in document.columns %}
+            <p>{{column.name}}:<strong>{{column.value}}</strong>
+            {% if column.map_url %}
+            <br /><img src="{{ column.map_url|default:'nomap.png' }}">
+            {% endif %}
+            </p>
+
+          
+          {% endfor %}
+          
+
+
       </li>
     {% empty %}
             No hay datos importados aún.
