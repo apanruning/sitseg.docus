@@ -1,4 +1,16 @@
 $('document').ready(function(){
+    function GetFilename(url)
+    {
+       if (url)
+       {
+          var m = url.toString().match(/.*\/(.+?)\./);
+          if (m && m.length > 1)
+          {
+             return m[1];
+          }
+       }
+       return "";
+    }
     function column_form_change(){
         form = $(this).parents('form');
         data = $(form).serializeArray();
@@ -34,7 +46,7 @@ $('document').ready(function(){
     $('form input[type="text"]:first').focus()
     $('input[type="file"]').change(function(){
         value = $(this).val()
-        $('#id_name').val(value)
+        $('#id_name').val(GetFilename(value))
         
     });
     window.setTimeout(function(){

@@ -18,20 +18,16 @@
     </menu>
 
     <ul id="list">
-    {% for document in data %}
+    {% for dato in dataset %}
       <li >
-          {% for column in document.columns %}
-            <p>{{column.name}}:<strong>{{column.value}}</strong>
-            {% if column.map_url %}
-            <br /><img src="{{ column.map_url|default:'nomap.png' }}">
+          {{dato.nombre.value}}
+          {% for x in dato %}
+            <p>{{x}}:<strong>{{x.value}}</strong>
+            {% if x.map_url %}
+            <br /><img src="{{ dato.map_url|default:'nomap.png' }}">
             {% endif %}
-            </p>
-
-          
           {% endfor %}
-          
-
-
+          </p>
       </li>
     {% empty %}
             No hay datos importados aún.

@@ -33,7 +33,7 @@
 {% block page %}
 <pre>
 {% for item in dataset %}
-{{item.count}}{{item.value}}
+{{item.count}} - {{item.value}}  - {{item.point}}
 {% endfor %}
 </pre>
 <div id="chart"></div>

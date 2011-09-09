@@ -8,9 +8,8 @@ from csv import reader
 from googlemaps import GoogleMaps
 
 from datasources.models import DataSource
-from datasources.documents import Dattum
 from dateutil.parser import parse as date_parser
-
+from geojson import Point
 
 def _cast_value(value):
     tests = (
@@ -27,59 +26,39 @@ def _cast_value(value):
 
 @task
 def generate_documents(datasource, columns=None):
+    db = settings.DB
+
     gmaps = GoogleMaps(settings.GOOGLEMAPS_API_KEY)
-    #FIXME Usar una cola de tareas
     datasource = DataSource.objects.get(id=datasource)
+
     region = settings.DEFAULT_REGION
+
     csv_attach = reader(StringIO(datasource.attach.read()))
     first_column = csv_attach.next() # skip the title column.
     errors = []
-    old_dattum = Dattum.objects.filter(datasource_id=datasource.pk)
-    old_dattum.delete()
-    if columns is not None:
+
+    db.dattum.remove({'datasource_id':datasource.pk})
+    
+    if columns:
         columns = datasource.column_set.filter(pk__in=columns)
     else:
         columns = datasource.column_set.all()
 
     for row in csv_attach:
-        dato = Dattum(datasource_id=datasource.pk)
+        dato = {'datasource_id':datasource.pk}
         for column in columns:
-            try:
-                ecol = model_to_dict(column)
-                ecol.pop('id')
-                ecol['datasource_id'] = datasource.pk
-                ecol['value'] = _cast_value(row[column.csv_index])
-                ecol['row'] = row.index(row[column.csv_index])
-                ecol['column'] = column.name
-            except IndexError:
-                errors.append('%s has no column "%s"' %(datasource.name,column))
-            else:
-
-                if ecol['data_type']=='point':
-                    local_search = gmaps.local_search('%s %s' %(ecol['value'], region))
-                    results = local_search['responseData']['results']
-                    result_len = len(results)
-                    ecol['map_multiple'] = []
-                    ecol['results'] = []
-                    if result_len > 1:
-
-                        for res in results:
-                            ecol.map_multiple.append(
-                                (
-                                    float(result['lat']), 
-                                    float(result['lng'])
-                                )
-                            )
-                            ecol.results.append(res)
-                    elif result_len == 1:
-                        result = results[0]
-                        ecol['results'].append(result)
-                        ecol['map_url'] = result['staticMapUrl']
-                        ecol['point'] = float(result['lat']), float(result['lng'])
-            
-
-                dato.columns.append(ecol)
-            dato.save()
+            ecol = model_to_dict(column)
+            ecol['value'] = _cast_value(row[column.csv_index])
+            ecol.pop('id')
+            ecol['name'] = column.name
+            dato[column.label] = ecol
+            if ecol['data_type'] == 'point':
+                try:
+                    ecol['point'] = gmaps.address_to_latlng(ecol['value'])
+                except Exception, e:
+                    errors.append(e)
+                            
+        db.dattum.insert(dato)
                 
     if len(errors) == 0:
         datasource.has_data = True

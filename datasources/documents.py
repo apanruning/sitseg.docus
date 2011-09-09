@@ -11,15 +11,3 @@ class Dattum(Document):
     row = fields.IntField()
     value = fields.StringField()
     
-    def _cast_value(self):
-        tests = (
-            int,
-            float,
-            lambda value: date_parser(value)
-        )
-        for test in tests:
-            try:
-                return test(self.value)
-            except ValueError:
-                continue
-        return self.value

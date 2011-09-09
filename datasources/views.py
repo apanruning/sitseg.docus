@@ -7,7 +7,6 @@ from django.conf import settings
 from django.contrib import messages
 from bson.objectid import ObjectId
 from datasources.models import DataSource, Column
-from datasources.documents import Dattum
 
 from datasources.forms import DataSourceForm, ColumnFormSet, ColumnForm
 from datasources.tasks import generate_documents
@@ -75,22 +74,21 @@ def column_detail(request, id):
 #        dataset = Dattum.objects.filter(datasource_id=instance.datasource_id)
         from settings import DB
         dataset = DB.dattum.group(
-            key={'columns':{'name':1}},
+            key={instance.label:1},
             condition={'datasource_id':instance.datasource_id},
             initial={
-                'count':10,
-                'value': ''
+                'count':0,
+                'value': '',
+                'point': []
             },
             reduce='''
                 function(obj,prev){
-                    for (i=0; i<obj.columns.length;i++){
-                        if (obj.columns[i].name=="%s"){
-                            prev.value=obj.columns[i].value;
-                        }
-                    };
+                    label = '%s'
+                    prev.value = obj[label]['value'];
+                    prev.point = obj[label]['point'];
                     prev.count++; 
                 }
-            ''' % instance.name)
+            ''' % instance.label)
     except Exception, e:
         messages.error(request, e)
         return redirect('detail', instance.datasource_id)
@@ -121,7 +119,8 @@ def import_data(request, id):
 
 def show_data(request, id):
     datasource = DataSource.objects.get(id=id)
-    data = Dattum.objects.filter(datasource_id=datasource.pk)
+    from settings import DB
+    data = DB.dattum.find({'datasource_id':datasource.pk})
     sort_by = request.GET.get('sort_by')
 
     if sort_by == 'empty':
@@ -130,12 +129,13 @@ def show_data(request, id):
         data = data.filter(columns__map_multiple=True)
     if sort_by == 'ok':
         data = data.filter(columns__point__ne=None, columns__map_multiple__ne=True)
+    import ipdb; ipdb.set_trace()
     return render(
         request,
         'data.html',
         {
             'datasource': datasource,
-            'data': data,
+            'dataset': data,
         }
     )
 
