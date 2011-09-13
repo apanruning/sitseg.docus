@@ -6,29 +6,34 @@
     {% if column.has_geodata %}    
       <!-- Leaflet JavaScript -->
     
-    <link rel="stylesheet" href="/static/js/dist/leaflet.css" type="text/css" />
-    <script src="/static/js/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="/static/dist/leaflet.css" type="text/css" />
+    <script src="/static/dist/leaflet.js"></script>
     <script type="text/javascript" language="javascript">
     
     
     $(document).ready(function(){
         var map = new L.Map('chart');
-        var cordoba = new L.LatLng(51.505, -0.09);
-        map.setView(cordoba, 13)
+        var cordoba = new L.LatLng(-31.416667,-64.183333);
+        map.setView(cordoba, 13);
         
-        var LeafIcon = L.Icon.extend({
-            iconUrl: '/static/js/dist/marker.png',
+        var cloudmadeUrl = 'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        cloudmadeAttrib = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
+        cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 18, attribution: cloudmadeAttrib});
+        
+        map.addLayer(cloudmade);
+        
+        icono = L.Icon.extend({
+            iconUrl: '/static/dist/images/marker.png',
             iconSize: new L.Point(38, 95),
             shadowSize: new L.Point(68, 95),
             iconAnchor: new L.Point(22, 94),
             popupAnchor: new L.Point(-3, -76)
         });
-        
               
         {% for item in dataset %}
-            //icono = LeafIcon();
-            //marker = new L.Marker(new L.LatLng({{ item.point.0 }}, {{ item.point.1 }}), {icon: icono});
-            //map.addLayer(marker);
+            marker = new L.Marker(new L.LatLng({{ item.point.0 }}, {{ item.point.1 }}), {icon: new icono()});
+            
+            map.addLayer(marker);
         {% endfor %}    
     })    
     </script>    
