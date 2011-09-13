@@ -55,7 +55,7 @@ def generate_documents(datasource, columns=None):
             dato[column.label] = ecol
             if ecol['data_type'] == 'point':
                 try:
-                    ecol['point'] = gmaps.address_to_latlng(ecol['value'])
+                    ecol['point'] = gmaps.address_to_latlng('%s, cordoba, argentina' %ecol['value'])
                     
                 except Exception, e:
                     errors.append(e)

@@ -31,9 +31,11 @@
         });
               
         {% for item in dataset %}
-            marker = new L.Marker(new L.LatLng({{ item.point.0 }}, {{ item.point.1 }}), {icon: new icono()});
-            
+          {% if item.point %}
+            latlng = new L.LatLng({{item.point.0|safe}}, {{item.point.1|safe}});
+            marker = new L.Marker(latlng);
             map.addLayer(marker);
+          {% endif %}
         {% endfor %}    
     })    
     </script>    
@@ -85,7 +87,6 @@
 {% endblock %}  
 
 {% block page %}
-
     <div id="chart" style="height:400px;"></div>
 {% endblock %}
 
