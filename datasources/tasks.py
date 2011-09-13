@@ -12,9 +12,6 @@ from dateutil.parser import parse as date_parser
 
 from geojson import Point
 
-from maap.models import MaapPoint
-
-
 def _cast_value(value):
     tests = (
         int,
