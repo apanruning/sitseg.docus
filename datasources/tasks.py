@@ -9,7 +9,11 @@ from googlemaps import GoogleMaps
 
 from datasources.models import DataSource
 from dateutil.parser import parse as date_parser
+
 from geojson import Point
+
+from maap.models import MaapPoint
+
 
 def _cast_value(value):
     tests = (
@@ -55,6 +59,7 @@ def generate_documents(datasource, columns=None):
             if ecol['data_type'] == 'point':
                 try:
                     ecol['point'] = gmaps.address_to_latlng(ecol['value'])
+                    
                 except Exception, e:
                     errors.append(e)
                             

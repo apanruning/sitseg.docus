@@ -7,9 +7,9 @@ from django.conf import settings
 from django.contrib import messages
 from bson.objectid import ObjectId
 from datasources.models import DataSource, Column
-
 from datasources.forms import DataSourceForm, ColumnFormSet, ColumnForm
 from datasources.tasks import generate_documents
+from settings import DB
 
 import simplejson
 
@@ -51,7 +51,6 @@ def datasource_detail(request, id):
             'datasource': instance,
             'columns': columns,
             'column_form':column_form,
-            
         }
     )
     
@@ -71,8 +70,6 @@ def column_detail(request, id):
             }
         )
     try:
-#        dataset = Dattum.objects.filter(datasource_id=instance.datasource_id)
-        from settings import DB
         dataset = DB.dattum.group(
             key={instance.label:1},
             condition={'datasource_id':instance.datasource_id},
@@ -89,6 +86,7 @@ def column_detail(request, id):
                     prev.count++; 
                 }
             ''' % instance.label)
+        
     except Exception, e:
         messages.error(request, e)
         return redirect('detail', instance.datasource_id)
@@ -100,7 +98,6 @@ def column_detail(request, id):
                 'column':instance,
                 'dataset': dataset,
                 'label':instance.label,
-                
             }
         )
 
@@ -119,7 +116,7 @@ def import_data(request, id):
 
 def show_data(request, id):
     datasource = DataSource.objects.get(id=id)
-    from settings import DB
+    
     data = DB.dattum.find({'datasource_id':datasource.pk})
     sort_by = request.GET.get('sort_by')
 
@@ -129,7 +126,7 @@ def show_data(request, id):
         data = data.filter(columns__map_multiple=True)
     if sort_by == 'ok':
         data = data.filter(columns__point__ne=None, columns__map_multiple__ne=True)
-    import ipdb; ipdb.set_trace()
+    
     return render(
         request,
         'data.html',
