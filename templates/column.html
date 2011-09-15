@@ -8,7 +8,7 @@
     
     <link rel="stylesheet" href="/static/dist/leaflet.css" type="text/css" />
     <script src="/static/dist/leaflet.js"></script>
-    <script type="text/javascript" language="javascript">
+    <script type="text/javascript">
     
     
     $(document).ready(function(){
@@ -41,53 +41,53 @@
     </script>    
     
     {%else%}
-        <script type="text/javascript" language="javascript">
-    google.load("visualization", "1", {packages:["corechart"]});
-    google.setOnLoadCallback(draw_chart)
-    function draw_chart(){
-        var data = new google.visualization.DataTable();
+        <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript">
+      // Load the Visualization API and the piechart package.
+      google.load('visualization', '1.0', {'packages':['corechart']});
+      
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.setOnLoadCallback(drawChart);
+      
+      // Callback that creates and populates a data table, 
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawChart() {
 
-        {% for label in labels %}
-            data.addColumn('number', '{{label}}');
-        {% endfor %}
+      // Create the data table.
+      var data = new google.visualization.DataTable();
+      {% for data in dataset %}
+        
+          data.addColumn('number','{{ data.value }}' );
+      {% endfor %}
+      
+      data.addRows({{dataset|length}});
+      {% for data in dataset %}
+            data.setValue({{forloop.counter0}},0,{{data.count}})
+      {% endfor %}
 
-        data.addRows({{dataset|length}});
-        {% for data in scatterdata %}
-            {% for label, item in data.iteritems %}              
-                data.setValue({{forloop.counter0}},0,{{label}})
-                data.setValue({{forloop.counter0}},1,{{item|floatformat}})
+      // Set chart options
+      var options = {'title':'How Much Pizza I Ate Last Night',
+                     'width':400,
+                     'height':300};
 
-            {% endfor %}    
-        {% endfor %}
-        var chart = new google.visualization.ScatterChart(document.getElementById('chart'));
-        chart.draw(data, {
-                width: 1200, 
-                height: 240, 
-                xAxis: {
-                    title: 'cantidad', 
-                    minValue: 0,
-                    maxValue: {{dataset|length}},
-                },
-                vAxis: {
-                    title: '{{label}}', 
-                    minValue: 0,
-                    maxValue: 50,
-                }
-                
-             });
+      // Instantiate and draw our chart, passing in some options.
+      var chart = new google.visualization.PieChart(document.getElementById('chart'));
+      chart.draw(data, options);
     };
- 
- 
-</script>
+    </script>
+
     
     {% endif %}
 {% endblock %}        
 {% block head %}
+    
     <h1><a title="Index"href="/">Indice</a>/<a href="{% url detail column.datasource_id %}">{{column.datasource.name}}</a>/Cantidades por {{label}}</h1>
 {% endblock %}  
 
 {% block page %}
-    <div id="chart" style="height:400px;"></div>
+    <div id="chart" style="height:600px;"></div>
 {% endblock %}
 
 

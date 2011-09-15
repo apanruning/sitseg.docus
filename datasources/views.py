@@ -107,7 +107,7 @@ def import_data(request, id):
     if request.method == 'POST':
         columns = request.POST.getlist('object_id')
 
-    generate_documents.delay(
+    generate_documents(
         datasource=id,
         columns=columns
     )
