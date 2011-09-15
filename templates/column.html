@@ -68,9 +68,8 @@
       {% endfor %}
 
       // Set chart options
-      var options = {'title':'How Much Pizza I Ate Last Night',
-                     'width':400,
-                     'height':300};
+      var options = {'width':700,
+                     'height':600};
 
       // Instantiate and draw our chart, passing in some options.
       var chart = new google.visualization.PieChart(document.getElementById('chart'));
@@ -82,8 +81,11 @@
     {% endif %}
 {% endblock %}        
 {% block head %}
-    
-    <h1><a title="Index"href="/">Indice</a>/<a href="{% url detail column.datasource_id %}">{{column.datasource.name}}</a>/Cantidades por {{label}}</h1>
+    {% if not column.has_geodata %}        
+    <h1><a title="Index"href="/">Indice</a>/<a href="{% url detail column.datasource_id %}">{{column.datasource.name}}</a>/Cantidades por {{column.name}}</h1>
+    {% else%}
+    <h1><a title="Index"href="/">Indice</a>/<a href="{% url detail column.datasource_id %}">{{column.datasource.name}}</a>/Mapa de {{column.name}}</h1>
+    {% endif%}
 {% endblock %}  
 
 {% block page %}
