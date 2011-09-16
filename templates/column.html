@@ -33,8 +33,10 @@
         {% for item in dataset %}
           {% if item.point %}
             latlng = new L.LatLng({{item.point.0|safe}}, {{item.point.1|safe}});
-            marker = new L.Marker(latlng);
+            var marker = new L.Marker(latlng);
+            marker.bindPopup("{{item.value}}");
             map.addLayer(marker);
+          
           {% endif %}
         {% endfor %}    
     })    
@@ -58,13 +60,14 @@
       // Create the data table.
       var data = new google.visualization.DataTable();
       {% for data in dataset %}
-        
+          data.addColumn('string','{{data.value}}');
           data.addColumn('number','{{ data.value }}' );
       {% endfor %}
       
       data.addRows({{dataset|length}});
       {% for data in dataset %}
-            data.setValue({{forloop.counter0}},0,{{data.count}})
+            data.setValue({{forloop.counter0}},0,'{{data.value}}')
+            data.setValue({{forloop.counter0}},1,{{data.count}})
       {% endfor %}
 
       // Set chart options
