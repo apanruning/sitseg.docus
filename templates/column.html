@@ -32,7 +32,7 @@
               
         {% for item in dataset %}
           {% if item.point %}
-            latlng = new L.LatLng({{item.point.0|safe}}, {{item.point.1|safe}});
+            latlng = new L.LatLng({{item.point.0|safe}}, {{item.point.1|safe}},new icono());
             var marker = new L.Marker(latlng);
             marker.bindPopup("{{item.value}}");
             map.addLayer(marker);
@@ -75,7 +75,7 @@
                      'height':600};
 
       // Instantiate and draw our chart, passing in some options.
-      var chart = new google.visualization.PieChart(document.getElementById('chart'));
+      var chart = new google.visualization.PieChart(document.getElementById('chart'),);
       chart.draw(data, options);
     };
     </script>
@@ -92,7 +92,12 @@
 {% endblock %}  
 
 {% block page %}
+    {% if column.has_geodata %}        
     <div id="chart" style="height:600px;"></div>
+    {% else%}
+    <div id="chart" style="height:400px;"></div>
+    {% endif%}
+    
 {% endblock %}
 
 
