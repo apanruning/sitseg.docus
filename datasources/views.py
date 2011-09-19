@@ -76,14 +76,24 @@ def column_detail(request, id):
             initial={
                 'count':0,
                 'value': '',
-                'point': []
+                'point': [],
+                'object_list':[]
             },
             reduce='''
                 function(obj,prev){
-                    label = '%s'
+                    label = '%s';
                     prev.value = obj[label]['value'];
                     prev.point = obj[label]['point'];
                     prev.count++; 
+                    var msg="";
+                    for (i in obj) {
+                       
+                       if (['_id','datasource_id'].indexOf(i)<0) {
+                           msg += obj[i]['name'] + ": "+ obj[i]['value'] + " - "; 
+                       }
+                     
+                    };
+                    prev.object_list[prev.count - 1] = msg;
                 }
             ''' % instance.label)
         
@@ -91,6 +101,7 @@ def column_detail(request, id):
         messages.error(request, e)
         return redirect('detail', instance.datasource_id)
     else:
+
         return render(
             request,
             'column.html',

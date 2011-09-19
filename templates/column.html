@@ -31,13 +31,14 @@
         });
               
         {% for item in dataset %}
-          {% if item.point %}
+        {% if item.point %}
             latlng = new L.LatLng({{item.point.0|safe}}, {{item.point.1|safe}},new icono());
             var marker = new L.Marker(latlng);
-            marker.bindPopup("{{item.value}}");
+            var msg = "<p> {{ item.count }} {% for x in item.object_list %} <strong> {{ x}} </strong> <br />{%endfor%}</p> "
+            marker.bindPopup(msg);
             map.addLayer(marker);
-          
-          {% endif %}
+        {% endif %}  
+
         {% endfor %}    
     })    
     </script>    
