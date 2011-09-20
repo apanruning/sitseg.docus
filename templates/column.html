@@ -31,13 +31,23 @@
         });
               
         {% for item in dataset %}
-        {% if item.point %}
-            latlng = new L.LatLng({{item.point.0|safe}}, {{item.point.1|safe}},new icono());
+            latlng = new L.LatLng({{item.direccion.point.0|safe}}, {{item.direccion.point.1|safe}});
+            //var circleLocation = latlng,
+            //circleOptions = {
+            //    fillColor: '#f03', 
+            //    fillOpacity: 0.2
+            //};
+    
+            //var circle = new L.Circle(circleLocation, 500+{{item.count}}, circleOptions);
+            
+            
+            
             var marker = new L.Marker(latlng);
-            var msg = "<p> {{ item.count }} {% for x in item.object_list %} <strong> {{ x}} </strong> <br />{%endfor%}</p> "
-            marker.bindPopup(msg);
+            //var msg = "<p> {{ item.count }} {% for x in item.object_list %} <strong> {{ x}} </strong> <br />{%endfor%}</p> "
+            marker.bindPopup('{{item.direccion.value}}');
+            //circle.bindPopup(msg);
             map.addLayer(marker);
-        {% endif %}  
+            //map.addLayer(circle);        
 
         {% endfor %}    
     })    
@@ -72,8 +82,8 @@
       {% endfor %}
 
       // Set chart options
-      var options = {'width':700,
-                     'height':600};
+      var options = {'width':500,
+                     'height':500};
 
       // Instantiate and draw our chart, passing in some options.
       var chart = new google.visualization.PieChart(document.getElementById('chart'));
@@ -94,7 +104,9 @@
 
 {% block page %}
     {% if column.has_geodata %}        
-    <div id="chart" style="height:600px;"></div>
+    <div id="chart" style="width:70%;height:600px;float:left;"></div>
+    <div style="width:25%;float:left;"> Cantidad de Puntos Mostrados {{ dataset|length }}</div>
+    <div style="clear:both" ></div>
     {% else%}
     <div id="chart" style="height:400px;"></div>
     {% endif%}

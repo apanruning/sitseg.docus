@@ -70,32 +70,35 @@ def column_detail(request, id):
             }
         )
     try:
-        dataset = DB.dattum.group(
-            key={instance.label:1},
-            condition={'datasource_id':instance.datasource_id},
-            initial={
-                'count':0,
-                'value': '',
-                'point': [],
-                'object_list':[]
-            },
-            reduce='''
-                function(obj,prev){
-                    label = '%s';
-                    prev.value = obj[label]['value'];
-                    prev.point = obj[label]['point'];
-                    prev.count++; 
-                    var msg="";
-                    for (i in obj) {
-                       
-                       if (['_id','datasource_id'].indexOf(i)<0) {
-                           msg += obj[i]['name'] + ": "+ obj[i]['value'] + " - "; 
-                       }
-                     
-                    };
-                    prev.object_list[prev.count - 1] = msg;
-                }
-            ''' % instance.label)
+        if not instance.has_geodata:
+            dataset = DB.dattum.group(
+                key={instance.label:1},
+                condition={'datasource_id':instance.datasource_id},
+                initial={
+                    'count':0,
+                    'value': '',
+                    'point': [],
+                    'object_list':[]
+                },
+                reduce='''
+                    function(obj,prev){
+                        label = '%s';
+                        prev.value = obj[label]['value'];
+                        prev.point = obj[label]['point'];
+                        prev.count++; 
+                        var msg="";
+                        for (i in obj) {
+                           
+                           if (['_id','datasource_id'].indexOf(i)<0) {
+                               msg += obj[i]['name'] + ": "+ obj[i]['value'] + " - "; 
+                           }
+                         
+                        };
+                        prev.object_list[prev.count - 1] = msg;
+                    }
+                ''' % instance.label)
+        else:
+            dataset = DB.dattum.find({'datasource_id':instance.datasource_id})
         
     except Exception, e:
         messages.error(request, e)
