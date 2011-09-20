@@ -98,13 +98,13 @@ def column_detail(request, id):
                     }
                 ''' % instance.label)
         else:
-            dataset = DB.dattum.find({'datasource_id':instance.datasource_id})
+            dataset = DB.dattum.find({'datasource_id':instance.datasource_id,})
+            dataset = [y[instance.label] for y in dataset]
         
     except Exception, e:
         messages.error(request, e)
         return redirect('detail', instance.datasource_id)
     else:
-
         return render(
             request,
             'column.html',
@@ -121,7 +121,7 @@ def import_data(request, id):
     if request.method == 'POST':
         columns = request.POST.getlist('object_id')
 
-    generate_documents(
+    generate_documents.delay(
         datasource=id,
         columns=columns
     )
