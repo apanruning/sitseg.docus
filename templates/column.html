@@ -17,7 +17,7 @@
             
             var cloudmadeUrl = 'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
             cloudmadeAttrib = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
-            cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 18, attribution: cloudmadeAttrib});
+            cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 15, attribution: cloudmadeAttrib});
             
             map.addLayer(cloudmade);
             
@@ -32,22 +32,22 @@
             {% for item in dataset %}
 
                 latlng = new L.LatLng({{item.point.0|safe}}, {{item.point.1|safe}},new icono());
-                //var circleLocation = latlng,
-                //circleOptions = {
-                //    fillColor: '#f03', 
-                //    fillOpacity: 0.2
-                //};
+                var circleLocation = latlng;
+                circleOptions = {
+                    fillColor: '#000000', 
+                    fillOpacity: 0.7
+                };
         
-                //var circle = new L.Circle(circleLocation, 500+{{item.count}}, circleOptions);
+                var circle = new L.Circle(circleLocation, 50, circleOptions);
                 
                 
                 
-                var marker = new L.Marker(latlng);
+                //var marker = new L.Marker(latlng);
                 //var msg = "<p> {{ item.count }} {% for x in item.object_list %} <strong> {{ x}} </strong> <br />{%endfor%}</p> "
-                marker.bindPopup('{{item.direccion.value}}');
-                //circle.bindPopup(msg);
-                map.addLayer(marker);
-                //map.addLayer(circle);        
+                //marker.bindPopup('{{item.value}}');
+                circle.bindPopup('{{item.value}}');
+                //map.addLayer(marker);
+                map.addLayer(circle);        
 
             {% endfor %}    
         })    
@@ -102,8 +102,8 @@
 
 {% block page %}
     {% if column.has_geodata %}        
-    <div id="chart" style="width:70%;height:600px;float:left;"></div>
-    <div style="width:25%;float:left;"> Cantidad de <strong> {{ column.label }}</strong> Mostrados {{ dataset|length}}</div>
+    <div id="chart" style="width:70%;height:500px;float:left;"></div>
+    <div style="width:25%;float:left;"> Cantidad de <strong> {{ column.label }}</strong> Mostrados {{ dataset|length }}</div>
     <div style="clear:both" ></div>
     {% else%}
     <div id="chart" style="height:400px;"></div>
