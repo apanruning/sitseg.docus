@@ -33,12 +33,12 @@ class MaapManager(models.GeoManager):
 
 class MaapModel(models.Model):
     slug = models.SlugField(editable=False, null=True)
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
+    name = models.CharField(max_length=100, null=True)
+    description = models.TextField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, editable = False)
     changed = models.DateTimeField(auto_now=True, editable = False)
-    creator = models.ForeignKey('auth.User', related_name='created',editable=False) 
-    editor = models.ForeignKey('auth.User',related_name='edited', editable=False)
+    creator = models.ForeignKey('auth.User', related_name='created',editable=False, null=True) 
+    editor = models.ForeignKey('auth.User',related_name='edited', editable=False, null=True)
     category = models.ManyToManyField('MaapCategory', null=True, blank=True, related_name='maapmodel_set')
     objects = MaapManager()
         

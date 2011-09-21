@@ -7,7 +7,7 @@ from StringIO import StringIO
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
-
+from maap.models import MaapPoint, MaapArea
 
 class Annotation(models.Model):
     text = models.TextField()
@@ -25,6 +25,7 @@ class Column(models.Model):
     csv_index = models.IntegerField(editable=False)
     data_type = models.CharField(max_length=50, default='str')
     has_geodata = models.BooleanField(default=False)
+    
 
     def __unicode__(self):
         return self.name
@@ -93,6 +94,55 @@ class DataSource(models.Model):
             new_column.datasource = self 
             new_column.is_available = True
             new_column.save()
+
+
+class Value(models.Model):
+    column = models.ForeignKey(Column)
+    data_type = models.CharField(max_length=100)
+
+
+class ValuePoint(Value):
+    value = models.ForeignKey(MaapPoint)
+    
+    def __init__(self):
+        self.data_type = 'point'
+        return super(Value, self).__init__(self)
+
+class ValueArea(Value):
+    value = models.ForeignKey(MaapArea)
+    
+    def __init__(self):
+        self.data_type = 'area'
+        return super(Value, self).__init__(self)
+
+class ValueText(Value):
+    value = models.CharField(max_length=100)
+    
+    def __init__(self):
+        self.data_type = 'text'
+        return super(Value, self).__init__(self)
+
+class ValueNumber(Value):
+    value = models.FloatField()
+    
+    def __init__(self):
+        self.data_type = 'number'
+        return super(Value, self).__init__(self)
+        
+class ValueDate(Value):
+    value = models.DateField()
+    
+    def __init__(self):
+        self.data_type = 'date'
+        return super(Value, self).__init__(self)
+
+class ValueBoolean(Value):
+    value = models.BooleanField()
+    
+    def __init__(self):
+        self.data_type = 'boolean'
+        return super(Value, self).__init__(self)
+
 
 
 __all__ = ['DataSource', 'Column', 'Annotation']

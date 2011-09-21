@@ -7,7 +7,8 @@ from StringIO import StringIO
 from csv import reader
 from googlemaps import GoogleMaps
 
-from datasources.models import DataSource
+from datasources.models import DataSource, Value, ValuePoint
+from maap.models import MaapPoint
 from dateutil.parser import parse as date_parser
 
 from geojson import Point
@@ -27,7 +28,6 @@ def _cast_value(value):
 
 @task
 def generate_documents(datasource, columns=None):
-    db = settings.DB
 
     gmaps = GoogleMaps(settings.GOOGLEMAPS_API_KEY)
     datasource = DataSource.objects.get(id=datasource)
@@ -38,7 +38,6 @@ def generate_documents(datasource, columns=None):
     first_column = csv_attach.next() # skip the title column.
     errors = []
 
-    db.dattum.remove({'datasource_id':datasource.pk})
     
     if columns:
         columns = datasource.column_set.filter(pk__in=columns)
@@ -46,16 +45,14 @@ def generate_documents(datasource, columns=None):
         columns = datasource.column_set.all()
 
     for row in csv_attach:
-        dato = {'datasource_id':datasource.pk}
+        
         for column in columns:
-            ecol = model_to_dict(column)
-            ecol['value'] = _cast_value(row[column.csv_index])
-            ecol.pop('id')
-            ecol['name'] = column.name
-            dato[column.label] = ecol
-            if ecol['data_type'] == 'point':
+            if column.data_type == 'point':
+                
                 try:
-                    ecol['point'] = gmaps.address_to_latlng('%s, cordoba, argentina' %ecol['value'])
+                    latlng = ['64', '31']
+                    maap_point = MaapPoint(*latlng)
+                    point = ValuePoint(column=column, value=maap_point)
                     
                 except Exception, e:
                     errors.append(e)
