@@ -14,7 +14,7 @@
 {% block page %}
       <menu>
       {% if request.user.is_staff %}
-      <a href="#add-form" class="control">Agregar columna</a> |
+      <!--<a href="#add-form" class="control">Agregar columna</a> |-->
       {% endif %}
       <a title="{{datasource.attach.name}}" 
          href="/datasource/{{datasource.id}}/download_attach">

@@ -5,82 +5,91 @@
 {% block js %}
     {% if column.has_geodata %}    
       <!-- Leaflet JavaScript -->
-    
-    <link rel="stylesheet" href="/static/dist/leaflet.css" type="text/css" />
-    <script src="/static/dist/leaflet.js"></script>
-    <script type="text/javascript">
-    
-    
-    $(document).ready(function(){
-        var map = new L.Map('chart');
-        var cordoba = new L.LatLng(-31.416667,-64.183333);
-        map.setView(cordoba, 13);
+        <link rel="stylesheet" href="/static/dist/leaflet.css" type="text/css" />
+        <script src="/static/dist/leaflet.js"></script>
+        <script type="text/javascript">
         
-        var cloudmadeUrl = 'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        cloudmadeAttrib = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
-        cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 18, attribution: cloudmadeAttrib});
         
-        map.addLayer(cloudmade);
+        $(document).ready(function(){
+            var map = new L.Map('chart');
+            var cordoba = new L.LatLng(-31.416667,-64.183333);
+            map.setView(cordoba, 13);
+            
+            var cloudmadeUrl = 'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            cloudmadeAttrib = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
+            cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 15, attribution: cloudmadeAttrib});
+            
+            map.addLayer(cloudmade);
+            
+            icono = L.Icon.extend({
+                iconUrl: '/static/dist/images/marker.png',
+                iconSize: new L.Point(38, 95),
+                shadowSize: new L.Point(68, 95),
+                iconAnchor: new L.Point(22, 94),
+                popupAnchor: new L.Point(-3, -76)
+            });
+                  
+            {% for item in dataset %}
+
+                latlng = new L.LatLng({{item.point.0|safe}}, {{item.point.1|safe}},new icono());
+                var circleLocation = latlng;
+                circleOptions = {
+                    fillColor: '#000000', 
+                    fillOpacity: 0.5
+                };
         
-        icono = L.Icon.extend({
-            iconUrl: '/static/dist/images/marker.png',
-            iconSize: new L.Point(38, 95),
-            shadowSize: new L.Point(68, 95),
-            iconAnchor: new L.Point(22, 94),
-            popupAnchor: new L.Point(-3, -76)
-        });
-              
-        {% for item in dataset %}
-          {% if item.point %}
-            latlng = new L.LatLng({{item.point.0|safe}}, {{item.point.1|safe}},new icono());
-            var marker = new L.Marker(latlng);
-            marker.bindPopup("{{item.value}}");
-            map.addLayer(marker);
-          
-          {% endif %}
-        {% endfor %}    
-    })    
-    </script>    
+                var circle = new L.CircleMarker(circleLocation, 50, circleOptions);
+                
+                
+                
+                //var marker = new L.Marker(latlng);
+                //var msg = "<p> {{ item.count }} {% for x in item.object_list %} <strong> {{ x}} </strong> <br />{%endfor%}</p> "
+                //marker.bindPopup('{{item.value}}');
+                circle.bindPopup('{{item.value}}');
+                //map.addLayer(marker);
+                map.addLayer(circle);        
+
+            {% endfor %}    
+        })    
+        </script>    
     
     {%else%}
         <!--Load the AJAX API-->
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript">
-      // Load the Visualization API and the piechart package.
-      google.load('visualization', '1.0', {'packages':['corechart']});
-      
-      // Set a callback to run when the Google Visualization API is loaded.
-      google.setOnLoadCallback(drawChart);
-      
-      // Callback that creates and populates a data table, 
-      // instantiates the pie chart, passes in the data and
-      // draws it.
-      function drawChart() {
+          // Load the Visualization API and the piechart package.
+          google.load('visualization', '1.0', {'packages':['corechart']});
+          
+          // Set a callback to run when the Google Visualization API is loaded.
+          google.setOnLoadCallback(drawChart);
+          
+          // Callback that creates and populates a data table, 
+          // instantiates the pie chart, passes in the data and
+          // draws it.
+          function drawChart() {
 
-      // Create the data table.
-      var data = new google.visualization.DataTable();
-      {% for data in dataset %}
-          data.addColumn('string','{{data.value}}');
-          data.addColumn('number','{{ data.value }}' );
-      {% endfor %}
-      
-      data.addRows({{dataset|length}});
-      {% for data in dataset %}
-            data.setValue({{forloop.counter0}},0,'{{data.value}}')
-            data.setValue({{forloop.counter0}},1,{{data.count}})
-      {% endfor %}
+          // Create the data table.
+          var data = new google.visualization.DataTable();
+          {% for data in dataset %}
+              data.addColumn('string','{{data.value}}');
+              data.addColumn('number','{{ data.value }}' );
+          {% endfor %}
+          
+          data.addRows({{dataset|length}});
+          {% for data in dataset %}
+                data.setValue({{forloop.counter0}},0,'{{data.value}}')
+                data.setValue({{forloop.counter0}},1,{{data.count}})
+          {% endfor %}
 
-      // Set chart options
-      var options = {'width':700,
-                     'height':600};
+          // Set chart options
+          var options = {'width':700,
+                         'height':600};
 
-      // Instantiate and draw our chart, passing in some options.
-      var chart = new google.visualization.PieChart(document.getElementById('chart'));
-      chart.draw(data, options);
-    };
-    </script>
-
-    
+          // Instantiate and draw our chart, passing in some options.
+          var chart = new google.visualization.PieChart(document.getElementById('chart'));
+          chart.draw(data, options);
+        };
+        </script>
     {% endif %}
 {% endblock %}        
 {% block head %}
@@ -93,7 +102,9 @@
 
 {% block page %}
     {% if column.has_geodata %}        
-    <div id="chart" style="height:600px;"></div>
+    <div id="chart" style="width:70%;height:500px;float:left;"></div>
+    <div style="width:25%;float:left;"> Cantidad de <strong> {{ column.label }}</strong> Mostrados {{ dataset|length }}</div>
+    <div style="clear:both" ></div>
     {% else%}
     <div id="chart" style="height:400px;"></div>
     {% endif%}

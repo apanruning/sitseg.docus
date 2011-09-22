@@ -70,22 +70,36 @@ def column_detail(request, id):
             }
         )
     try:
-        dataset = DB.dattum.group(
-            key={instance.label:1},
-            condition={'datasource_id':instance.datasource_id},
-            initial={
-                'count':0,
-                'value': '',
-                'point': []
-            },
-            reduce='''
-                function(obj,prev){
-                    label = '%s'
-                    prev.value = obj[label]['value'];
-                    prev.point = obj[label]['point'];
-                    prev.count++; 
-                }
-            ''' % instance.label)
+        if not instance.has_geodata:
+            dataset = DB.dattum.group(
+                key={instance.label:1},
+                condition={'datasource_id':instance.datasource_id},
+                initial={
+                    'count':0,
+                    'value': '',
+                    'point': [],
+                    'object_list':[]
+                },
+                reduce='''
+                    function(obj,prev){
+                        label = '%s';
+                        prev.value = obj[label]['value'];
+                        prev.point = obj[label]['point'];
+                        prev.count++; 
+                        var msg="";
+                        for (i in obj) {
+                           
+                           if (['_id','datasource_id'].indexOf(i)<0) {
+                               msg += obj[i]['name'] + ": "+ obj[i]['value'] + " - "; 
+                           }
+                         
+                        };
+                        prev.object_list[prev.count - 1] = msg;
+                    }
+                ''' % instance.label)
+        else:
+            dataset = DB.dattum.find({'datasource_id':instance.datasource_id,})
+            dataset = [y[instance.label] for y in dataset]
         
     except Exception, e:
         messages.error(request, e)
@@ -107,7 +121,7 @@ def import_data(request, id):
     if request.method == 'POST':
         columns = request.POST.getlist('object_id')
 
-    generate_documents(
+    generate_documents.delay(
         datasource=id,
         columns=columns
     )
