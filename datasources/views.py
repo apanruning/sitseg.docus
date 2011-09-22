@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.contrib import messages
 from bson.objectid import ObjectId
-from datasources.models import DataSource, Column
+from datasources.models import DataSource, Column, Value
 from datasources.forms import DataSourceForm, ColumnFormSet, ColumnForm
 from datasources.tasks import generate_documents
 from settings import DB
@@ -116,17 +116,7 @@ def import_data(request, id):
 
 def show_data(request, id):
     datasource = DataSource.objects.get(id=id)
-    
-    data = DB.dattum.find({'datasource_id':datasource.pk})
-    sort_by = request.GET.get('sort_by')
-
-    if sort_by == 'empty':
-        data = data.filter(columns__point=None, columns__map_multiple__ne=True)
-    if sort_by == 'multiple':
-        data = data.filter(columns__map_multiple=True)
-    if sort_by == 'ok':
-        data = data.filter(columns__point__ne=None, columns__map_multiple__ne=True)
-    
+    data = []    
     return render(
         request,
         'data.html',

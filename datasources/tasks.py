@@ -53,11 +53,9 @@ def generate_documents(datasource, columns=None):
                     latlng = ['64', '31']
                     maap_point = MaapPoint(*latlng)
                     point = ValuePoint(column=column, value=maap_point)
-                    
+                    point.save()
                 except Exception, e:
                     errors.append(e)
-                            
-        db.dattum.insert(dato)
                 
     if len(errors) == 0:
         datasource.has_data = True
