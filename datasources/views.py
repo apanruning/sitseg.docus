@@ -6,8 +6,8 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.contrib import messages
 from bson.objectid import ObjectId
-from datasources.models import DataSource, Column, Value
-from datasources.forms import DataSourceForm, ColumnFormSet, ColumnForm
+from datasources.models import DataSource, Column, Value, Row
+from datasources.forms import DataSourceForm, ColumnFormSet, ColumnForm, ValueForm
 from datasources.tasks import generate_documents
 from settings import DB
 
@@ -82,7 +82,6 @@ def column_detail(request, id):
         }
     )
 
-
 def import_data(request, id):
     columns = []
     if request.method == 'POST':
@@ -96,17 +95,30 @@ def import_data(request, id):
     return redirect("detail", id)
 
 def show_data(request, id):
+    values = Value.objects.filter(column__datasource = id)
+    values_form = (ValueForm(instance=value) for value in values)
+
     datasource = DataSource.objects.get(id=id)
-    data = []    
     return render(
         request,
         'data.html',
         {
             'datasource': datasource,
-            'dataset': data,
+            'dataset': values_form,
         }
     )
 
+
+def download_attach(request, id):
+
+    datasource = DataSource.objects.get(id=id)
+    attach = datasource.attach.read()
+    name = datasource.slug
+    
+    response = HttpResponse(attach, mimetype='application/force-download')
+    response['Content-Disposition'] = 'attachment; filename=%s' % name
+
+    return response
 
 def geometry_append(request, datasource_id, id):
     db = settings.DB
@@ -123,16 +135,4 @@ def geometry_append(request, datasource_id, id):
     data_collection.find_one({"_id": oid}).update(document_args)
     
     return redirect('detail', id)
-
-
-def download_attach(request, id):
-
-    datasource = DataSource.objects.get(id=id)
-    attach = datasource.attach.read()
-    name = datasource.slug
-    
-    response = HttpResponse(attach, mimetype='application/force-download')
-    response['Content-Disposition'] = 'attachment; filename=%s' % name
-
-    return response
 

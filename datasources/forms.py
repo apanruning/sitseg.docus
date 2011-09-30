@@ -3,7 +3,7 @@
 from django import forms
 from tagging.fields import TagField
 from mongoengine.django.auth import User
-from models import DataSource, Annotation, Column
+from models import DataSource, Annotation, Column, Value
 
 class DataSourceForm(forms.ModelForm):
     name = forms.CharField()
@@ -33,13 +33,10 @@ class ColumnForm(forms.ModelForm):
 
     class Meta:
         model = Column
+        
+class ValueForm(forms.ModelForm):
+
+    class Meta:
+        model = Value
 
 ColumnFormSet = forms.formsets.formset_factory(ColumnForm, extra=3)
-
-#class DocumentForm(forms.Form):
-#    def __init__(self, data_id, *args, **kwargs):
-#        super(DocumentForm, self).__init__(*args, **kwargs)
-#        data = DataSource.objects.all()
-#
-#            self.fields['captcha'] = CaptchaField()
-

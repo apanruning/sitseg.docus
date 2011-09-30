@@ -17,22 +17,17 @@
          Correctos</a>
     </menu>
 
-    <ul id="list">
-    {% for dato in dataset %}
-      <li >
-          {{dato.nombre.value}}
-          {% for x in dato.columns %}
-            <p>{{x}}:<strong>{{x.value}}</strong>
-            {% if x.map_url %}
-            <br /><img src="{{ dato.map_url|default:'nomap.png' }}">
-            {% endif %}
-          {% endfor %}
-          </p>
-      </li>
+    <div id="list">
+    {% for form in dataset %}
+        <p>
+         
+          {{form.as_p}}
+      
+        </p>
     {% empty %}
             No hay datos importados aún.
             <a href="/datasource/{{datasource.id}}/import_data">Importar desde el archivo.</a>
     {% endfor %}
-    </ul>
+    </div>
     {%paginate%}
 {% endblock %}

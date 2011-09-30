@@ -17,7 +17,6 @@ class Annotation(models.Model):
     datasource = models.ForeignKey('DataSource')
 
 class Column(models.Model):
-
     name = models.CharField(max_length=50)
     label = models.CharField(max_length=50, editable=False)
     created = models.DateTimeField(auto_now_add=True, editable = False)
@@ -97,6 +96,10 @@ class DataSource(models.Model):
             new_column.is_available = True
             new_column.save()
 
+class Row(models.Model):
+    datasource = models.ForeignKey(DataSource)    
+    csv_index = models.IntegerField()
+
 
 class Value(models.Model):
     column = models.ForeignKey(Column)
@@ -104,7 +107,8 @@ class Value(models.Model):
     value = models.CharField(max_length=100)
     point = models.ForeignKey(MaapPoint, null=True)
     area = models.ForeignKey(MaapArea, null=True)
-    row = models.IntegerField()
+    row = models.ForeignKey(Row)
+    
     def cast_value(self):
         tests = (
             int,

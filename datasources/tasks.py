@@ -7,7 +7,7 @@ from StringIO import StringIO
 from csv import reader
 from googlemaps import GoogleMaps
 
-from datasources.models import DataSource, Value
+from datasources.models import DataSource, Value, Row
 from maap.models import MaapPoint
 
 from geojson import Point
@@ -32,12 +32,16 @@ def generate_documents(datasource, columns=None):
         columns = datasource.column_set.all()
 
     for i, row in enumerate(csv_attach):
+        row2 = Row()
+        row2.datasource = datasource
+        row2.csv_index = i
+        row2.save()
         for column in columns:
             value = Value()
             value.value = row[column.csv_index]
             value.data_type = column.data_type
             value.column = column
-            value.row = i
+            value.row = row2
             
             if column.data_type == 'point':
                 try:
