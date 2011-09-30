@@ -105,6 +105,10 @@ class Value(models.Model):
     point = models.ForeignKey(MaapPoint, null=True)
     area = models.ForeignKey(MaapArea, null=True)
     row = models.IntegerField()
+    
+    def __unicode__(self):
+        return self.value
+    
     def cast_value(self):
         tests = (
             int,
