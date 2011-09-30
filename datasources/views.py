@@ -9,7 +9,6 @@ from bson.objectid import ObjectId
 from datasources.models import DataSource, Column, Value, Row
 from datasources.forms import DataSourceForm, ColumnFormSet, ColumnForm, ValueForm
 from datasources.tasks import generate_documents
-from settings import DB
 
 import simplejson
 
@@ -119,20 +118,4 @@ def download_attach(request, id):
     response['Content-Disposition'] = 'attachment; filename=%s' % name
 
     return response
-
-def geometry_append(request, datasource_id, id):
-    db = settings.DB
-    # This create the collection if not exists previously
-    data_collection = db['data']
-    
-    column_id = request.get("column_id", "")
-    maapmodel_id = request.get("maapmodel_id", "")
-    
-    oid = ObjectId(id)
-    document_args = dict()
-    document_args[column_id+"_geom_id"] = maapmodel_id
-    
-    data_collection.find_one({"_id": oid}).update(document_args)
-    
-    return redirect('detail', id)
 
