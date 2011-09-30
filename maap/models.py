@@ -50,7 +50,6 @@ class MaapModel(models.Model):
         out = dict(filter(lambda (x,y): not x.startswith('_'), self.__dict__.iteritems()))
         out['created'] = self.created.strftime('%D %T')        
         out['changed'] = self.changed.strftime('%D %T')
-        out['absolute_url'] = self.get_absolute_url()
         out['clickable'] = True
         return out
 
@@ -61,23 +60,6 @@ class MaapModel(models.Model):
     def __unicode__(self):
         return self.name
     
-    @models.permalink
-    def get_absolute_url(self):
-        categories = self.category.all()
-        if categories:
-            cat_slug = categories[0].slug
-        else:
-            cat_slug = None
-        return ('view', [cat_slug, self.id])  
-
-    def to_layer(self):
-        # This method only works on inherited models with geom field
-        center_point = self.to_geo_element()
-        center_point.center = True
-        out = get_closest(center_point.geom, self.id).layer()
-        out.elements.append(center_point)
-        return out
-
     def cast(self):
         out = self
         try: 
@@ -133,7 +115,6 @@ class MaapPoint(MaapModel):
         out = self.json_dict
         out.pop('geom')
         out['geom'] = self.geom
-        out['icon'] = self.icon.json_dict
         return Point(**out)
 
     
