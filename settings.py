@@ -6,6 +6,10 @@ import djcelery
 
 DB = connect('sitseg')
 
+POSTGIS_SQL_PATH = '/usr/share/postgresql/8.4/contrib'
+TEST_RUNNER='django.contrib.gis.tests.run_tests'
+
+
 BASE_DIR = os.path.dirname(__file__)
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
