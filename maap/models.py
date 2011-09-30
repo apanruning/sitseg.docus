@@ -126,7 +126,7 @@ class MaapCategory(models.Model):
 class MaapPoint(MaapModel):
    
     geom = models.PointField(srid=DEFAULT_SRID)
-    icon = models.ForeignKey('Icon', default=185, blank=True)
+    icon = models.ForeignKey('Icon', blank=True, null=True)
     objects = MaapManager()
 
     def to_geo_element(self):
@@ -136,10 +136,6 @@ class MaapPoint(MaapModel):
         out['icon'] = self.icon.json_dict
         return Point(**out)
 
-    @models.permalink
-    def get_absolute_url(self):
-        cat_slug = self.category.all()[0].slug
-        return ('view',[cat_slug, self.id])
     
 
 class MaapArea(MaapModel):
