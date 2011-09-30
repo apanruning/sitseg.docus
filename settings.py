@@ -4,7 +4,6 @@ import os
 from mongoengine import connect
 import djcelery
 
-DB = connect('sitseg')
 
 POSTGIS_SQL_PATH = '/usr/share/postgresql/8.4/contrib'
 TEST_RUNNER='django.contrib.gis.tests.run_tests'

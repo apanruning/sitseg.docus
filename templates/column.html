@@ -31,7 +31,7 @@
                   
             {% for item in dataset %}
 
-                latlng = new L.LatLng({{item.point.0|safe}}, {{item.point.1|safe}},new icono());
+                latlng = new L.LatLng({{item.point.geom.x|safe}}, {{item.point.geom.y|safe}},new icono());
                 var circleLocation = latlng;
                 circleOptions = {
                     fillColor: '#000000', 
@@ -99,13 +99,9 @@
 {% endblock %}  
 
 {% block page %}
-    {% if column.has_geodata %}        
-    <div id="chart" style="width:70%;height:500px;float:left;"></div>
-    <div style="width:25%;float:left;"> Cantidad de <strong> {{ column.label }}</strong> Mostrados {{ dataset|length }}</div>
-    <div style="clear:both" ></div>
-    {% else%}
-    <div id="chart" style="height:400px;"></div>
-    {% endif%}
+    <div><strong>{{ dataset|length }}</strong> registros </div>
+    <div id="chart"></div>
+
     
 {% endblock %}
 
