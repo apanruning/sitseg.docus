@@ -46,7 +46,7 @@ $('document').ready(function(){
     $('form input[type="text"]:first').focus()
     $('input[type="file"]').change(function(){
         value = $(this).val()
-        $('#id_name').val(GetFilename(value))
+        $('#id_name').val(value)
         
     });
     window.setTimeout(function(){

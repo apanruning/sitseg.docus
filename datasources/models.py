@@ -8,6 +8,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from maap.models import MaapPoint, MaapArea
+from dateutil.parser import parse as date_parser
+
 
 class Annotation(models.Model):
     text = models.TextField()
@@ -99,50 +101,22 @@ class DataSource(models.Model):
 class Value(models.Model):
     column = models.ForeignKey(Column)
     data_type = models.CharField(max_length=100)
-
-
-class ValuePoint(Value):
-    value = models.ForeignKey(MaapPoint)
-    
-    def __init__(self):
-        self.data_type = 'point'
-        return super(Value, self).__init__(self)
-
-class ValueArea(Value):
-    value = models.ForeignKey(MaapArea)
-    
-    def __init__(self):
-        self.data_type = 'area'
-        return super(Value, self).__init__(self)
-
-class ValueText(Value):
     value = models.CharField(max_length=100)
-    
-    def __init__(self):
-        self.data_type = 'text'
-        return super(Value, self).__init__(self)
-
-class ValueNumber(Value):
-    value = models.FloatField()
-    
-    def __init__(self):
-        self.data_type = 'number'
-        return super(Value, self).__init__(self)
+    point = models.ForeignKey(MaapPoint, null=True)
+    area = models.ForeignKey(MaapArea, null=True)
+    row = models.IntegerField()
+    def cast_value(self):
+        tests = (
+            int,
+            float,
+            lambda value: date_parser(value)
+        )
         
-class ValueDate(Value):
-    value = models.DateField()
-    
-    def __init__(self):
-        self.data_type = 'date'
-        return super(Value, self).__init__(self)
-
-class ValueBoolean(Value):
-    value = models.BooleanField()
-    
-    def __init__(self):
-        self.data_type = 'boolean'
-        return super(Value, self).__init__(self)
-
-
+        for test in tests:
+            try:
+                return test(self.value)
+            except ValueError:
+                continue
+        return value
 
 __all__ = ['DataSource', 'Column', 'Annotation']

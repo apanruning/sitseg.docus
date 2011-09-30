@@ -7,24 +7,12 @@ from StringIO import StringIO
 from csv import reader
 from googlemaps import GoogleMaps
 
-from datasources.models import DataSource, Value, ValuePoint
+from datasources.models import DataSource, Value
 from maap.models import MaapPoint
-from dateutil.parser import parse as date_parser
 
 from geojson import Point
 
-def _cast_value(value):
-    tests = (
-        int,
-        float,
-        lambda value: date_parser(value)
-    )
-    for test in tests:
-        try:
-            return test(value)
-        except ValueError:
-            continue
-    return value
+
 
 @task
 def generate_documents(datasource, columns=None):
@@ -37,26 +25,27 @@ def generate_documents(datasource, columns=None):
     csv_attach = reader(StringIO(datasource.attach.read()))
     first_column = csv_attach.next() # skip the title column.
     errors = []
-
     
     if columns:
         columns = datasource.column_set.filter(pk__in=columns)
     else:
         columns = datasource.column_set.all()
 
-    for row in csv_attach:
-        
+    for i, row in enumerate(csv_attach):
         for column in columns:
+            value = Value()
+            value.value = row[column.csv_index]
+            value.data_type = column.data_type
+            value.column = column
+            value.row = i
+            
             if column.data_type == 'point':
-                
                 try:
-                    latlng = ['64', '31']
-                    maap_point = MaapPoint(*latlng)
-                    point = ValuePoint(column=column, value=maap_point)
-                    point.save()
+                    latlng = gmaps.address_to_latlng('%s, cordoba, argentina' %value.value, )
                 except Exception, e:
                     errors.append(e)
-                
+                    
+            value.save()
     if len(errors) == 0:
         datasource.has_data = True
         datasource.is_dirty = False 
