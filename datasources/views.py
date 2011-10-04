@@ -17,16 +17,19 @@ def datasource(request):
     form = DataSourceForm()
     column_form = ColumnFormSet()
     if request.method == 'POST':
-        form = DataSourceForm(request.POST, request.FILES)
-        column_form = ColumnFormSet(request.POST)
 
-        if form.is_valid():
-            datasource = form.save()
-            datasource.import_columns()
-        else:
-            return redirect("/")
+       form = DataSourceForm(request.POST, request.FILES)
 
-        return redirect('detail', datasource.pk)
+       if form.is_valid():
+            data = form.cleaned_data
+            datasource = DataSource()
+            datasource.name = data['name']
+            datasource.attach = data['attach'].read()
+            datasource.attach.content_type = data['attach'].content_type
+            datasource.author = data['author']
+     
+            datasource.save()
+       return redirect("/")
 
     return render(
         request,

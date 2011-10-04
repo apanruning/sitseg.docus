@@ -30,13 +30,14 @@ def generate_documents(datasource, columns=None):
     Value.objects.filter(column__datasource=datasource.id).delete()
     
     for i, row in enumerate(csv_attach):
-        row_obj = Row(
-            datasource = datasource,
-            csv_index = i,
-        )
+        row_obj = Row()
+        row_obj.datasource = datasource
+        row_obj.csv_index = i
         row_obj.save()
+        
         for column in columns:
             value = Value()
+            
             value.value = row[column.csv_index]
             value.data_type = column.data_type
             value.column = column
@@ -44,16 +45,16 @@ def generate_documents(datasource, columns=None):
             
             if column.data_type == 'point':
                 latlng = gmaps.address_to_latlng('%s, cordoba, argentina' %value.value )
-                try:
-                    point =  MaapPoint(
-                        geom=Point(latlng).wkt,
-                        name=value.value
-                    )
-                    point.save()            
-                except Exception, e:
-                    errors.append(e)
-                else:
-                    value.point = point
+               #try:
+                point =  MaapPoint(
+                    geom=Point(latlng).wkt,
+                    name=value.value,
+                )
+                point.save()            
+                #except Exception, e:
+                #errors.append(e)
+                #else:
+                #    value.point = point
                                         
             value.save()
             

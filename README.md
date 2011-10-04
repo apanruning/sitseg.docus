@@ -1,5 +1,5 @@
 Requerimientos:
-
+==================
 - MongoDB (http://www.mongodb.org/)
 - django (http://django-project.com)
 - mongoengine (http://mongoengine.org/)
@@ -111,11 +111,13 @@ Esta es una configuración para servir sólo archivos del gridfs
 
 
             location /gridfs {
-                gridfs sitseg field=filename type=string;
+                gridfs sitseg;
             }
         }
 
     }
+    
+Luego apuntamos al grid id de los archivos (ej: http://gridfs.sitseg:9000/4dac2c1f7fdfb536bc000000).
     
 
 > Notar que server_name está definido como gridfs.sitseg, probablemente te haga
