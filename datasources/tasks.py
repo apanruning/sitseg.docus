@@ -27,8 +27,6 @@ def generate_documents(datasource, columns=None):
     else:
         columns = datasource.column_set.all()
         
-    Value.objects.filter(column__datasource=datasource.id).delete()
-    
     for i, row in enumerate(csv_attach):
         row_obj = Row()
         row_obj.datasource = datasource
@@ -36,26 +34,41 @@ def generate_documents(datasource, columns=None):
         row_obj.save()
         
         for column in columns:
-            value = Value()
-            
-            value.value = row[column.csv_index]
             value.data_type = column.data_type
-            value.column = column
-            value.row = row_obj
-            
-            if column.data_type == 'point':
+            if column.data_type == 'str':
+                value = ValueText()
+                value.value = row[column.csv_index]
+            elif column.data_type == 'int':
+                value = ValueInt()
+                value.value = int(row[column.csv_index])
+            elif column.data_type == 'float':
+                value = ValueFloat()
+                value.value = float(row[column.csv_index])
+            elif column.data_type == 'bool':
+                value = ValueBool()
+                value.value = bool(row[column.csv_index])   
+            elif column.data_type == 'date':
+                import time, datetime
+                time_format = "%d-%m-%Y"
+                value = ValueDate()
+                value.value = datetime.datetime.fromtimestamp(time.mktime(time.strptime(row[column.csv_index], time_format)))
+            elif column.data_type == 'point':
                 latlng = gmaps.address_to_latlng('%s, cordoba, argentina' %value.value )
-               #try:
-                point =  MaapPoint(
-                    geom=Point(latlng).wkt,
-                    name=value.value,
-                )
-                point.save()            
-                #except Exception, e:
-                #errors.append(e)
-                #else:
-                #    value.point = point
-                                        
+                try:
+                    point =  MaapPoint(
+                        geom=Point(latlng).wkt,
+                        name=value.value,
+                    )
+                    point.save()            
+                except Exception, e:
+                    errors.append(e)
+                else:
+                    value.value = row[column.csv_index]
+                    value.point = point
+            
+            value.row = row_obj
+            value.column = column
+            
             value.save()
             
     if len(errors) == 0:

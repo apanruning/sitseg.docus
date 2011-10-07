@@ -9,6 +9,7 @@ from bson.objectid import ObjectId
 from datasources.models import DataSource, Column, Value, Row
 from datasources.forms import DataSourceForm, ColumnFormSet, ColumnForm, ValueForm
 from datasources.tasks import generate_documents
+from datasources.utils import *
 
 import simplejson
 
@@ -22,13 +23,9 @@ def datasource(request):
 
        if form.is_valid():
             data = form.cleaned_data
-            datasource = DataSource()
-            datasource.name = data['name']
-            datasource.attach = data['attach'].read()
-            datasource.attach.content_type = data['attach'].content_type
-            datasource.author = data['author']
+            datasource = form.save()
      
-            datasource.save()
+
        return redirect("/")
 
     return render(
@@ -88,8 +85,9 @@ def import_data(request, id):
     columns = []
     if request.method == 'POST':
         columns = request.POST.getlist('object_id')
-
-    generate_documents(
+    import pdb
+    pdb.set_trace()
+    generate_documents.delay(
         datasource=id,
         columns=columns
     )
@@ -121,4 +119,47 @@ def download_attach(request, id):
     response['Content-Disposition'] = 'attachment; filename=%s' % name
 
     return response
+
+def stats(request,id):
+    instance = Column.objects.get(pk=int(id))
+    values = Value.objects.filter(column=instance.id)
+    
+    if not instance.has_geodata:
+        #La columna no es geoposicionada        
+        #aca deberian mostrarse n posibles estadisticas para los datos de esa columna
+        #Se devuelve un diccionario en el contexto
+        import pdb
+        pdb.set_trace()
+        
+        if instance.data_type=="int" or instance.data_type=="float":
+            dist = Distribucion(len(lista_values))
+            dist.elementos = values
+            res = {
+                'casos':dist.n,
+                'min':dist.minimo(),
+                'max':dist.maximo(),
+                'rango':dist.rango(),
+                'media':dist.media(),
+                'mediana':dist.mediana(),
+                'varianza':dist.varianza(),
+                'desv_estandar':dist.desviacion(),
+            }
+            
+            
+        else:
+            res = values.order_by('value')
+    else:
+        #La columna es geoposicionada
+        #aca deberian mostrarse m posibles estadisticas para los datos de esa columna
+        res = values.order_by('value')
+
+    return render(
+        request,
+        'stats.html',
+        {
+            'datasource': instance.datasource,
+            'column':instance,
+            'dataset': res,
+        }
+    )
 

@@ -23,8 +23,10 @@ class ColumnForm(forms.ModelForm):
         choices=[
             ('None','---------'), 
             ('str','Texto'), 
-            ('int','Numero'), 
-            ('date','Fecha'), 
+            ('float','Flotante'), 
+            ('int','Entero'), 
+            ('date','Fecha'),
+            ('bool','Booleano'),             
             ('point',u'Dirección'),
             ('area','Zona'), 
         ],

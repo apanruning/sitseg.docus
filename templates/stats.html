@@ -1,0 +1,17 @@
+{% extends "index.html" %}
+{% block title %}
+    Estadisticas de {{datasource.name}}
+{% endblock %}
+{% block page %}
+    {% if not column.has_geodata %}
+        <h2> Estadísticas Básicas </h2>
+        {%for k,v in dataset.iteritems%}
+        <p><strong> {{ k }}</strong> {{ v }}</p>
+        {%endfor%}
+    {% else %}
+        <h2> Estadísticas Básicas </h2>
+        <a href=""> Patron de Puntos </a>
+        <a href=""> Patron Areas </a>
+        
+    {% endif %}    
+{% endblock %}

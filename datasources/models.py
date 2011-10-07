@@ -45,8 +45,8 @@ class Column(models.Model):
         
 class DataSource(models.Model):
 
-    name = models.CharField(max_length=50)
-    slug = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
+    slug = models.CharField(max_length=100)
     attach = models.FileField(upload_to="docs")
     created = models.DateTimeField(auto_now_add=True, editable = False)
     author = models.ForeignKey('auth.User')
@@ -100,31 +100,28 @@ class Row(models.Model):
     datasource = models.ForeignKey(DataSource)    
     csv_index = models.IntegerField()
 
-
 class Value(models.Model):
     column = models.ForeignKey(Column)
-    data_type = models.CharField(max_length=100)
-    value = models.CharField(max_length=100)
-    point = models.ForeignKey(MaapPoint, null=True)
-    area = models.ForeignKey(MaapArea, null=True)
     row = models.ForeignKey(Row)
-
     
-    def __unicode__(self):
-        return self.value
+class ValueInt(Value):
+    value = models.IntegerField()
     
-    def cast_value(self):
-        tests = (
-            int,
-            float,
-            lambda value: date_parser(value)
-        )
-        
-        for test in tests:
-            try:
-                return test(self.value)
-            except ValueError:
-                continue
-        return value
+class ValueFloat(Value):
+    value = models.FloatField()
+    
+class ValueBool(Value):
+    value = models.BooleanField()
 
-__all__ = ['DataSource', 'Column', 'Annotation']
+class ValueText(Value):
+    value = models.CharField(max_length=100)
+    
+class ValuePoint(Value):
+    value = models.CharField(max_length=100)
+    point = models.ForeignKey(MaapPoint)
+    
+class ValueArea(Value):
+    value = models.CharField(max_length=100)
+    area = models.ForeignKey(MaapArea) 
+
+__all__ = ['DataSource', 'Column', 'Annotation','Row','Value','ValueInt','ValueFloat','ValueBool','ValueText','ValuePoint','ValueArea']

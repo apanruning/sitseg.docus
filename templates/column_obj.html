@@ -8,6 +8,7 @@
     <h3>
         <input type="checkbox" name="is_available"  {% if column.instance.is_available %}checked{% endif %}/>
         <a href="/column/{{column.instance.pk}}">{{column.instance.name}}</a>
+        <a href="/stats/{{column.instance.pk}}"> estadisticas </p>
     </h3>
     <p>    
     <input type="hidden" name="object_id"  value="{{column.instance.pk}}"/>
@@ -22,7 +23,6 @@
     {% endif %}
     <p>
     {{form.errors}}
+    </p>
     </form>
-
-
 </li>
