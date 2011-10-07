@@ -24,8 +24,8 @@ def datasource(request):
        if form.is_valid():
             data = form.cleaned_data
             datasource = form.save()
-     
-
+            datasource.import_columns()                
+       
        return redirect("/")
 
     return render(
