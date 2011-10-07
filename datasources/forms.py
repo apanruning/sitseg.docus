@@ -22,11 +22,6 @@ class ColumnForm(forms.ModelForm):
     data_type = forms.ChoiceField(
         choices=[
             ('None','---------'), 
-            ('str','Texto'), 
-            ('float','Flotante'), 
-            ('int','Entero'), 
-            ('date','Fecha'),
-            ('bool','Booleano'),             
             ('point',u'Dirección'),
             ('area','Zona'), 
         ],

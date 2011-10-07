@@ -24,8 +24,8 @@ class Distribucion:
         return sqrt(self.varianza())        
 
     def mediana(self):
-        middle = n/2
-        if n%2==0:
+        middle = self.n/2
+        if self.n%2==0:
             res = (self.elementos[middle]+self.elementos[middle+1])/2.0
         else:
             res = self.elementos[middle+1]/2.0

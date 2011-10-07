@@ -24,7 +24,8 @@ def datasource(request):
        if form.is_valid():
             data = form.cleaned_data
             datasource = form.save()
-            datasource.import_columns()                
+            datasource.import_columns()
+                            
        
        return redirect("/")
 
@@ -85,9 +86,7 @@ def import_data(request, id):
     columns = []
     if request.method == 'POST':
         columns = request.POST.getlist('object_id')
-    import pdb
-    pdb.set_trace()
-    generate_documents.delay(
+    generate_documents(
         datasource=id,
         columns=columns
     )
@@ -128,31 +127,22 @@ def stats(request,id):
         #La columna no es geoposicionada        
         #aca deberian mostrarse n posibles estadisticas para los datos de esa columna
         #Se devuelve un diccionario en el contexto
-        import pdb
-        pdb.set_trace()
-        
-        if instance.data_type=="int" or instance.data_type=="float":
-            dist = Distribucion(len(lista_values))
-            dist.elementos = values
-            res = {
-                'casos':dist.n,
-                'min':dist.minimo(),
-                'max':dist.maximo(),
-                'rango':dist.rango(),
-                'media':dist.media(),
-                'mediana':dist.mediana(),
-                'varianza':dist.varianza(),
-                'desv_estandar':dist.desviacion(),
-            }
-            
-            
-        else:
-            res = values.order_by('value')
+        list_values = [v.cast_value() for v in values]
+        dist = Distribucion(len(list_values))
+        dist.elementos = list_values
+        res = {
+            'Numeros de Casos':dist.n,
+            'min':dist.minimo(),
+            'max':dist.maximo(),
+            'rango':dist.rango(),
+            'media':dist.media(),
+            'mediana':dist.mediana(),
+            'varianza':dist.varianza(),
+            'desv_estandar':dist.desviacion(),
+        }
     else:
-        #La columna es geoposicionada
-        #aca deberian mostrarse m posibles estadisticas para los datos de esa columna
         res = values.order_by('value')
-
+    
     return render(
         request,
         'stats.html',
