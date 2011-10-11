@@ -10,6 +10,7 @@ from datasources.models import DataSource, Column, Value, Row
 from datasources.forms import DataSourceForm, ColumnFormSet, ColumnForm, ValueForm
 from datasources.tasks import generate_documents
 from datasources.utils import *
+from django.db.models import Count
 
 import simplejson
 
@@ -77,7 +78,7 @@ def column_detail(request, id):
         'column.html',
         {
             'column':instance,
-            'dataset': dataset,
+            'dataset': dataset.annotate(count = Count('value')), 
             'label':instance.label,
         }
     )

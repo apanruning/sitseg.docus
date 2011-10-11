@@ -3,6 +3,12 @@
 {% block title %}
     Detalles de {{datasource.name}}
 {% endblock %}
+{% block js %}
+    $('#button-column-list').click(function() {
+        $($(this).attr('href')).toggle();
+        return false;
+    });
+{% endblock %}
 {% block head %}
 
     <h1><a href="/">Indice</a>/{{datasource.name}}</h1>
@@ -30,12 +36,14 @@
         <input type="submit" value="Guardar" />
     </form>
     {% if request.user.is_staff %}
-    <ul class="list">
-    {% for column in columns %}
-        {% include "column_obj.html" %}
-    {% endfor %}        
-    </ul>    
-    <form action="/datasource/{{datasource.id}}/import_data" id="import_form" method="post">{% csrf_token %}
+    <a id="button-column-list" href="#column_list"> Informacion de Columnas </a>
+    <div id="column_list">
+        <ul class="list">
+        {% for column in columns %}
+            {% include "column_obj.html" %}
+        {% endfor %}        
+        </ul>
+        <form action="/datasource/{{datasource.id}}/import_data" id="import_form" method="post">{% csrf_token %}
     {% for column in columns  %}
         {% if column.instance.is_available %}
         <input type="hidden" name="object_id" value="{{column.instance.pk}}"/>
@@ -51,4 +59,6 @@
     {% endfor %}
     </ul>
     {% endif %}
+    </div>    
+    
 {% endblock %}

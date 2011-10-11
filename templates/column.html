@@ -2,15 +2,19 @@
 {% block title %}
     Cantidades por {{label}}
 {% endblock %}
+{% block linkjs %}
+    {% if column.has_geodata %}
+        <link rel="stylesheet" href="/static/dist/leaflet.css" type="text/css" />
+        <script src="/static/dist/leaflet.js"></script>
+    {% else %}    
+        <!--Load the AJAX API-->
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>     
+    {% endif %}
+{% endblock %}
 {% block js %}
     {% if column.has_geodata %}    
       <!-- Leaflet JavaScript -->
-        <link rel="stylesheet" href="/static/dist/leaflet.css" type="text/css" />
-        <script src="/static/dist/leaflet.js"></script>
-        <script type="text/javascript">
-        
-        
-        $(document).ready(function(){
+           
             var map = new L.Map('chart');
             var cordoba = new L.LatLng(-31.416667,-64.183333);
             map.setView(cordoba, 13);
@@ -41,20 +45,15 @@
                 var circle = new L.CircleMarker(circleLocation, 20, circleOptions);
                 
                 //var marker = new L.Marker(latlng);
-                //var msg = "<p> {{ item.count }} {% for x in item.object_list %} <strong> {{ x}} </strong> <br />{%endfor%}</p> "
                 //marker.bindPopup('{{item.value}}');
                 circle.bindPopup('{{item.value}}');
                 //map.addLayer(marker);
                 map.addLayer(circle);        
 
             {% endfor %}    
-        })    
-        </script>    
-    
-    {%else%}
-        <!--Load the AJAX API-->
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript">
+        });    
+   
+    {% else %}
           // Load the Visualization API and the piechart package.
           google.load('visualization', '1.0', {'packages':['corechart']});
           
@@ -75,8 +74,8 @@
           
           data.addRows({{dataset|length}});
           {% for data in dataset %}
-                data.setValue({{forloop.counter0}},0,'{{data.value}}')
-                data.setValue({{forloop.counter0}},1,{{data.count}})
+                data.setValue({{forloop.counter0}},0,'{{data.value}}');
+                data.setValue({{forloop.counter0}},1,{{data.count}});
           {% endfor %}
 
           // Set chart options
@@ -87,9 +86,8 @@
           var chart = new google.visualization.PieChart(document.getElementById('chart'));
           chart.draw(data, options);
         };
-        </script>
     {% endif %}
-{% endblock %}        
+{% endblock %}                
 {% block head %}
     {% if not column.has_geodata %}        
     <h1><a title="Index"href="/">Indice</a>/<a href="{% url detail column.datasource_id %}">{{column.datasource.name}}</a>/Cantidades por {{column.name}}</h1>

@@ -14,7 +14,15 @@
           <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js">
           </script>
         <![endif]-->
-        {% block js %}{% endblock %}
+        {% block linkjs %}
+        
+        {% endblock %}
+        <script type="text/javascript" language="javascript">
+        $(document).ready(function() {
+        {% block js %}
+            
+        {% endblock %}
+        });
         </script>
     </head>
     <body>
