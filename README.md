@@ -1,126 +1,89 @@
 Requerimientos:
 ==================
-- MongoDB (http://www.mongodb.org/)
-- django (http://django-project.com)
-- mongoengine (http://mongoengine.org/)
 
-Opcional, para servir archivos desde el gridfs:
-
-- nginx (http://nginx.org/)
-- nginx-gridfs (https://github.com/mdirolf/nginx-gridfs)
+* django
+* postgreSQL - postgis
+* mongodb
+* celery
 
 Instalación en Ubuntu:
 ====================
 
-Instalar MongoDB:
+Instalar dependencias de los repositorios de ubuntu:
 
-    $ sudo apt-get install mongodb
+        $ sudo apt-get install gdal-bin postgresql-8.4-postgis
 
-Establecer el entorno para django:
+Postgis 
+--------------------
 
-    $ virtualenv --no-site-packages sitseg
-    $ cd sitseg
-    $ . bin/activate 
-    $ git clone git@github.com:Inventta/sitseg.docus.git docus
-
-
-Correr el servidor de desarrollo
------------------------
-
-    $ cd docus
-    $ git checkout dev
-    $ pip install -r docus/requirements.txt
-    $ ./manage.py runserver
-
-Crear usuario inicial (necesario para poder usar el formulario)
------------------------
-    $ ./manage.py shell
-    >>> from mongoengine.django.auth import User
-    >>> User.create_user('nombre', 'pass')
-
-Correr mongodb en el entorno local
------------------------
-Si es la primera vez que se corre:    
-    $ mkdir db
-
-Para correrlo:
+Crear el template_postgis y permitir que otros usuarios puedan crear bases 
+de datos con este:
     
-    $ mongod --dbpath=./db
-    Sun May  8 16:55:15 MongoDB starting : pid=17436 port=27017 dbpath=./db 32-bit 
+        $ sudo su - postgres
 
-Esto permite tener la base de datos aislada en la carpeta db, para luego poder hacer
-backups o levantar un entorno con datos cargados.
+        $ createdb -E UTF8 template_postgis
+        $ psql -d postgres -c "UPDATE pg_database SET datistemplate='true' WHERE datname='template_postgis';"
 
+Cargar las rutinas PostGIS SQL:
 
-Correr el servidor de produccion
------------------------
-TBD
+        $ locate postgis.sql
+        /usr/share/postgresql/8.4/contrib/postgis-1.5/postgis.sql # puede traer varios resultados
+        $ psql -d template_postgis -f /usr/share/postgresql/8.4/contrib/postgis-1.5/postgis.sql
+        $ psql -d template_postgis -f /usr/share/postgresql/8.4/contrib/postgis-1.5/spatial_ref_sys.sql
 
+Darle permisos a todos los usuarios de alterar columnas de geometría:
 
+        $ psql -d template_postgis -c "GRANT ALL ON geometry_columns TO PUBLIC;"
+        $ psql -d template_postgis -c "GRANT ALL ON geography_columns TO PUBLIC;"
+        $ psql -d template_postgis -c "GRANT ALL ON spatial_ref_sys TO PUBLIC;"
 
-Configurar nginx para servir los archivos desde el GridFS
------------------------
-NOTA: Para el sitio en desarrollo no es necesario utilizarlo.
+Configuración del proyecto
+-------------------
+Luego podés crear una base de datos que pueda almacenar las columnas de postgis utilizando el template_postgis:
 
+        $ psql
+        postgres=# CREATE DATABASE sitseg WITH OWNER=sitseg TEMPLATE=template_postgis;
 
-Obtener dependencias y las fuentes de nginx
+Establecer el entorno para el proyecto:
 
-    $ sudo apt-get install libpcre3-dev
-    $ wget http://nginx.org/download/nginx-1.0.0.tar.gz
-    $ tar nginx-1.0.0.tar.gz 
-
-
-Obtener el módulo que da soporte para servir archvios directamente desde el 
-GridFS de MongoDB
+        $ virtualenv --no-site-packages sitseg
+        $ cd sitseg
+        $ . bin/activate 
+        $ git clone git@github.com:Inventta/sitseg.docus.git docus
+        $ cd docus
+        $ git checkout dev
+        $ pip install -r docus/requirements.txt
     
-    $ git clone https://github.com/mdirolf/nginx-gridfs.git
-    $ cd nginx-gridfs
-    $ git submodule init
-    $ git submodule update
-    
-Compilar nginx con soporte para GridFS
+Crear un archivo `local_settings.py` y ajustar la configuración a nuestro 
+entorno:
 
-    # en el dir donde bajamos las fuentes de nginx
-    $ ./configure prefix=</path/to/virtualenv/>/nginx --add-module=/path/to/nginx-gridfs
-    $ make
-    $ make install
-    
-> Esto instala nginx en el virtualenv para facilitar la explicación de la 
-> configuración más adelante, probablemente quieras hacer algo más cómodo.
-
-
-Modificar la configuración del servidor
-    
-    $ cd /path/to/nginx
-    $ nano conf/ngnix.conf
-
-Esta es una configuración para servir sólo archivos del gridfs
-
-    events {
-        worker_connections  1024;
-    }
-
-
-    http {
-        include       mime.types;
-        default_type  application/octet-stream;
-
-        server {
-            listen       9000;
-            server_name  gridfs.sitseg;
-
-
-            location /gridfs {
-                gridfs sitseg;
-            }
+        $ vim local_settings.py
+        DATABASES = {
+           'default': {
+               'ENGINE': 'django.contrib.gis.db.backends.postgis',
+               'NAME': 'sitseg',
+               'USER': 'sitseg',
+               'PASSWORD': 'sitseg',
+               'HOST':'localhost',
+               'PORT':'5432'
+           },
         }
-
-    }
+        INTERNAL_IP="127.0.0.1"
     
-Luego apuntamos al grid id de los archivos (ej: http://gridfs.sitseg:9000/4dac2c1f7fdfb536bc000000).
-    
+Ahora podemos sincronizar y correr el servidor de desarrollo:
 
-> Notar que server_name está definido como gridfs.sitseg, probablemente te haga
-> falta modificar /etc/hosts para agregar este subdominio
+        $ ./manage.py syncdb
+        $ ./manage.py runserver
 
+Opcional: Configurar celery y mongodb
+=======================
+
+Instalar mongodb y correrlo con una base de datos aislada
+
+        $ sudo apt-get install mongodb
+        $ mkdir db
+        $ mongod --dbpath=./db
+
+Ejecutar celeryd
+        $ ./manage.py celeryd
 
