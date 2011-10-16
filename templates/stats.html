@@ -2,16 +2,20 @@
 {% block title %}
     Estadisticas de {{datasource.name}}
 {% endblock %}
+{% block head %}
+<h1><a href="/">Indice</a>/{{datasource.name}}</h1>
+    <p>
+      {{datasource.created|date}} - {{datasource.author}} - {{datasource.find.count}} registros
+    </p>
+{% endblock %}
 {% block page %}
-    {% if not column.has_geodata %}
-        <h2> Estadísticas Básicas </h2>
-        {%for k,v in dataset.iteritems%}
-        <p><strong> {{ k }}</strong> {{ v }}</p>
-        {%endfor%}
-    {% else %}
-        <h2> Estadísticas Básicas </h2>
-        <a href=""> Patron de Puntos </a>
-        <a href=""> Patron Areas </a>
-        
-    {% endif %}    
+    <h4> Elija uno o mas campos para graficar </h4>
+    <form action="/plots/{{datasource.id}}/graph" method="post">
+    <input type="hidden" name="datasource" value="{{datasource.id}}"> 
+    {% csrf_token %}
+    {% for k in datasource.column_set.all %}
+    <input type="checkbox" name="campo" value="{{k.id}}"> {{ k.name }} 
+    {% endfor %}
+    <input type="submit" value="Submit" />
+    </form>    
 {% endblock %}

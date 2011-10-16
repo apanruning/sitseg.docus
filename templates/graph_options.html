@@ -1,0 +1,15 @@
+{% extends "index.html" %}
+{% block title %}
+    Estadisticas de {{datasource.name}}
+{% endblock %}
+{% block head %}
+<h1><a href="/">Indice</a>/{{datasource.name}}</h1>
+    <p>
+      {{datasource.created|date}} - {{datasource.author}} - {{datasource.find.count}} registros
+    </p>
+{% endblock %}
+{% block page %}
+        {% for k, v in dataset.iteritems %}
+            <a href="{{v}}"> {{ k }}</a>
+        {% endfor %}
+{% endblock %}

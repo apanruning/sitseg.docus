@@ -11,6 +11,7 @@ from datasources.forms import DataSourceForm, ColumnFormSet, ColumnForm, ValueFo
 from datasources.tasks import generate_documents
 from datasources.utils import *
 from django.db.models import Count
+from django import forms
 
 import simplejson
 
@@ -119,38 +120,3 @@ def download_attach(request, id):
     response['Content-Disposition'] = 'attachment; filename=%s' % name
 
     return response
-
-def stats(request,id):
-    instance = Column.objects.get(pk=int(id))
-    values = Value.objects.filter(column=instance.id)
-    
-    if not instance.has_geodata:
-        #La columna no es geoposicionada        
-        #aca deberian mostrarse n posibles estadisticas para los datos de esa columna
-        #Se devuelve un diccionario en el contexto
-        list_values = [v.cast_value() for v in values]
-        dist = Distribucion(len(list_values))
-        dist.elementos = list_values
-        res = {
-            'Numeros de Casos':dist.n,
-            'min':dist.minimo(),
-            'max':dist.maximo(),
-            'rango':dist.rango(),
-            'media':dist.media(),
-            'mediana':dist.mediana(),
-            'varianza':dist.varianza(),
-            'desv_estandar':dist.desviacion(),
-        }
-    else:
-        res = values.order_by('value')
-    
-    return render(
-        request,
-        'stats.html',
-        {
-            'datasource': instance.datasource,
-            'column':instance,
-            'dataset': res,
-        }
-    )
-

@@ -35,5 +35,5 @@ class ValueForm(forms.ModelForm):
 
     class Meta:
         model = Value
-
+        
 ColumnFormSet = forms.formsets.formset_factory(ColumnForm, extra=3)

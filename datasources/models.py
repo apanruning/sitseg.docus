@@ -109,7 +109,6 @@ class Value(models.Model):
     area = models.ForeignKey(MaapArea, null=True)
     row = models.ForeignKey(Row)
 
-    
     def __unicode__(self):
         return self.value
     
