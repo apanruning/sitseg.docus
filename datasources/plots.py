@@ -6,44 +6,18 @@ from datasources.models import Column, Value, DataSource
 from datasources.interface_r import *
 
 def stats(request,id):
-    instance = Column.objects.get(pk=int(id))
-    column_values = Column.objects.filter(datasource=instance.datasource)
-    values = Value.objects.filter(column=instance.id)
-
-    if not instance.has_geodata:
-        #La columna no es geoposicionada        
-        #aca deberian mostrarse n posibles estadisticas para los datos de esa columna
-        #Se devuelve un diccionario en el contexto
-        list_values = [v.cast_value() for v in values]
-
-        vector_r = robjects.FloatVector(list_values)
-        
-        res = {
-            'Numeros de Casos':length(vector_r)[0],
-            'min':minimo(vector_r)[0],
-            'max':maximo(vector_r)[0],
-            'rango':(rango(vector_r)[0],rango(vector_r)[1]),
-            'media':media(vector_r)[0],
-            'varianza':cuasi_varianza(vector_r)[0],
-            'desv_estandar':desviacion(vector_r)[0],
-            'sumatoria':sumatoria(vector_r)[0],
-        }
-    else:
-        res = values.order_by('value')
+    datasource = DataSource.objects.get(pk=int(id))
     
     return render(
         request,
         'stats.html',
         {
-            'datasource': instance.datasource,
-            'column':instance,
-            'dataset': res,
+            'datasource': datasource,
         }
     )
 
 def graf_decided(request,id):
     values = request.POST['campo']
-    datasource = DataSource.objects.get(pk=int(request.POST['datasource']))
     column = list()
     for v in values: 
         column.append(Column.objects.get(pk=int(v)))
@@ -51,12 +25,18 @@ def graf_decided(request,id):
     graphics = {}
     
     if len(values) == 1:
-        
         graphics = {
-            'Boxplot':'/plots/'+str(datasource.id)+'/boxplot',
-            'Torta':'/plots/'+str(datasource.id)+'/pie',
-            'Histograma':'/plots/'+str(datasource.id)+'/hist',
+            'Cajas':'/plots/'+str(column[0].id)+'/boxplot',
+            'Barras':'/plots/'+str(column[0].id)+'/bar',
+            'Torta':'/plots/'+str(column[0].id)+'/pie',
+            'Histograma':'/plots/'+str(column[0].id)+'/hist',
+            'Stripchart':'/plots/'+str(column[0].id)+'/strip',
+            'Densidad':'/plots/'+str(column[0].id)+'/density',
+            'Puntos':'/plots/'+str(column[0].id)+'/density',
+            'Pareto':'/plots/'+str(column[0].id)+'/pareto',
         }
+    elif len(values) == 2:
+        graphics = {}
     
     return render(
         request,
@@ -67,20 +47,38 @@ def graf_decided(request,id):
     )
 
 def histplot(request,id):
+    col = Column.objects.get(pk=int(id))
+    values = Value.objects.filter(column=col.id)
+    list_values = [v.cast_value() for v in values]
+    vector = robjects.IntVector(list_values)
+    #png(file=str(col.datasource.name)+"-"+str(col.name)+".png")
+    suffix_dir = "media/graphics/"
+    name_file = col.datasource.name+"-"+col.name+"-histograma"
+    png(file=suffix_dir+name_file)
+    graph = hist(vector,col='blue',nclass=10,main='Frecuencia de '+col.name,ylab='Frecuencias',xlab='Valores')
+    g = {'name':str(name_file)}
+    off()
+    
     return render(
         request,
         'graphic.html',
         {          
-            'graphic':{},
+            'graphic':g,
         }
     )
 
 def boxplot(request,id):
+    col = Column.objects.get(pk=int(id))
+    values = Value.objects.filter(column=col.id)
+    list_values = [v.cast_value() for v in values]
+    vector = robjects.FloatVector(list_values)
+    graph = boxplot(vector,vector)
+
     return render(
         request,
         'graphic.html',
         {          
-            'graphic':{},
+            'graphic':graph.r_repr(),
         }
     )
 

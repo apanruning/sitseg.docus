@@ -20,6 +20,10 @@
         <script type="text/javascript" language="javascript">
         $(document).ready(function() {
         {% block js %}
+            $('#delete').click(function(){
+                window.location="/datasource/"+this.attr('href')+"/delete";
+                return false;
+            })
             
         {% endblock %}
         });
@@ -80,8 +84,8 @@
                 <a title="{{datasource.attach.name}}" 
                    href="/datasource/{{datasource.id}}/download_attach">
                     Descargar Fuente
-                </a> &nbsp;{% if not datasource.column_set.all %}
-                {% endif%}
+                </a> &nbsp;{% if not datasource.column_set.all %}{% endif%}
+                <a id="delete" href="/datasource/{{datasource.id}}/delete">borrar</a>
             </li>
         {% empty %}
             <li>No hay registros</li>
