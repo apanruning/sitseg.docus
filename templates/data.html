@@ -1,4 +1,4 @@
-{% extends "datasource.html" %}
+    {% extends "datasource.html" %}
 {% load pagination_tags %}
 {% block title %}
     Datos en {{datasource.name}}
@@ -17,17 +17,32 @@
          Correctos</a>
     </menu>
 
-    <div id="list">
-    {% for form in dataset %}
-        <p>
-         
-          {{form.as_p}}
-      
-        </p>
+    <table id="list">
+    
+    <tr>
+    {% for value in rows[0].value_set.all %}
+        <th> {{ value.column.name }} </th>        
+    {% endfor %}
+    </tr>
+
+    {% for value in row.value_set.all %}
+        
     {% empty %}
             No hay datos importados aún.
             <a href="/datasource/{{datasource.id}}/import_data">Importar desde el archivo.</a>
     {% endfor %}
-    </div>
-    {%paginate%}
+
+    {% for row in rows %}
+        <tr>
+        {% for field in row.value_set.all.reverse %}
+            <td>
+            {{ field.value }}            
+            </td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+    
+    </table>
+    
 {% endblock %}
+

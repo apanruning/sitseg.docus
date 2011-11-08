@@ -1,21 +1,17 @@
 # -*- coding: utf-8 -*-
 from django.contrib.gis.db import models
 from django.contrib.gis.db.models.query import GeoQuerySet
-from django.contrib.gis.measure import Distance, D
-from django.db import models as dbmodels
 from django.utils import simplejson
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from settings import DEFAULT_SRID
 from django.contrib.gis.geos import LineString, MultiLineString, MultiPoint, Point
+from django.contrib.gis.gdal import OGRGeometry, SpatialReference
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
 
-import mptt
-
 from maap.layers import Point, Area, MultiLine, Layer
-from django.contrib.gis.gdal import OGRGeometry, SpatialReference
 
 class MaapQuerySet(GeoQuerySet):
     def layer(self):
@@ -30,26 +26,20 @@ class MaapManager(models.GeoManager):
     def get_query_set(self):
         return MaapQuerySet(self.model)
 
-
 class MaapModel(models.Model):
     slug = models.SlugField(editable=False, null=True)
     name = models.CharField(max_length=100, null=True)
+    creator = models.ForeignKey('auth.User',related_name='created',editable=False, null=True) 
     created = models.DateTimeField(auto_now_add=True, editable = False)
     changed = models.DateTimeField(auto_now=True, editable = False)
-    creator = models.ForeignKey('auth.User', related_name='created',editable=False, null=True) 
-    editor = models.ForeignKey('auth.User',related_name='edited', editable=False, null=True)
-    category = models.ManyToManyField('MaapCategory', null=True, blank=True, related_name='maapmodel_set')
     objects = MaapManager()
         
     class Meta:
-        ordering = ('created', 'name',)
+        ordering = ('name',)
     
     @property
     def json_dict(self):
         out = dict(filter(lambda (x,y): not x.startswith('_'), self.__dict__.iteritems()))
-        out['created'] = self.created.strftime('%D %T')        
-        out['changed'] = self.changed.strftime('%D %T')
-        out['clickable'] = True
         return out
 
     def save(self, *args, **kwargs):
@@ -66,43 +56,10 @@ class MaapModel(models.Model):
         except MaapPoint.DoesNotExist:
             pass
         try:
-            out = self.maapmultiline
-        except MaapMultiLine.DoesNotExist:
-            pass
-        try:
             out = self.maaparea
         except MaapArea.DoesNotExist:
             pass    
         return out
-
-class MaapCategory(models.Model):
-    slug = models.SlugField(unique=True, editable=False)
-    name = models.CharField(max_length=35)
-    parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
-    
-    def save(self, *args, **kwargs):        
-        if self.id is None:
-            num = 0
-            while num < 100:
-                
-                self.slug = slugify(self.name)
-                if num > 0:
-                    self.slug.append('-%i' % num)
-                try:
-                    out = super(MaapCategory, self).save( *args, **kwargs)
-                    return out
-                except:
-                    num += 1
-        else:
-            return super(MaapCategory, self).save(*args, **kwargs)
-    
-    
-    def __unicode__(self):
-        return self.name
-        
-    @models.permalink
-    def get_absolute_url(self):
-        return ('list_by_category', [self.slug])
 
 class MaapPoint(MaapModel):
    
@@ -117,28 +74,15 @@ class MaapPoint(MaapModel):
         return Point(**out)
 
     
-
 class MaapArea(MaapModel):
-    objects = MaapManager()
-
     geom = models.PolygonField(srid=DEFAULT_SRID)
+    objects = MaapManager()
 
     def to_geo_element(self):
         out = self.json_dict
         out.pop('geom')
         out['geom'] = self.geom
         return Area(**out)   
-        
-
-class MaapMultiLine(MaapModel):
-    geom = models.MultiLineStringField(srid = DEFAULT_SRID)
-    objects = MaapManager()
-
-    def to_geo_element(self):
-        out = self.json_dict
-        out.pop('geom')
-        out['geom'] = self.geom
-        return MultiLine(**out)
         
 
 class Icon(models.Model):
@@ -155,9 +99,4 @@ class Icon(models.Model):
         out['width'] = self.image.width
         out['height'] = self.image.height
         return out
-        
-try: 
-    mptt.register(MaapCategory)  
-except mptt.AlreadyRegistered:
-    pass
 

@@ -9,7 +9,7 @@ from googlemaps import GoogleMaps
 from datasources.models import DataSource, Value, Row
 from django.contrib.gis.geos import Point
 from datasources.models import DataSource, Value
-from maap.models import MaapPoint
+from maap.models import MaapPoint, MaapArea
 
 
 @task
@@ -41,7 +41,6 @@ def generate_documents(datasource, columns=None):
             value.data_type = column.data_type
             value.column = column
             value.row = row_obj
-            
             if column.data_type == 'point':
                 latlng = gmaps.address_to_latlng('%s, cordoba, argentina' %value.value )
                 try:
@@ -54,13 +53,20 @@ def generate_documents(datasource, columns=None):
                     errors.append(e)
                 else:
                     value.point = point
-                                        
+
+            if column.data_type == 'area':
+                try:
+                    barrio = MaapArea.objects.filter(name=unicode(value.value))    
+                except Exception, e:
+                    errors.append(e)
+                else:
+                    if len(barrio) == 1:
+                        value.area = barrio[0]
             value.save()
             
     if len(errors) == 0:
         datasource.has_data = True
         datasource.is_dirty = False 
         datasource.save() 
-
 
     print errors

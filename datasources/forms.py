@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
-from tagging.fields import TagField
-from mongoengine.django.auth import User
-from models import DataSource, Annotation, Column, Value
+from models import DataSource, Annotation, Column, Value, Workspace, DataSet
 
 class DataSourceForm(forms.ModelForm):
-    name = forms.CharField()
-    #attach = forms.FileField(label="Archivo CSV")
-
     class Meta:
-        fields = ('attach','name', 'author')
-        model = DataSource
-        widgets = {'attach': forms.FileInput}
+        model = DataSource    
+
+class WorkspaceForm(forms.ModelForm):
+    class Meta:  
+        model = Workspace
+
+class DataSetForm(forms.ModelForm):
+    class Meta:
+        model = DataSet
         
 class AnnotationForm(forms.ModelForm):
     class Meta:

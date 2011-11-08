@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from models import DataSource, Column, Annotation, Value, Row
+from models import DataSource, Column, Annotation, Value, Row, DataSet, Workspace
 from django.contrib import admin
 
 #class DataSourceAdmin(admin.ModelAdmin):
@@ -15,9 +15,16 @@ class ColumnAdmin(admin.ModelAdmin):
     ordering = ('-id',)
     search_fields = ('label','name')
 
+class DataSetAdmin(admin.ModelAdmin):
+    model = DataSet
+    list_display = ('name',)
+    ordering = ('-id',)
+    search_fields = ('name',)
 
 admin.site.register(DataSource)
 admin.site.register(Column,ColumnAdmin)
 admin.site.register(Annotation)
 admin.site.register(Value)
 admin.site.register(Row)
+admin.site.register(DataSet, DataSetAdmin)
+admin.site.register(Workspace)

@@ -9,13 +9,16 @@
     </p>
 {% endblock %}
 {% block page %}
-    <h4> Elija uno o mas campos para graficar </h4>
-    <form action="/plots/{{datasource.id}}/graph" method="post">
-    <input type="hidden" name="datasource" value="{{datasource.id}}"> 
-    {% csrf_token %}
-    {% for k in datasource.column_set.all %}
-    <input type="checkbox" name="campo" value="{{k.id}}"> {{ k.name }} 
+    <h3> Bienvenido al programa para graficar estadisticas. Usted debe elegir un grafico que desee realizar. 
+         El sistema lo guiará en la selección de datos a graficar 
+    </h3>
+    <ul>
+    {% for k, v in plots.iteritems %}
+        <li>
+            <a href="{{v}}"> {{ k }}</a>
+        </li>
     {% endfor %}
-    <input type="submit" value="Submit" />
-    </form>    
+    <li>
+    </ul>    
+
 {% endblock %}

@@ -21,7 +21,7 @@
         $(document).ready(function() {
         {% block js %}
             $('#delete').click(function(){
-                window.location="/datasource/"+this.attr('href')+"/delete";
+                window.location="/workspace/"+this.attr('href')+"/delete";
                 return false;
             })
             
@@ -50,42 +50,24 @@
     {% block page %}
       {% if user.is_staff %}
       <menu>
-        <a href="#add-form" class="control">Agregar fuente</a>
+        <a href="#add-form" class="control">Crear espacio de trabajo vacio</a>
       </menu>
       <form id="add-form" method="post" action="." 
             class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
           <input type="hidden" name="author" value="{{user.id}}"/>
-          <legend>Nueva Fuente de Datos</legend>
-          {% for error in form.errors %}
-            <p class="error">{{error}}</p>
-          {% endfor %}
-          <p class="{{form.attach.errors|yesno:'errors,valid'}}">
-              {{form.attach.errors}}
-              <label for="id_{{form.attach.name}}">Archivo</label>
-              {{form.attach}}
-          </p>
-          {{ column_form.management_form }}
-          <p class="{{form.name.errors|yesno:'errors,valid'}}">
-              {{form.name.errors}}
-              <label for="id_name">Nombre</label>
-              {{form.name}}
-          </p>
-
+          <legend>Nuevo Espacio de Trabajo</legend>
+            {{ form.as_p }}
           <a href="#add-form" class="control">cerrar</a>   
           <input type="submit" name="Guardar" value="Submit"/>
       </form>
       {% endif %}    
-        {% autopaginate datasource_list 10 %}
+       <h1> Espacios de Trabajo </h1>
+        {% autopaginate workspace_list 10 %}
         <ul>
-        {% for datasource in datasource_list %}
+        {% for workspace in workspace_list %}
             <li>
-                <h1><a href="/datasource/{{datasource.id}}">{{datasource.name}}</a></h1> 
-                {{datasource.created}} - {{datasource.author}} ({{datasource.column_set.count }} columnas)
-                <a title="{{datasource.attach.name}}" 
-                   href="/datasource/{{datasource.id}}/download_attach">
-                    Descargar Fuente
-                </a> &nbsp;{% if not datasource.column_set.all %}{% endif%}
-                <a id="delete" href="/datasource/{{datasource.id}}/delete">borrar</a>
+                <h1><a href="/workspace/{{workspace.id}}">{{workspace.name}}</a></h1> 
+                <a id="delete" href="/workspace/{{workspace.id}}/delete?next={{request.path}}">borrar</a>
             </li>
         {% empty %}
             <li>No hay registros</li>

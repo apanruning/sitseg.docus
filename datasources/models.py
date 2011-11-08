@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from maap.models import MaapPoint, MaapArea
 from dateutil.parser import parse as date_parser
+from django import forms
 
 
 class Annotation(models.Model):
@@ -29,6 +30,7 @@ class Column(models.Model):
     
 
     def __unicode__(self):
+
         return self.name
         
     class Meta:
@@ -43,22 +45,57 @@ class Column(models.Model):
         return super(Column,self).save()
         
         
-class DataSource(models.Model):
-
+class Workspace(models.Model):
     name = models.CharField(max_length=50)
-    slug = models.CharField(max_length=50)
-    attach = models.FileField(upload_to="docs")
+    slug = models.CharField(max_length=50, editable=False)
+    
+    @models.permalink
+    def get_absolute_url(self):
+        return ('workspace_detail',[self.pk])
+
+    def save(self):
+        self.slug = slugify(self.name)
+        return super(Workspace, self).save()
+
+    def __str__(self):
+        return self.name
+
+    
+class DataSet(models.Model):
+    name = models.CharField(max_length=50)
+    slug = models.CharField(max_length=50, editable=False)
+    workspace = models.ForeignKey('Workspace')
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('dataset_detail',[self.pk])
+
+    def save(self):
+        self.slug = slugify(self.name)
+        return super(DataSet, self).save()
+
+    def __str__(self):
+        return self.name
+
+
+class DataSource(models.Model):
+    name = models.CharField(max_length=50)
+    slug = models.CharField(max_length=50,editable=False)
+    attach = models.FileField(upload_to='docs/')
     created = models.DateTimeField(auto_now_add=True, editable = False)
     author = models.ForeignKey('auth.User')
     #first_import = models.BooleanField(default=True)
-    
     is_dirty = models.BooleanField(default=True)
-    has_data = models.BooleanField(default=False, editable=False)
+    dataset = models.ForeignKey('DataSet')
     
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('datasource_detail',[self.pk])
+
     def __unicode__(self):
         return self.name
 
-        
     def save(self):
         self.created = datetime.now()
         if self.slug is None:
@@ -85,6 +122,7 @@ class DataSource(models.Model):
         """
         csv_attach = reader(StringIO(self.attach.read()))
         first_column = csv_attach.next()
+        import pdb; pdb.set_trace()
         # Check: Is deleting the previous fields?
         #self.columns = []
         for i, column in enumerate(first_column):
@@ -114,6 +152,7 @@ class Value(models.Model):
     
     def cast_value(self):
         tests = (
+            str,
             int,
             float,
             lambda value: date_parser(value)

@@ -6,17 +6,80 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.contrib import messages
 from bson.objectid import ObjectId
-from datasources.models import DataSource, Column, Value, Row
-from datasources.forms import DataSourceForm, ColumnFormSet, ColumnForm, ValueForm
-from datasources.tasks import generate_documents
+from datasources.models import DataSource, Column, Value, Row, Workspace, DataSet
+from datasources.forms import DataSourceForm, ColumnFormSet, ColumnForm, \
+                                ValueForm, WorkspaceForm, DataSetForm
+from datasources.tasks import generate_documents 
 from datasources.utils import *
 from django.db.models import Count
 from django import forms
 
 import simplejson
 
-def datasource(request):
+def workspace(request):
+    ''' This function list all workspace present in database. Here is possible create a new workspace '''
+    form = WorkspaceForm()
+    if request.method == 'POST':
 
+       form = WorkspaceForm(request.POST)
+       if form.is_valid():
+            workspace = form.save()
+       return redirect("/")
+
+    return render(
+        request,
+        'index.html',
+        {
+            'workspace_list': Workspace.objects.all(),
+            'form': form,
+        }
+    )
+
+def workspace_detail(request, id):
+    ''' This function show the workspace's detail. It consist in a list of dataset associated with it. Here is possible create a new dataset'''
+    obj = Workspace.objects.get(pk=id)
+    form = DataSetForm(initial={'workspace':obj.id})
+    
+    if request.method == 'POST':
+
+       form = DataSetForm(request.POST, initial={'workspace':obj.id})
+       if form.is_valid():
+            dataset = form.save()
+       return redirect(obj.get_absolute_url())
+
+    return render(
+        request,
+        'workspace_detail.html',
+        {
+            'dataset_list': DataSet.objects.filter(workspace=obj),
+            'workspace': obj,
+            'form': form,
+        }
+    )
+
+def dataset_detail(request,id):
+    obj = DataSet.objects.get(pk=id)
+    form = DataSourceForm(initial={'dataset':obj.id})
+    if request.method == 'POST':
+        form = DataSourceForm(request.POST, request.FILES, initial={'dataset':obj.id})
+        if form.is_valid():
+            #import pdb; pdb.set_trace()
+            datasource = form.save()
+            datasource.import_columns()
+
+        return redirect(obj.get_absolute_url())
+
+    return render(
+        request,
+        'dataset_detail.html',
+        {
+            'datasources_list': DataSource.objects.filter(dataset=obj),
+            'dataset': obj,
+            'form': form,
+        }
+    )
+
+def datasource(request):
     form = DataSourceForm()
     column_form = ColumnFormSet()
     if request.method == 'POST':
@@ -27,7 +90,7 @@ def datasource(request):
             data = form.cleaned_data
             datasource = form.save()
             datasource.import_columns()
-                            
+                
        
        return redirect("/")
 
@@ -42,7 +105,6 @@ def datasource(request):
     )
 
 def datasource_detail(request, id):
-    
     column_form = ColumnForm()
     instance = get_object_or_404(DataSource, pk=id)
     columns = (ColumnForm(instance=column) for column in instance.column_set.all())
@@ -56,12 +118,11 @@ def datasource_detail(request, id):
         }
     )
 
-def datasource_delete(request, id):
-    
-    instance = get_object_or_404(DataSource, pk=id)
+def delete(request, id, model=None):
+    instance = get_object_or_404(model, pk=id)
     instance.delete()
-    
-    return datasource(request)
+    next = request.GET.get('next', '/')
+    return redirect(next)
 
     
     
@@ -104,16 +165,17 @@ def import_data(request, id):
     return redirect("detail", id)
 
 def show_data(request, id):
-    values = Value.objects.filter(column__datasource = id)
-    values_form = (ValueForm(instance=value) for value in values)
+    datasource = DataSource.objects.get(pk=id)
+    rows = Row.objects.filter(datasource=id)
 
-    datasource = DataSource.objects.get(id=id)
+    #values_form = (ValueForm(instance=value) for value in values)
+    
     return render(
         request,
         'data.html',
         {
             'datasource': datasource,
-            'dataset': values_form,
+            'rows':rows,
         }
     )
 
