@@ -10,11 +10,11 @@ from datasources.models import DataSource, Value, Row
 from django.contrib.gis.geos import Point
 from datasources.models import DataSource, Value
 from maap.models import MaapPoint, MaapArea
+from unicodedata import normalize
 
 
 @task
 def generate_documents(datasource, columns=None):
-
     gmaps = GoogleMaps(settings.GOOGLEMAPS_API_KEY)
     datasource = DataSource.objects.get(id=datasource)
     region = settings.DEFAULT_REGION
@@ -41,14 +41,17 @@ def generate_documents(datasource, columns=None):
             value.data_type = column.data_type
             value.column = column
             value.row = row_obj
+
             if column.data_type == 'point':
                 latlng = gmaps.address_to_latlng('%s, cordoba, argentina' %value.value )
                 try:
                     point =  MaapPoint(
                         geom=Point(latlng).wkt,
-                        name=value.value
+                        name=value.value,
+                        name_norm = normalize('NFKD', row[column.csv_index].decode('utf-8')).encode('UTF-8', 'ignore').lower()
                     )
-                    point.save()            
+                    point.save()
+     
                 except Exception, e:
                     errors.append(e)
                 else:
@@ -56,7 +59,7 @@ def generate_documents(datasource, columns=None):
 
             if column.data_type == 'area':
                 try:
-                    barrio = MaapArea.objects.filter(name=unicode(value.value))    
+                    barrio = MaapArea.objects.filter(name_norm=normalize('NFKD', row[column.csv_index].decode('utf-8')).encode('UTF-8', 'ignore').lower())    
                 except Exception, e:
                     errors.append(e)
                 else:
@@ -65,7 +68,6 @@ def generate_documents(datasource, columns=None):
             value.save()
             
     if len(errors) == 0:
-        datasource.has_data = True
         datasource.is_dirty = False 
         datasource.save() 
 

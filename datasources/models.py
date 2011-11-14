@@ -2,14 +2,15 @@
 
 from datetime import datetime
 from django.template.defaultfilters import slugify
+
 from csv import reader
-from StringIO import StringIO
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from maap.models import MaapPoint, MaapArea
 from dateutil.parser import parse as date_parser
 from django import forms
+
 
 
 class Annotation(models.Model):
@@ -21,9 +22,8 @@ class Column(models.Model):
     name = models.CharField(max_length=50)
     label = models.CharField(max_length=50, editable=False)
     created = models.DateTimeField(auto_now_add=True, editable = False)
-    is_key = models.NullBooleanField(default=False, )
     datasource = models.ForeignKey('DataSource', editable=False)
-    is_available = models.BooleanField(default=True,)
+    is_available = models.BooleanField(default=True,editable=False)
     csv_index = models.IntegerField(editable=False)
     data_type = models.CharField(max_length=50, default='str')
     has_geodata = models.BooleanField(default=False)
@@ -84,7 +84,6 @@ class DataSource(models.Model):
     attach = models.FileField(upload_to='docs/')
     created = models.DateTimeField(auto_now_add=True, editable = False)
     author = models.ForeignKey('auth.User')
-    #first_import = models.BooleanField(default=True)
     is_dirty = models.BooleanField(default=True)
     dataset = models.ForeignKey('DataSet')
     
@@ -120,13 +119,15 @@ class DataSource(models.Model):
         """ assume that the first column has the headers title.
             WARNING: It removes previous columns. Use with care.
         """
-        csv_attach = reader(StringIO(self.attach.read()))
+        from cStringIO import StringIO
+        f = StringIO(self.attach.read())        
+        csv_attach = reader(f)
         first_column = csv_attach.next()
-        import pdb; pdb.set_trace()
+
         # Check: Is deleting the previous fields?
         #self.columns = []
         for i, column in enumerate(first_column):
-            new_column = Column(name=unicode(column, 'utf-8'))
+            new_column = Column(name=unicode(column),)
             new_column.created = datetime.now()
             new_column.label = slugify(new_column.name)
             new_column.csv_index = i

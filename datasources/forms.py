@@ -24,7 +24,7 @@ class ColumnForm(forms.ModelForm):
         choices=[
             ('None','---------'), 
             ('point',u'Dirección'),
-            ('area','Zona'), 
+            ('area',u'Zona'), 
         ],
         required=False
     )
@@ -33,7 +33,6 @@ class ColumnForm(forms.ModelForm):
         model = Column
         
 class ValueForm(forms.ModelForm):
-
     class Meta:
         model = Value
         

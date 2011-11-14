@@ -4,6 +4,7 @@ from django.conf.urls.defaults import patterns, include, url
 from django.contrib import admin
 from django.conf import settings
 from datasources import models
+
 admin.autodiscover()
 
 urlpatterns = patterns('datasources.views',
@@ -20,7 +21,6 @@ urlpatterns = patterns('datasources.views',
 
     (r'^datasource/(?P<id>\w+)/download_attach$', 'download_attach', {}, 'download_attach'),
     (r'^datasource/(?P<id>\w+)/import_data$', 'import_data', {}, 'import_data'),
-    (r'^datasource/(?P<id>\w+)/data$', 'show_data', {}, 'show_data'),
 
     (r'^column/(?P<id>\w+)$', 'column_detail', {}, 'column'),
    
@@ -36,7 +36,6 @@ urlpatterns += patterns('',
 )
 
 urlpatterns += patterns('datasources.plots',
-    (r'^plots/(?P<id>\w+)$', 'stats', {}, 'stats'),
     (r'^plots/(?P<id>\w+)/hist$', 'histplot', {}, 'histplot'),
     (r'^plots/(?P<id>\w+)/box$', 'boxplot', {}, 'boxplot'),
     (r'^plots/(?P<id>\w+)/pie$', 'pieplot', {}, 'pieplot'),

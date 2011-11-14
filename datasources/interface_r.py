@@ -14,15 +14,15 @@ desviacion = robjects.r('''function(r) sqrt(var(r)/length(r)) ''')
 #plots function
 histplot = robjects.r['hist']
 boxplot = robjects.r['boxplot']
-densityplot = robjects.r['boxplot']
+densityplot = robjects.r['density']
 dotchart = robjects.r['dotchart']
-genericplot = robjects.r['genericplot']
-ecdfplot = robjects.r['ecdfplot']
-paretochart = robjects.r['paretochart'] 
-piechart = robjects.r['piechart']
-scatterplot = robjects.r['scatterplot']
-scatterploatmatrix = robjects.r['scatterplotmatrix']
-stripchart = robjects.r['stripchart']
+genericplot = robjects.r['plot']
+ecdfplot = robjects.r['plot.ecdf']
+#paretochart = robjects.r['pareto.chart'] 
+piechart = robjects.r['pie']
+#scatterplot = robjects.r['plot.scatter']
+#scatterplotmatrix = robjects.r['scatterplot.matrix']
+#stripchart = robjects.r['stripchart']
 
 
 #device function

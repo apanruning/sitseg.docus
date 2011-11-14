@@ -10,6 +10,7 @@ from django.contrib.gis.gdal import OGRGeometry, SpatialReference
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
+from unicodedata import normalize
 
 from maap.layers import Point, Area, MultiLine, Layer
 
@@ -29,6 +30,7 @@ class MaapManager(models.GeoManager):
 class MaapModel(models.Model):
     slug = models.SlugField(editable=False, null=True)
     name = models.CharField(max_length=100, null=True)
+    name_norm = models.CharField(max_length=100,null=True,editable=False)
     creator = models.ForeignKey('auth.User',related_name='created',editable=False, null=True) 
     created = models.DateTimeField(auto_now_add=True, editable = False)
     changed = models.DateTimeField(auto_now=True, editable = False)
@@ -62,7 +64,6 @@ class MaapModel(models.Model):
         return out
 
 class MaapPoint(MaapModel):
-   
     geom = models.PointField(srid=DEFAULT_SRID)
     icon = models.ForeignKey('Icon', blank=True, null=True)
     objects = MaapManager()

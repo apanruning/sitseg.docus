@@ -2,12 +2,36 @@
 {% block title %}
     Estadisticas de {{datasource.name}}
 {% endblock %}
-{% block head %}
-<h1><a href="/">Indice</a>/{{datasource.name}}</h1>
-    <p>
-      {{datasource.created|date}} - {{datasource.author}} - {{datasource.find.count}} registros
-    </p>
+{% block js %}
+    $('#menu li a').click(function(event){
+		var elem = $(this).next();
+		if(elem.is('ul')){
+			event.preventDefault();
+			$('#menu ul:visible').not(elem).slideUp();
+			elem.slideToggle();
+		}
+	});
+
 {% endblock %}
 {% block page %}
-        <img src="/media/graphics/{{graphic.name}}" />
-{% endblock %}
+<div id="leftSide">
+<div id="variables">
+<ul id="menu">
+{% for ds in datasources %}
+    <li><a href="#">{{ ds.name }}</a>
+    <ul>
+    {% for v in ds.column_set.all %}
+        <li><a href="#">{{v.name}}</a></li>
+    {% endfor %}    
+    </ul>
+{% endfor %}
+</ul>
+
+</div>
+
+</div>
+<div id="rightSide">
+
+</div>
+
+{% endblock %}  

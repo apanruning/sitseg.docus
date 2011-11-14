@@ -10,7 +10,7 @@ from django.contrib import admin
 
 class ColumnAdmin(admin.ModelAdmin):
     model = 'Column'
-    list_display = ('name', 'label', 'is_key')
+    list_display = ('name', 'label',)
     list_filter = ('datasource', )
     ordering = ('-id',)
     search_fields = ('label','name')

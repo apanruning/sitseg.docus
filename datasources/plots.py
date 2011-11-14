@@ -9,14 +9,17 @@ def stats(request,id):
     datasource = DataSource.objects.get(pk=int(id))
     plots_function = {
             'Cajas':'/plots/'+str(column[0].id)+'/boxplot',
-            'Barras':'/plots/'+str(column[0].id)+'/bar',
-            'Torta':'/plots/'+str(column[0].id)+'/pie',
-            'Histograma':'/plots/'+str(column[0].id)+'/hist',
-            'Stripchart':'/plots/'+str(column[0].id)+'/strip',
-            'Densidad':'/plots/'+str(column[0].id)+'/density',
-            'Puntos':'/plots/'+str(column[0].id)+'/density',
-            'Pareto':'/plots/'+str(column[0].id)+'/pareto',
-            
+            'Barras':'/plots/'+str(column[0].id)+'/barplot',
+            'Torta':'/plots/'+str(column[0].id)+'/pieplot',
+            'Histograma':'/plots/'+str(column[0].id)+'/histplot',
+            'Stripchart':'/plots/'+str(column[0].id)+'/stripchart',
+            'Densidad':'/plots/'+str(column[0].id)+'/densityplot',
+            'Puntos':'/plots/'+str(column[0].id)+'/ptosplot',
+            'Pareto':'/plots/'+str(column[0].id)+'/paretoplot',
+            'Generico':'/plots/'+str(column[0].id)+'/genericplot',
+            'ECDF':'/plots/'+str(column[0].id)+'/ecdfplot',            
+            'Scatter':'/plots/'+str(column[0].id)+'/scatterplot',
+            'Scatter Matrix':'/plots/'+str(column[0].id)+'/scattermatrixplot',            
             
         }
 
@@ -30,23 +33,31 @@ def stats(request,id):
     )
 
 def histplot(request,id):
-    col = Column.objects.get(pk=int(id))
-    values = Value.objects.filter(column=col.id)
-    list_values = [v.cast_value() for v in values]
-    vector = robjects.IntVector(list_values)
-    suffix_dir = "media/graphics/"
-    name_file = col.datasource.name+"-"+col.name+"-histograma"
-    ext_file = ".png"
-    png(file=suffix_dir+name_file+ext_file)
-    graph = hist(vector,col='blue',nclass=10,main='Frecuencia de '+col.name,ylab='Frecuencias',xlab='Valores')
-    g = {'name':str(name_file+ext_file)}
-    off()
+    #id is a parameter that represent the datasource id
+    #the administrator for plot include a chunk that show all column's datasource's dataset father 
+    datasource = DataSource.objects.get(pk=id)
+    dataset = datasource.dataset
+    datasources = []
+    for ds in dataset.datasource_set.all():
+        datasources.append(ds)
+
+    #values = Value.objects.filter(column=col.id)
+    #list_values = [v.cast_value() for v in values]
+    #import pdb; pdb.set_trace()
+    #vector = robjects.matrix(list_values)
+    #suffix_dir = "media/graphics/"
+    #name_file = col.datasource.name+"-"+col.name+"-histograma"
+    #ext_file = ".png"
+    #png(file=suffix_dir+name_file+ext_file)
+    #graph = hist(vector,col='blue',nclass=10,main='Frecuencia de '+col.name,ylab='Frecuencias',xlab='Valores')
+    #g = {'name':str(name_file+ext_file)}
+    #off()
     
     return render(
         request,
         'graphic.html',
         {          
-            'graphic':g,
+            'datasources':datasources,
         }
     )
 

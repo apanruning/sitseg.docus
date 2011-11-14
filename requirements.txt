@@ -12,6 +12,7 @@ googlemaps
 svn+http://django-mptt.googlecode.com/svn/trunk/#egg=mptt
 git+git://github.com/etnalubma/python-osm.git#egg=osm
 git+git://github.com/etnalubma/django-osm.git#egg=djangoosm
+git+git://github.com/jdunck/python-unicodecsv.git#egg=unicodecsv
 psycopg2
 PIL
 rpy2

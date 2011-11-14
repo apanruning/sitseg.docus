@@ -90,7 +90,6 @@ def datasource(request):
             data = form.cleaned_data
             datasource = form.save()
             datasource.import_columns()
-                
        
        return redirect("/")
 
@@ -105,18 +104,39 @@ def datasource(request):
     )
 
 def datasource_detail(request, id):
-    column_form = ColumnForm()
+
     instance = get_object_or_404(DataSource, pk=id)
-    columns = (ColumnForm(instance=column) for column in instance.column_set.all())
+    plots_function = {
+            'Cajas':'/plots/'+id+'/box',
+            'Barras':'/plots/'+id+'/bar',
+            'Torta':'/plots/'+id+'/pie',
+            'Histograma':'/plots/'+id+'/hist',
+            'Stripchart':'/plots/'+id+'/stripchart',
+            'Densidad':'/plots/'+id+'/densityplot',
+            'Puntos':'/plots/'+id+'/ptosplot',
+            'Pareto':'/plots/'+id+'/paretoplot',
+            'Generico':'/plots/'+id+'/genericplot',
+            'ECDF':'/plots/'+id+'/ecdfplot',            
+            'Scatter':'/plots/'+id+'/scatterplot',
+            'Scatter Matrix':'/plots/'+id+'/scattermatrixplot',            
+     }
+
     return render(
         request,
         'datasource.html',
         {
             'datasource': instance,
-            'columns': columns,
-            'column_form':column_form,
+            'rows':Row.objects.filter(datasource=id),
+            'column_forms':(ColumnForm(instance=column) for column in instance.column_set.all()),
+            'column_labels':(v for v in ColumnForm()),
+            'data_labels':(c.label for c in Column.objects.filter(datasource=id)),
+            'plots':plots_function,
+            
         }
+
     )
+
+
 
 def delete(request, id, model=None):
     instance = get_object_or_404(model, pk=id)
@@ -154,31 +174,23 @@ def column_detail(request, id):
     )
 
 def import_data(request, id):
-    columns = []
     if request.method == 'POST':
-        columns = request.POST.getlist('object_id')
+        #Aqui hay que setear los valores para cada columna que viene
+        for i, v in enumerate(request.POST.getlist('object_id')):
+            col = Column.objects.get(pk=v)
+            col.data_type = request.POST.getlist('data_type')[i]
+            if i < len(request.POST.getlist('has_geodata')):
+                col.has_geodata = request.POST.getlist('has_geodata')[i]    
+            else:
+                col.has_geodata = False
+            col.save()                            
+
     generate_documents(
         datasource=id,
-        columns=columns
+        columns=request.POST.getlist('object_id')
     )
-    messages.info(request, u'Estamos procesando los datos')
+    messages.info(request, u'Se procesaron exitosamente los datos')
     return redirect("detail", id)
-
-def show_data(request, id):
-    datasource = DataSource.objects.get(pk=id)
-    rows = Row.objects.filter(datasource=id)
-
-    #values_form = (ValueForm(instance=value) for value in values)
-    
-    return render(
-        request,
-        'data.html',
-        {
-            'datasource': datasource,
-            'rows':rows,
-        }
-    )
-
 
 def download_attach(request, id):
 
