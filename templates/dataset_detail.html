@@ -1,0 +1,40 @@
+{% extends "index.html" %}
+{% load pagination_tags %}
+{% block title %}
+    Detalles de {{dataset.name}}
+{% endblock %}
+{% block js %}
+    $('#delete').click(function(){
+        window.location="/datasource/"+this.attr('href')+"/delete";
+        return false;
+    })
+    
+{% endblock %}
+
+{% block head %}
+
+    <h1><a href="/">Indice</a>/{{dataset.name}}</h1>
+    <p> {{datasources.find.count}} registros </p>
+
+{% endblock %}
+{% block page %}
+    {% if user.is_staff %}
+    <menu>
+    <a href="#add-form" class="control">Importar Datos</a>
+    </menu>
+    <form id="add-form" method="post" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
+    <legend>Importar Datos </legend>
+    {{ form.as_table }}
+    <a href="#add-form" class="control">cerrar</a>   
+    <input type="submit" name="Guardar" value="Submit"/>
+    </form>
+    {% endif %}    
+    
+    <h1> Fuentes de Datos </h1>
+    {% for datasources in datasources_list %}
+        <h1><a href="/datasource/{{datasources.id}}">{{ datasources.name }}</a></h1> 
+        <a id="delete" href="/datasource/{{datasources.id}}/delete?next={{request.path}}">borrar</a>
+    {% empty %}
+    {% endfor %}
+    
+{% endblock %}

@@ -136,6 +136,12 @@ def datasource_detail(request, id):
 
     )
 
+def datasource_get(request, id):
+
+    instance = get_object_or_404(DataSource, pk=id)
+    
+    return instance
+
 
 
 def delete(request, id, model=None):

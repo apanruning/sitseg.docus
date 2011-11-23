@@ -3,27 +3,31 @@
     Estadisticas de {{datasource.name}}
 {% endblock %}
 {% block js %}
-    $('#menu li a').click(function(event){
-		var elem = $(this).next();
-		if(elem.is('ul')){
+     $('.accordion').click(function(event){
+		var elem = $(this);
 			event.preventDefault();
-			$('#menu ul:visible').not(elem).slideUp();
-			elem.slideToggle();
-		}
+			$(elem.attr('href')).not(elem.attr('href')).slideDown();
+			$(elem.attr('href')).slideToggle();
+            return false;
 	});
-
+    $('#execute_graph').click(function(event) {
+        var elem = $(this);
+        window.location = '/plots/'    
+            alert($("input[type='radio']:checked").val(); 
+            $('#value_var').attr('value', elem.attr['value']);
+    });
 {% endblock %}
 {% block page %}
+
 <div id="leftSide">
 <div id="variables">
-<ul id="menu">
 {% for ds in datasources %}
-    <li><a href="#">{{ ds.name }}</a>
-    <ul>
+    <a href="#{{ds.id}}" class="accordion" >{{ ds.name }}</a>
+    <div id="{{ds.id}}">
     {% for v in ds.column_set.all %}
-        <li><a href="#">{{v.name}}</a></li>
+        <input type="radio" name="{{ds.name}}" value="{{v.id}}" /> {{v.name}}
     {% endfor %}    
-    </ul>
+    </div>
 {% endfor %}
 </ul>
 
@@ -31,7 +35,10 @@
 
 </div>
 <div id="rightSide">
-
+<input id="value_var" type="hidden" value="" />
+<input type="button" id="execute_graph" value=">>" />
 </div>
-
+<div id="graph">
+    <img src="{{ g.url }}" />
+</div>
 {% endblock %}  

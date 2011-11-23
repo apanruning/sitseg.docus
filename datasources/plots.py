@@ -20,7 +20,6 @@ def stats(request,id):
             'ECDF':'/plots/'+str(column[0].id)+'/ecdfplot',            
             'Scatter':'/plots/'+str(column[0].id)+'/scatterplot',
             'Scatter Matrix':'/plots/'+str(column[0].id)+'/scattermatrixplot',            
-            
         }
 
     return render(
@@ -33,31 +32,34 @@ def stats(request,id):
     )
 
 def histplot(request,id):
-    #id is a parameter that represent the datasource id
-    #the administrator for plot include a chunk that show all column's datasource's dataset father 
+    #This function populate manager's graphic for produce Histogram 
+    #id is a parameter that represent the dataset id
+   
     datasource = DataSource.objects.get(pk=id)
     dataset = datasource.dataset
     datasources = []
     for ds in dataset.datasource_set.all():
         datasources.append(ds)
-
-    #values = Value.objects.filter(column=col.id)
-    #list_values = [v.cast_value() for v in values]
-    #import pdb; pdb.set_trace()
-    #vector = robjects.matrix(list_values)
-    #suffix_dir = "media/graphics/"
-    #name_file = col.datasource.name+"-"+col.name+"-histograma"
-    #ext_file = ".png"
-    #png(file=suffix_dir+name_file+ext_file)
-    #graph = hist(vector,col='blue',nclass=10,main='Frecuencia de '+col.name,ylab='Frecuencias',xlab='Valores')
-    #g = {'name':str(name_file+ext_file)}
-    #off()
+   
+    values = Value.objects.filter(column=col.id)
+    list_values = [v.cast_value() for v in values]
     
+    vector = robjects.matrix(list_values)
+    suffix_dir = "media/graphics/"
+    name_file = col.datasource.name+"-"+col.name+"-histograma"
+    ext_file = ".png"
+    png(file=suffix_dir+name_file+ext_file)
+    graph = hist(vector,col='blue',nclass=10,main='Frecuencia de '+col.name,ylab='Frecuencias',xlab='Valores')
+    g = {'url':str(name_file+ext_file)}
+    off()
+    options = {}
     return render(
         request,
         'graphic.html',
         {          
             'datasources':datasources,
+            'options':options,
+            'graph':g,
         }
     )
 
