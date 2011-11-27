@@ -40,6 +40,7 @@ urlpatterns += patterns('datasources.plots',
     (r'^plots/(?P<id>\w+)/hist$', 'histplot', {}, 'histplot'),
     (r'^plots/(?P<id>\w+)/box$', 'boxplot', {}, 'boxplot'),
     (r'^plots/(?P<id>\w+)/pie$', 'pieplot', {}, 'pieplot'),
+    (r'^plots/(?P<id>\w+)/scatter$', 'scatterplot', {}, 'scatterplot'),
 )
 
 if settings.DEBUG:

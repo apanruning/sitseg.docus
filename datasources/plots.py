@@ -19,7 +19,8 @@ def stats(request,id):
             'Generico':'/plots/'+str(column[0].id)+'/genericplot',
             'ECDF':'/plots/'+str(column[0].id)+'/ecdfplot',            
             'Scatter':'/plots/'+str(column[0].id)+'/scatterplot',
-            'Scatter Matrix':'/plots/'+str(column[0].id)+'/scattermatrixplot',            
+            'Scatter Matrix':'/plots/'+str(column[0].id)+'/scattermatrixplot',     
+            'Geo':'/plots/'+str(column[0].id)+'/scattermatrixplot',
         }
 
     return render(
@@ -41,25 +42,26 @@ def histplot(request,id):
     for ds in dataset.datasource_set.all():
         datasources.append(ds)
    
-    values = Value.objects.filter(column=col.id)
-    list_values = [v.cast_value() for v in values]
+    #values = Value.objects.filter(column=col.id)
+    #list_values = [v.cast_value() for v in values]
     
-    vector = robjects.matrix(list_values)
-    suffix_dir = "media/graphics/"
-    name_file = col.datasource.name+"-"+col.name+"-histograma"
-    ext_file = ".png"
-    png(file=suffix_dir+name_file+ext_file)
-    graph = hist(vector,col='blue',nclass=10,main='Frecuencia de '+col.name,ylab='Frecuencias',xlab='Valores')
-    g = {'url':str(name_file+ext_file)}
-    off()
-    options = {}
+    #vector = robjects.matrix(list_values)
+    #suffix_dir = "media/graphics/"
+    #name_file = col.datasource.name+"-"+col.name+"-histograma"
+    #ext_file = ".png"
+    #png(file=suffix_dir+name_file+ext_file)
+    #graph = hist(vector,col='blue',nclass=10,main='Frecuencia de '+col.name,ylab='Frecuencias',xlab='Valores')
+    #g = {'url':str(name_file+ext_file)}
+    #off()
+    options = {
+                'labels':['Seleccione Variable'],
+    }
     return render(
         request,
         'graphic.html',
         {          
             'datasources':datasources,
             'options':options,
-            'graph':g,
         }
     )
 
@@ -103,3 +105,28 @@ def pieplot(request,id):
             'graphic':g,
         }
     )
+
+def scatterplot(request,id):
+    datasource = DataSource.objects.get(pk=id)
+    dataset = datasource.dataset
+    datasources = []
+    for ds in dataset.datasource_set.all():
+        datasources.append(ds)
+    
+    options = {
+        'labels':['Seleccione Variable','Seleccione Variable'],
+        'javascript':'''$("input[type='button']").each(
+                                    function(event) {
+                                        $('#variable'+i).attr('value', $("input[type='radio']:checked").val());
+                                    }                            
+                        )''',
+    }
+    return render(
+        request,
+        'graphic.html',
+        {          
+            'datasources':datasources,
+            'options':options,
+        }
+    )
+

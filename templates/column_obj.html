@@ -9,7 +9,6 @@
         <input type="checkbox" name="is_available"  {% if column.instance.is_available %}checked{% endif %}/>
         <a href="/column/{{column.instance.pk}}">{{column.instance.name}}</a>
     </h3>
-    <p>    
     <input type="hidden" name="object_id"  value="{{column.instance.pk}}"/>
     <input type="hidden" name="name"  value="{{column.instance.name}}"/>
     <input type="hidden" name="label"  value="{{column.instance.label}}"/>
@@ -18,10 +17,10 @@
     {{ column.data_type }}
             geografico<input type="checkbox" name="has_geodata" {% if column.instance.has_geodata %}checked{% endif %}/>
     {% if column.instance.has_geodata %}
-    {{ column.geodata_type }}
+        {{ column.geodata_type }}
     {% endif %}
     <p>
-    {{form.errors}}
+        {{form.errors}}
     </p>
     </form>
 </li>

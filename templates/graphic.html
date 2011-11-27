@@ -10,35 +10,35 @@
 			$(elem.attr('href')).slideToggle();
             return false;
 	});
-    $('#execute_graph').click(function(event) {
-        var elem = $(this);
-        window.location = '/plots/'    
-            alert($("input[type='radio']:checked").val(); 
-            $('#value_var').attr('value', elem.attr['value']);
-    });
+    eval({{options.javascript|safe}});
 {% endblock %}
 {% block page %}
 
-<div id="leftSide">
+<div id="leftSide" class="anchotreinta">
 <div id="variables">
 {% for ds in datasources %}
     <a href="#{{ds.id}}" class="accordion" >{{ ds.name }}</a>
     <div id="{{ds.id}}">
     {% for v in ds.column_set.all %}
-        <input type="radio" name="{{ds.name}}" value="{{v.id}}" /> {{v.name}}
+        <input type="radio" name="variable" value="{{v.id}}" /> {{v.name}} <br />
     {% endfor %}    
     </div>
 {% endfor %}
 </ul>
-
 </div>
 
 </div>
-<div id="rightSide">
-<input id="value_var" type="hidden" value="" />
-<input type="button" id="execute_graph" value=">>" />
+<div id="rightSide" class="anchosesenta">
+{% for o in options.labels %}
+    <div>
+    <p> Seleccione una variable númerica y presione el botón </p> 
+    <input id="variable-{{forloop.counter0}}" type="text" value="" />    
+    <input type="button" id="execute_graph" value=">>" />
+    </div>
+{% endfor %}
 </div>
+<div class="clear"></div>
 <div id="graph">
-    <img src="{{ g.url }}" />
+    // Aqui se muestra el grafico con el resultado
 </div>
 {% endblock %}  

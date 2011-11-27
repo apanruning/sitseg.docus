@@ -43,21 +43,9 @@
     <a class="accordion" href="#column_list"> Informacion de Columnas </a>
     <div id="column_list">
     <form action="/datasource/{{datasource.id}}/import_data" id="import_form" method="post">{% csrf_token %}
-    <table>
-    <tr>    
-    {% for label in column_labels  %}
-        <th>{{label.name}}</th> 
+    {% for column in column_forms  %}
+        {% include 'column_obj.html' %}
     {% endfor %}
-    </tr>
-    {% for column_form in column_forms  %}
-        <tr>
-        <td> {{ column_form.name.value }} </td>
-        <td> {{ column_form.data_type }} </td>
-        <td> {{ column_form.has_geodata }} </td>
-        <td>  <input type="hidden" name="object_id" value="{{column_form.instance.pk}}"/></td>
-        </tr>
-    {% endfor %}
-    </table>
     <p class="clear"><input type="submit" value="Importar columnas seleccionadas" /></p>
     </form>
     </div>

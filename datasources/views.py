@@ -117,7 +117,7 @@ def datasource_detail(request, id):
             'Pareto':'/plots/'+id+'/paretoplot',
             'Generico':'/plots/'+id+'/genericplot',
             'ECDF':'/plots/'+id+'/ecdfplot',            
-            'Scatter':'/plots/'+id+'/scatterplot',
+            'Scatter':'/plots/'+id+'/scatter',
             'Scatter Matrix':'/plots/'+id+'/scattermatrixplot',            
      }
 
