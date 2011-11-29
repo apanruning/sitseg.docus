@@ -2,8 +2,9 @@
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
-from datasources.models import Column, Value, DataSource
+from datasources.models import Column, Value, DataSource, Out
 from datasources.interface_r import *
+from django import forms
 
 def stats(request,id):
     datasource = DataSource.objects.get(pk=int(id))
@@ -42,19 +43,9 @@ def histplot(request,id):
     for ds in dataset.datasource_set.all():
         datasources.append(ds)
    
-    #values = Value.objects.filter(column=col.id)
-    #list_values = [v.cast_value() for v in values]
-    
-    #vector = robjects.matrix(list_values)
-    #suffix_dir = "media/graphics/"
-    #name_file = col.datasource.name+"-"+col.name+"-histograma"
-    #ext_file = ".png"
-    #png(file=suffix_dir+name_file+ext_file)
-    #graph = hist(vector,col='blue',nclass=10,main='Frecuencia de '+col.name,ylab='Frecuencias',xlab='Valores')
-    #g = {'url':str(name_file+ext_file)}
-    #off()
     options = {
                 'labels':['Seleccione Variable'],
+                'action':'/graph/histogram',
     }
     return render(
         request,
@@ -66,23 +57,25 @@ def histplot(request,id):
     )
 
 def boxplot(request,id):
-    col = Column.objects.get(pk=int(id))
-    values = Value.objects.filter(column=col.id)
-    list_values = [v.cast_value() for v in values]
-    vector = robjects.FloatVector(list_values)
-    suffix_dir = "media/graphics/"
-    name_file = col.datasource.name+"-"+col.name+"-histograma"
-    ext_file = ".png"
-    png(file=suffix_dir+name_file+ext_file)
-    graph = boxplot(vector,vector)
-    g = {'name':str(name_file+ext_file)}
-    off()
-
+    #This function populate manager's graphic for produce Histogram 
+    #id is a parameter that represent the dataset id
+   
+    datasource = DataSource.objects.get(pk=id)
+    dataset = datasource.dataset
+    datasources = []
+    for ds in dataset.datasource_set.all():
+        datasources.append(ds)
+   
+    options = {
+                'labels':['Seleccione Variable','Seleccione Variable'],
+                'action':'/graph/boxplot',
+    }
     return render(
         request,
         'graphic.html',
         {          
-            'graphic':g,
+            'datasources':datasources,
+            'options':options,
         }
     )
 
@@ -115,11 +108,7 @@ def scatterplot(request,id):
     
     options = {
         'labels':['Seleccione Variable','Seleccione Variable'],
-        'javascript':'''$("input[type='button']").each(
-                                    function(event) {
-                                        $('#variable'+i).attr('value', $("input[type='radio']:checked").val());
-                                    }                            
-                        )''',
+        'action':'/graph/scatter',
     }
     return render(
         request,
@@ -130,3 +119,51 @@ def scatterplot(request,id):
         }
     )
 
+#Funciones que graficar (se conectan directamente con R)
+def histogram(request):
+    if request.method == "POST":
+        var = request.POST['var-0']
+        
+        suffix_dir = "media/graphics/"
+        ext_file = ".png"
+        
+        values = Value.objects.filter(column=var)
+        list_values = [v.cast_value() for v in values]
+        
+        #configuracion para el grafico     
+        vector = robjects.FloatVector(list_values)
+        name_file = "histograma"+var
+        png(file=suffix_dir+name_file+ext_file)
+        hist(vector)
+        off()
+        out = Out()
+        out.img = str(name_file+ext_file)
+        out.save()
+        return render(
+            request,
+            'outqueue.html',
+            {          
+                'outs':Out.objects.all(),
+            }
+        )
+
+def boxplot(request):
+    col = Column.objects.get(pk=int(id))
+    values = Value.objects.filter(column=col.id)
+    list_values = [v.cast_value() for v in values]
+    vector = robjects.FloatVector(list_values)
+    suffix_dir = "media/graphics/"
+    name_file = col.datasource.name+"-"+col.name+"-histograma"
+    ext_file = ".png"
+    png(file=suffix_dir+name_file+ext_file)
+    graph = boxplot(vector,vector)
+    g = {'name':str(name_file+ext_file)}
+    off()
+
+    return render(
+        request,
+        'graphic.html',
+        {          
+            'graphic':g,
+        }
+    )

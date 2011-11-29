@@ -10,7 +10,14 @@
 			$(elem.attr('href')).slideToggle();
             return false;
 	});
-    eval({{options.javascript|safe}});
+    buttons = $("input[type='button']");
+    for(i=0;i<buttons.length;i++) {
+        $(buttons[i]).click(function() {
+                   i = $(this).attr('id');
+                   $('#var-'+i).val($("input[type='radio']:checked").val());
+                   return false; 
+            });
+    };
 {% endblock %}
 {% block page %}
 
@@ -29,13 +36,17 @@
 
 </div>
 <div id="rightSide" class="anchosesenta">
+<form action='{{options.action|safe}}' method='post'>
+
 {% for o in options.labels %}
-    <div>
-    <p> Seleccione una variable númerica y presione el botón </p> 
-    <input id="variable-{{forloop.counter0}}" type="text" value="" />    
-    <input type="button" id="execute_graph" value=">>" />
-    </div>
+    <p> {{ o }} </p> 
+    <input type='text' id='var-{{forloop.counter0}}' name='var-{{forloop.counter0}}' value="Ingrese valor" />    
+    <input type='button' id='{{forloop.counter0}}' value=">>" /> 
 {% endfor %}
+    <input type='submit' value='graficar' />
+{% csrf_token %}
+</form>
+
 </div>
 <div class="clear"></div>
 <div id="graph">

@@ -37,10 +37,16 @@ urlpatterns += patterns('',
 )
 
 urlpatterns += patterns('datasources.plots',
+    #Funciones que arman el formulario para graficar segun el grafico
     (r'^plots/(?P<id>\w+)/hist$', 'histplot', {}, 'histplot'),
     (r'^plots/(?P<id>\w+)/box$', 'boxplot', {}, 'boxplot'),
     (r'^plots/(?P<id>\w+)/pie$', 'pieplot', {}, 'pieplot'),
     (r'^plots/(?P<id>\w+)/scatter$', 'scatterplot', {}, 'scatterplot'),
+    
+    #Funciones que grafican (se conectan directamente con R)
+    (r'^graph/scatter$', 'scatter', {}, 'scatter'),
+    (r'^graph/histogram$', 'histogram', {}, 'histogram'),
+    (r'^graph/boxplot$', 'boxplot', {}, 'boxplot'),
 )
 
 if settings.DEBUG:

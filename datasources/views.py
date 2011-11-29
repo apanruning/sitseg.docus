@@ -142,16 +142,12 @@ def datasource_get(request, id):
     
     return instance
 
-
-
 def delete(request, id, model=None):
     instance = get_object_or_404(model, pk=id)
     instance.delete()
     next = request.GET.get('next', '/')
     return redirect(next)
 
-    
-    
 def column_detail(request, id):
     instance = get_object_or_404(Column, pk=id)
     if request.method == "POST":

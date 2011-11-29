@@ -10,6 +10,7 @@ from django.conf import settings
 from maap.models import MaapPoint, MaapArea
 from dateutil.parser import parse as date_parser
 from django import forms
+import datetime
 
 
 
@@ -166,4 +167,9 @@ class Value(models.Model):
                 continue
         return value
 
+class Out(models.Model):
+    session = models.DateTimeField(default=datetime.datetime.now(),editable=False) 
+    img = models.CharField(max_length=50)
+    errors = models.TextField()
+    
 __all__ = ['DataSource', 'Column', 'Annotation']

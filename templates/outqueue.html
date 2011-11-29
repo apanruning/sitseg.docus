@@ -1,0 +1,14 @@
+{% extends "index.html" %}
+{% block title %}
+    Cola de Salida
+{% endblock %}
+{% block page %}
+<ul>
+{% for o in outs %}
+    <li>
+        <img src="/media/graphics/{{o.img|safe}}" />
+        <p> {{ o.session }} </p>
+    </li>
+{% endfor %}
+</ul>
+{% endblock %}  
