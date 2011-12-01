@@ -56,7 +56,7 @@ def histplot(request,id):
         }
     )
 
-def boxplot(request,id):
+def box(request,id):
     #This function populate manager's graphic for produce Histogram 
     #id is a parameter that represent the dataset id
    
@@ -67,7 +67,7 @@ def boxplot(request,id):
         datasources.append(ds)
    
     options = {
-                'labels':['Seleccione Variable','Seleccione Variable'],
+                'labels':['Seleccione Variable'],
                 'action':'/graph/boxplot',
     }
     return render(
@@ -99,7 +99,7 @@ def pieplot(request,id):
         }
     )
 
-def scatterplot(request,id):
+def scatter(request,id):
     datasource = DataSource.objects.get(pk=id)
     dataset = datasource.dataset
     datasources = []
@@ -108,7 +108,7 @@ def scatterplot(request,id):
     
     options = {
         'labels':['Seleccione Variable','Seleccione Variable'],
-        'action':'/graph/scatter',
+        'action':'/graph/scatterplot',
     }
     return render(
         request,
@@ -120,7 +120,7 @@ def scatterplot(request,id):
     )
 
 #Funciones que graficar (se conectan directamente con R)
-def histogram(request):
+def histogram_view(request):
     if request.method == "POST":
         var = request.POST['var-0']
         
@@ -147,23 +147,37 @@ def histogram(request):
             }
         )
 
-def boxplot(request):
-    col = Column.objects.get(pk=int(id))
-    values = Value.objects.filter(column=col.id)
-    list_values = [v.cast_value() for v in values]
-    vector = robjects.FloatVector(list_values)
-    suffix_dir = "media/graphics/"
-    name_file = col.datasource.name+"-"+col.name+"-histograma"
-    ext_file = ".png"
-    png(file=suffix_dir+name_file+ext_file)
-    graph = boxplot(vector,vector)
-    g = {'name':str(name_file+ext_file)}
-    off()
+def boxplot_view(request):
+    if request.method == "POST":
+        var = request.POST['var-0']
+        
+        suffix_dir = "media/graphics/"
+        ext_file = ".png"
+        
+        values = Value.objects.filter(column=var)
+        list_values = [v.cast_value() for v in values]
+        
+        #configuracion para el grafico     
+        vector = robjects.FloatVector(list_values)
+        name_file = "histograma"+var
+        png(file=suffix_dir+name_file+ext_file)
+        boxplot(vector)
+        off()
+        out = Out()
+        out.img = str(name_file+ext_file)
+        out.save()
 
+        return outqueue(request)
+
+def scatterplot_view(request):
+
+
+def outqueue(request):
+    
     return render(
         request,
-        'graphic.html',
+        'outqueue.html',
         {          
-            'graphic':g,
+            'outs':Out.objects.all(),
         }
     )

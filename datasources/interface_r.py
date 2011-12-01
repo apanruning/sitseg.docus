@@ -12,6 +12,7 @@ desviacion = robjects.r('''function(r) sqrt(var(r)/length(r)) ''')
 
 
 #plots function
+bxp = robjects.r['bxp']
 hist = robjects.r['hist']
 boxplot = robjects.r['boxplot']
 densityplot = robjects.r['density']
