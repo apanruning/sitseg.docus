@@ -97,7 +97,7 @@ class DataSource(models.Model):
         return self.name
 
     def save(self):
-        self.created = datetime.now()
+        self.created = datetime.datetime.now()
         if self.slug is None:
             slug = slugify(self.name)
             new_slug = slug
