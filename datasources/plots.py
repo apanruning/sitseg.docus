@@ -170,7 +170,7 @@ def boxplot_view(request):
         return outqueue(request)
 
 def scatterplot_view(request):
-
+    pass
 
 def outqueue(request):
     

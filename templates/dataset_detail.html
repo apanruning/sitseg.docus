@@ -12,10 +12,7 @@
 {% endblock %}
 
 {% block head %}
-
     <h1><a href="/">Indice</a>/{{dataset.name}}</h1>
-    <p> {{datasources.find.count}} registros </p>
-
 {% endblock %}
 {% block page %}
     {% if user.is_staff %}
@@ -24,7 +21,7 @@
     </menu>
     <form id="add-form" method="post" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
     <legend>Importar Datos </legend>
-    {{ form.as_table }}
+    {{ form.as_p }}
     <a href="#add-form" class="control">cerrar</a>   
     <input type="submit" name="Guardar" value="Submit"/>
     </form>

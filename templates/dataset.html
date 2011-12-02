@@ -5,10 +5,7 @@
 {% endblock %}
 
 {% block head %}
-
     <h1><a href="/">Indice</a>/{{dataset.name}}</h1>
-    <p> {{datasources.find.count}} registros </p>
-
 {% endblock %}
 {% block page %}
     {% if user.is_staff %}

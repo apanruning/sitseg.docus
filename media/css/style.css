@@ -60,6 +60,7 @@ footer a {
     padding:0.5em;
     border: 1px solid transparent;
     overflow: hidden;
+    list-style:none;
 }
 .data_column:hover {
     cursor:pointer;
@@ -196,7 +197,6 @@ fieldset {
 }
 
 .table_data {
-    border:1px solid;
 }
 
 #leftSide {
@@ -260,4 +260,6 @@ fieldset {
 .anchosesenta {
     width:70%;
 }
-
+.accordion {
+    display:block;    
+}

@@ -43,9 +43,11 @@
     <a class="accordion" href="#column_list"> Informacion de Columnas </a>
     <div id="column_list">
     <form action="/datasource/{{datasource.id}}/import_data" id="import_form" method="post">{% csrf_token %}
+    <ul>
     {% for column in column_forms  %}
         {% include 'column_obj.html' %}
     {% endfor %}
+    </ul>
     <p class="clear"><input type="submit" value="Importar columnas seleccionadas" /></p>
     </form>
     </div>
