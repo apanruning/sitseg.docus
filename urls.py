@@ -16,7 +16,7 @@ urlpatterns = patterns('datasources.views',
     (r'^dataset/(?P<id>\w+)/$', 'dataset_detail', {}, 'dataset_detail'),
     (r'^dataset/(?P<id>\w+)/delete', 'delete', {'model':models.DataSet}),
 
-    (r'^datasource/(?P<id>\w+)/$', 'datasource_detail', {}, 'detail'),
+    (r'^datasource/(?P<id>\w+)/$', 'datasource_detail', {}, 'datasource_detail'),
     (r'^datasource/(?P<id>\w+)/get$', 'datasource_get', {}, 'datasource_get'),
     (r'^datasource/(?P<id>\w+)/delete$', 'delete', {'model':models.DataSource}),
 
