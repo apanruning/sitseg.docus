@@ -8,15 +8,14 @@
         window.location="/datasource/"+this.attr('href')+"/delete";
         return false;
     })
-    
 {% endblock %}
-
 {% block head %}
-    <h1><a href="/">Indice</a>/{{dataset.name}}</h1>
+    <h1><a href="/">Indice</a>/<a href="{{dataset.workspace.get_absolute_url}}">{{dataset.workspace.name}}</a>/{{dataset.name}}</h1>
 {% endblock %}
 {% block page %}
     {% if user.is_staff %}
     <menu>
+    <a id="delete" href="/dataset/{{dataset.id}}/delete?next={{request.path}}">Borrar</a>
     <a href="#add-form" class="control">Importar Datos</a>
     </menu>
     <form id="add-form" method="post" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
@@ -27,10 +26,9 @@
     </form>
     {% endif %}    
     
-    <h1> Fuentes de Datos </h1>
-    {% for datasources in datasources_list %}
-        <h1><a href="/datasource/{{datasources.id}}">{{ datasources.name }}</a></h1> 
-        <a id="delete" href="/datasource/{{datasources.id}}/delete?next={{request.path}}">borrar</a>
+    <h1>Fuentes de Datos </h1>
+    {% for datasource in datasources_list %}
+        <h1><a href="{{datasource.get_absolute_url}}">#{{datasource.pk}}-{{ datasource.name }}</a></h1> 
     {% empty %}
     {% endfor %}
     

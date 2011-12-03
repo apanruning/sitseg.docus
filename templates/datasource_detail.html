@@ -16,23 +16,18 @@
 {% endblock %}
 {% block head %}
 
-    <h1><a href="/">Indice</a>/{{datasource.name}}</h1>
+    <h1><a href="/">Indice</a>/<a href="{{datasource.dataset.workspace.get_absolute_url}}">{{datasource.dataset.workspace.name}}</a>/<a href="{{datasource.dataset.get_absolute_url}}">{{datasource.dataset.name}}</a>/{{datasource.name}}</h1>
     <p>
-      {{datasource.created|date}} - {{datasource.author}} - {{datasource.find.count}} registros
+      {{datasource.created|date}} - {{datasource.author}}
     </p>
 
 {% endblock %}
 {% block page %}
       <menu>
-      {% if request.user.is_staff %}
-      <!--<a href="#add-form" class="control">Agregar columna</a> |-->
-      {% endif %}
+      <a id="delete" href="/datasource/{{datasources.id}}/delete?next={{request.path}}">Borrar</a>
       <a title="{{datasource.attach.name}}" 
          href="/datasource/{{datasource.id}}/download_attach">
-          Descargar Fuente</a> |
-      <a title="Ver Datos" 
-         href="/datasource/{{datasource.id}}/data">
-          Explorar datos</a>
+          Descargar Fuente</a>
       </menu>
     <form id="add-form" action="/column/" class="{{form.errors|yesno:'errors,valid'}}" method="post">{% csrf_token %}
         <legend>Nueva Columna</legend>
