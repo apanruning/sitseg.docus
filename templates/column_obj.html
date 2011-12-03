@@ -1,9 +1,4 @@
-{%spaceless%}
-<li class="
-    data_column
-    {% if not column.instance.is_available %} disabled{% endif %}
-    {% if column.errors %}error{%endif%}">
-{%endspaceless%}
+<li class="data_column {% if not column.instance.is_available %}disabled{% endif %}">
     <form action="/column/{{column.instance.pk}}" method="post" class="column_form">{% csrf_token %}
     <h3>
         <input type="checkbox" name="is_available"  {% if column.instance.is_available %}checked{% endif %}/>
