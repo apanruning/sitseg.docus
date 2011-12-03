@@ -119,6 +119,27 @@ def scatter(request,id):
         }
     )
 
+def scattermatrix(request,id):
+    datasource = DataSource.objects.get(pk=id)
+    dataset = datasource.dataset
+    datasources = []
+    for ds in dataset.datasource_set.all():
+        datasources.append(ds)
+    
+    options = {
+        'labels':['Seleccione Variable','Seleccione Variable'],
+        'action':'/graph/scatterplotmatrix',
+    }
+    return render(
+        request,
+        'graphic.html',
+        {          
+            'datasources':datasources,
+            'options':options,
+        }
+    )
+
+
 #Funciones que graficar (se conectan directamente con R)
 def histogram_view(request):
     if request.method == "POST":
@@ -159,7 +180,7 @@ def boxplot_view(request):
         
         #configuracion para el grafico     
         vector = robjects.FloatVector(list_values)
-        name_file = "histograma"+var
+        name_file = "cajas"+var
         png(file=suffix_dir+name_file+ext_file)
         boxplot(vector)
         off()
@@ -170,7 +191,66 @@ def boxplot_view(request):
         return outqueue(request)
 
 def scatterplot_view(request):
-    pass
+    if request.method == "POST":
+        var1 = request.POST['var-0']
+        var2 = request.POST['var-1']
+        
+        suffix_dir = "media/graphics/"
+        ext_file = ".png"
+        
+        values_var1 = Value.objects.filter(column=var1)
+        values_var2 = Value.objects.filter(column=var2)
+
+        list_values_var1 = [v.cast_value() for v in values_var1]
+        list_values_var2 = [v.cast_value() for v in values_var2]
+        errors=""
+        #configuracion para el grafico     
+        try:
+            vector_var1 = robjects.FloatVector(list_values_var1)
+            vector_var2 = robjects.FloatVector(list_values_var2)
+        except e:
+            errors = e
+
+        name_file = "scatter"+var1+var2
+        png(file=suffix_dir+name_file+ext_file)
+        scatterplot(vector_var1, vector_var2)
+        off()
+        out = Out()
+        out.img = str(name_file+ext_file)
+        out.save()
+
+        return outqueue(request)
+
+def scatterplot_view(request):
+    if request.method == "POST":
+        var1 = request.POST['var-0']
+        var2 = request.POST['var-1']
+        
+        suffix_dir = "media/graphics/"
+        ext_file = ".png"
+        
+        values_var1 = Value.objects.filter(column=var1)
+        values_var2 = Value.objects.filter(column=var2)
+
+        list_values_var1 = [v.cast_value() for v in values_var1]
+        list_values_var2 = [v.cast_value() for v in values_var2]
+        errors=""
+        #configuracion para el grafico     
+        try:
+            vector_var1 = robjects.FloatVector(list_values_var1)
+            vector_var2 = robjects.FloatVector(list_values_var2)
+        except e:
+            errors = e
+
+        name_file = "scatter"+var1+var2
+        png(file=suffix_dir+name_file+ext_file)
+        scatterplotmatrix(vector_var1, vector_var2)
+        off()
+        out = Out()
+        out.img = str(name_file+ext_file)
+        out.save()
+
+        return outqueue(request)
 
 def outqueue(request):
     
@@ -178,6 +258,6 @@ def outqueue(request):
         request,
         'outqueue.html',
         {          
-            'outs':Out.objects.all(),
+            'outs':Out.objects.all().order_by('-session'),
         }
     )

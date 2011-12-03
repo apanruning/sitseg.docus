@@ -10,6 +10,7 @@ media = robjects.r['mean']
 cuasi_varianza = robjects.r['var']
 desviacion = robjects.r('''function(r) sqrt(var(r)/length(r)) ''')
 
+robjects.r['library(car)']
 
 #plots function
 bxp = robjects.r['bxp']
@@ -21,8 +22,8 @@ genericplot = robjects.r['plot']
 ecdfplot = robjects.r['plot.ecdf']
 #paretochart = robjects.r['pareto.chart'] 
 piechart = robjects.r['pie']
-#scatterplot = robjects.r['plot.scatter']
-#scatterplotmatrix = robjects.r['scatterplot.matrix']
+scatterplot = robjects.r['plot']
+scatterplotmatrix = robjects.r['scatterplotMatrix']
 #stripchart = robjects.r['stripchart']
 
 

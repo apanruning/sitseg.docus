@@ -42,11 +42,14 @@ urlpatterns += patterns('datasources.plots',
     (r'^plots/(?P<id>\w+)/box$', 'box', {}, 'box'),
     (r'^plots/(?P<id>\w+)/pie$', 'pieplot', {}, 'pieplot'),
     (r'^plots/(?P<id>\w+)/scatter$', 'scatter', {}, 'scatter'),
+    (r'^plots/(?P<id>\w+)/scattermatrix$', 'scattermatrix', {}, 'scattermatrix'),
     
     #Funciones que grafican (se conectan directamente con R)
     (r'^graph/scatterplot$', 'scatterplot_view', {}, 'scatterplot_view'),
+    (r'^graph/scatterplotmatrix$', 'scatterplotmatrix_view', {}, 'scatterplotmatrix_view'),
     (r'^graph/histogram$', 'histogram_view', {}, 'histogram_view'),
     (r'^graph/boxplot$', 'boxplot_view', {}, 'boxplot_view'),
+    (r'^outqueue$', 'outqueue', {}, 'outqueue'),
 )
 
 if settings.DEBUG:

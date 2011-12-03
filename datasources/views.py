@@ -118,7 +118,7 @@ def datasource_detail(request, id):
             'Generico':'/plots/'+id+'/genericplot',
             'ECDF':'/plots/'+id+'/ecdfplot',            
             'Scatter':'/plots/'+id+'/scatter',
-            'Scatter Matrix':'/plots/'+id+'/scattermatrixplot',            
+            'Scatter Matrix':'/plots/'+id+'/scattermatrix',            
      }
 
     return render(
