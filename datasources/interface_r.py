@@ -22,7 +22,7 @@ ecdfplot = robjects.r['plot.ecdf']
 #paretochart = robjects.r['pareto.chart'] 
 piechart = robjects.r['pie']
 scatterplot = robjects.r['plot']
-#scatterplotmatrix = robjects.r['scatterplotMatrix']
+scatterplotmatrix = robjects.r['pairs']
 strip = robjects.r['stripchart']
 
 

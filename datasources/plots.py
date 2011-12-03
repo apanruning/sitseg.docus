@@ -329,12 +329,12 @@ def scatterplotmatrix_view(request):
             errors = e
 
         name_file = "scatter"+var1+var2
-        #png(file=suffix_dir+name_file+ext_file)
-        #scatterplotmatrix(vector_var1, vector_var2)
-        #off()
-        #out = Out()
-        #out.img = str(name_file+ext_file)
-        #out.save()
+        png(file=suffix_dir+name_file+ext_file)
+        scatterplotmatrix([vector_var1, vector_var2])
+        off()
+        out = Out()
+        out.img = str(name_file+ext_file)
+        out.save()
 
         return outqueue(request)
 
