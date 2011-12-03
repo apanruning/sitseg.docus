@@ -45,8 +45,9 @@ $('document').ready(function(){
     });
     $('form input[type="text"]:first').focus()
     $('input[type="file"]').change(function(){
-        value = $(this).val()
-        $('#id_name').val(value)
+        value = $(this).val();
+        value = value.split('\\').reverse()[0];
+        $('#id_name').val(value);
         
     });
     window.setTimeout(function(){
