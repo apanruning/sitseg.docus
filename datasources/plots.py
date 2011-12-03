@@ -179,6 +179,46 @@ def pieplot(request,id):
         }
     )
 
+def density(request,id):
+    datasource = DataSource.objects.get(pk=id)
+    dataset = datasource.dataset
+    datasources = []
+    for ds in dataset.datasource_set.all():
+        datasources.append(ds)
+    
+    options = {
+        'labels':['Seleccione Variable'],
+        'action':'/graph/densityplot',
+    }
+    return render(
+        request,
+        'graphic.html',
+        {          
+            'datasources':datasources,
+            'options':options,
+        }
+    )
+
+def barplot(request,id):
+    datasource = DataSource.objects.get(pk=id)
+    dataset = datasource.dataset
+    datasources = []
+    for ds in dataset.datasource_set.all():
+        datasources.append(ds)
+    
+    options = {
+        'labels':['Seleccione Variable'],
+        'action':'/graph/barplot',
+    }
+    return render(
+        request,
+        'graphic.html',
+        {          
+            'datasources':datasources,
+            'options':options,
+        }
+    )
+
 #Funciones que graficar (se conectan directamente con R)
 def histogram_view(request):
     if request.method == "POST":
@@ -337,6 +377,65 @@ def scatterplotmatrix_view(request):
         out.save()
 
         return outqueue(request)
+
+def densityplot_view(request):
+    if request.method == "POST":
+        var1 = request.POST['var-0']
+        
+        suffix_dir = "media/graphics/"
+        ext_file = ".png"
+        
+        values_var1 = Value.objects.filter(column=var1)
+
+        list_values_var1 = [v.cast_value() for v in values_var1]
+        
+        errors=""
+        #configuracion para el grafico     
+        try:
+            vector_var1 = robjects.FloatVector(list_values_var1)
+        
+        except e:
+            errors = e
+
+        name_file = "density"+var1
+        png(file=suffix_dir+name_file+ext_file)
+        densityplot(vector_var1)
+        off()
+        out = Out()
+        out.img = str(name_file+ext_file)
+        out.save()
+
+        return outqueue(request)
+
+def barplot_view(request):
+    if request.method == "POST":
+        var1 = request.POST['var-0']
+        
+        suffix_dir = "media/graphics/"
+        ext_file = ".png"
+        
+        values_var1 = Value.objects.filter(column=var1)
+
+        list_values_var1 = [v.cast_value() for v in values_var1]
+        
+        errors=""
+        #configuracion para el grafico     
+        try:
+            vector_var1 = robjects.FloatVector(list_values_var1)
+        
+        except e:
+            errors = e
+
+        name_file = "bar"+var1
+        png(file=suffix_dir+name_file+ext_file)
+        bar(vector_var1)
+        off()
+        out = Out()
+        out.img = str(name_file+ext_file)
+        out.save()
+
+        return outqueue(request)
+
 
 def outqueue(request):
     

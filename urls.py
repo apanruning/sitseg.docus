@@ -41,9 +41,11 @@ urlpatterns += patterns('datasources.plots',
     (r'^plots/(?P<id>\w+)/hist$', 'histplot', {}, 'histplot'),
     (r'^plots/(?P<id>\w+)/box$', 'box', {}, 'box'),
     (r'^plots/(?P<id>\w+)/pie$', 'pieplot', {}, 'pieplot'),
+    (r'^plots/(?P<id>\w+)/bar$', 'barplot', {}, 'barplot'),
     (r'^plots/(?P<id>\w+)/scatter$', 'scatter', {}, 'scatter'),
     (r'^plots/(?P<id>\w+)/scattermatrix$', 'scattermatrix', {}, 'scattermatrix'),
     (r'^plots/(?P<id>\w+)/stripchart$', 'stripchart', {}, 'stripchart'),
+    (r'^plots/(?P<id>\w+)/density$', 'density', {}, 'density'),
     
     #Funciones que grafican (se conectan directamente con R)
     (r'^graph/scatterplot$', 'scatterplot_view', {}, 'scatterplot_view'),
@@ -52,6 +54,9 @@ urlpatterns += patterns('datasources.plots',
     (r'^graph/boxplot$', 'boxplot_view', {}, 'boxplot_view'),
     (r'^graph/stripchart$', 'stripchart_view', {}, 'stripchart_view'),
     (r'^graph/pieplot$', 'pieplot_view', {}, 'pieplot_view'),
+    (r'^graph/densityplot$', 'densityplot_view', {}, 'densityplot_view'),
+    (r'^graph/barplot$', 'barplot_view', {}, 'barplot_view'),
+
     (r'^outqueue$', 'outqueue', {}, 'outqueue'),
 )
 
