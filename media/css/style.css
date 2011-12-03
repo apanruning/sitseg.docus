@@ -263,3 +263,7 @@ fieldset {
 .accordion {
     display:block;    
 }
+
+#delete {
+    color:#500;
+}
