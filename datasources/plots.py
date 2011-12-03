@@ -139,6 +139,45 @@ def scattermatrix(request,id):
         }
     )
 
+def stripchart(request,id):
+    datasource = DataSource.objects.get(pk=id)
+    dataset = datasource.dataset
+    datasources = []
+    for ds in dataset.datasource_set.all():
+        datasources.append(ds)
+    
+    options = {
+        'labels':['Seleccione Variable'],
+        'action':'/graph/stripchart',
+    }
+    return render(
+        request,
+        'graphic.html',
+        {          
+            'datasources':datasources,
+            'options':options,
+        }
+    )
+
+def pieplot(request,id):
+    datasource = DataSource.objects.get(pk=id)
+    dataset = datasource.dataset
+    datasources = []
+    for ds in dataset.datasource_set.all():
+        datasources.append(ds)
+    
+    options = {
+        'labels':['Seleccione Variable'],
+        'action':'/graph/pieplot',
+    }
+    return render(
+        request,
+        'graphic.html',
+        {          
+            'datasources':datasources,
+            'options':options,
+        }
+    )
 
 #Funciones que graficar (se conectan directamente con R)
 def histogram_view(request):
@@ -190,6 +229,52 @@ def boxplot_view(request):
 
         return outqueue(request)
 
+def stripchart_view(request):
+    if request.method == "POST":
+        var = request.POST['var-0']
+        
+        suffix_dir = "media/graphics/"
+        ext_file = ".png"
+        
+        values = Value.objects.filter(column=var)
+        list_values = [v.cast_value() for v in values]
+        
+        #configuracion para el grafico     
+        vector = robjects.FloatVector(list_values)
+        name_file = "stripchart"+var
+        png(file=suffix_dir+name_file+ext_file)
+        strip(list_values)
+        off()
+     
+        out = Out()
+        out.img = str(name_file+ext_file)
+        out.save()
+
+        return outqueue(request)
+
+def pieplot_view(request):
+    if request.method == "POST":
+        var = request.POST['var-0']
+        
+        suffix_dir = "media/graphics/"
+        ext_file = ".png"
+        
+        values = Value.objects.filter(column=var)
+        list_values = [v.cast_value() for v in values]
+        
+        #configuracion para el grafico     
+        vector = robjects.FloatVector(list_values)
+        name_file = "stripchart"+var
+        png(file=suffix_dir+name_file+ext_file)
+        piechart(vector)
+        off()
+     
+        out = Out()
+        out.img = str(name_file+ext_file)
+        out.save()
+
+        return outqueue(request)
+
 def scatterplot_view(request):
     if request.method == "POST":
         var1 = request.POST['var-0']
@@ -204,6 +289,7 @@ def scatterplot_view(request):
         list_values_var1 = [v.cast_value() for v in values_var1]
         list_values_var2 = [v.cast_value() for v in values_var2]
         errors=""
+
         #configuracion para el grafico     
         try:
             vector_var1 = robjects.FloatVector(list_values_var1)

@@ -23,7 +23,7 @@ ecdfplot = robjects.r['plot.ecdf']
 piechart = robjects.r['pie']
 scatterplot = robjects.r['plot']
 #scatterplotmatrix = robjects.r['scatterplotMatrix']
-#stripchart = robjects.r['stripchart']
+strip = robjects.r['stripchart']
 
 
 #device function

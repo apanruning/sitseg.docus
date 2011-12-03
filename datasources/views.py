@@ -113,7 +113,7 @@ def datasource_detail(request, id):
             'Histograma':'/plots/'+id+'/hist',
             'Stripchart':'/plots/'+id+'/stripchart',
             'Densidad':'/plots/'+id+'/densityplot',
-            'Puntos':'/plots/'+id+'/ptosplot',
+            'Puntos':'/plots/'+id+'/stripchart',
             'Pareto':'/plots/'+id+'/paretoplot',
             'Generico':'/plots/'+id+'/genericplot',
             'ECDF':'/plots/'+id+'/ecdfplot',            
