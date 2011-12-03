@@ -123,7 +123,7 @@ def datasource_detail(request, id):
 
     return render(
         request,
-        'datasource.html',
+        'datasource_detail.html',
         {
             'datasource': instance,
             'rows':Row.objects.filter(datasource=id),
