@@ -112,7 +112,7 @@ def datasource_detail(request, id):
             'Torta':'/plots/'+id+'/pie',
             'Histograma':'/plots/'+id+'/hist',
             'Stripchart':'/plots/'+id+'/stripchart',
-            'Densidad':'/plots/'+id+'/densityplot',
+            'Densidad':'/plots/'+id+'/density',
             'Puntos':'/plots/'+id+'/stripchart',
             'Pareto':'/plots/'+id+'/paretoplot',
             'Generico':'/plots/'+id+'/genericplot',
