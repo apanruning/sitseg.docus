@@ -221,7 +221,7 @@ def scatterplot_view(request):
 
         return outqueue(request)
 
-def scatterplot_view(request):
+def scatterplotmatrix_view(request):
     if request.method == "POST":
         var1 = request.POST['var-0']
         var2 = request.POST['var-1']
@@ -243,12 +243,12 @@ def scatterplot_view(request):
             errors = e
 
         name_file = "scatter"+var1+var2
-        png(file=suffix_dir+name_file+ext_file)
-        scatterplotmatrix(vector_var1, vector_var2)
-        off()
-        out = Out()
-        out.img = str(name_file+ext_file)
-        out.save()
+        #png(file=suffix_dir+name_file+ext_file)
+        #scatterplotmatrix(vector_var1, vector_var2)
+        #off()
+        #out = Out()
+        #out.img = str(name_file+ext_file)
+        #out.save()
 
         return outqueue(request)
 
