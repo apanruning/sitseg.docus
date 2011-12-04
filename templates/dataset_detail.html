@@ -27,8 +27,11 @@
     {% endif %}    
     
     <h1>Fuentes de Datos </h1>
+    <ul id="datasources">
     {% for datasource in datasources_list %}
-        <h1><a href="{{datasource.get_absolute_url}}">#{{datasource.pk}}-{{ datasource.name }}</a></h1> 
+        <li>
+            <h2><a href="{{datasource.get_absolute_url}}" class="pjax">#{{datasource.pk}}-{{ datasource.name }}</a></h2>
+        </li>
     {% empty %}
     {% endfor %}
     

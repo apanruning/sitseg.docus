@@ -30,9 +30,13 @@
     {% endif %}    
 
     <h1> Conjuntos de Datos </h1>
+    <ul id="workspaces">
     {% for dataset in dataset_list %}
-        <h2><a href="{{dataset.get_absolute_url}}">#{{ dataset.pk }}-{{ dataset.name }}</a></h2> 
+        <li>
+            <h2><a href="{{dataset.get_absolute_url}}">#{{ dataset.pk }}-{{ dataset.name }}</a></h2>
+        </li>
     {% empty %}
+    </ul>
     {% endfor %}
     
 {% endblock %}
