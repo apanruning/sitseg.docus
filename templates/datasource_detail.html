@@ -1,5 +1,5 @@
     <menu>
-    <a id="delete" href="/datasource/{{datasources.id}}/delete?next={{request.path}}">Borrar</a>
+    <a id="delete" href="/datasource/{{datasource.id}}/delete?next={{request.path}}">Borrar</a>
     <a title="{{datasource.attach.name}}" 
          href="/datasource/{{datasource.id}}/download_attach">
          Descargar Fuente</a>
@@ -10,9 +10,7 @@
         <a href="#add-form" class="control">cerrar</a>
         <input type="submit" value="Guardar" />
     </form>
-    <div id="accordion">
     <h3><a href="#"> Informacion de Columnas </a></h3>
-    <div>
         <form action="/datasource/{{datasource.id}}/import_data" id="import_form" method="post">{% csrf_token %}
         <ul>
         {% for column in column_forms  %}

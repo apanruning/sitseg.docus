@@ -128,7 +128,7 @@ def datasource_detail(request, id):
         {
             'datasource': instance,
             'rows':Row.objects.filter(datasource=id),
-            'column_forms':(ColumnForm(instance=column) for column in instance.column_set.all()),
+            'column_forms':[ColumnForm(instance=column) for column in instance.column_set.all()],
             'column_labels':(v for v in ColumnForm()),
             'data_labels':(c.label for c in Column.objects.filter(datasource=id)),
             'plots':plots_function,
@@ -180,6 +180,7 @@ def import_data(request, id):
     if request.method == 'POST':
         #Aqui hay que setear los valores para cada columna que viene
         for i, v in enumerate(request.POST.getlist('object_id')):
+            import ipdb; ipdb.set_trace()
             col = Column.objects.get(pk=v)
             col.data_type = request.POST.getlist('data_type')[i]
             if i < len(request.POST.getlist('has_geodata')):
@@ -193,7 +194,7 @@ def import_data(request, id):
         columns=request.POST.getlist('object_id')
     )
     messages.info(request, u'Se procesaron exitosamente los datos')
-    return redirect("detail", id)
+    return redirect("dataset_detail", id)
 
 def download_attach(request, id):
 

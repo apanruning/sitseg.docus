@@ -17,7 +17,7 @@
 {% block page %}
     {% if user.is_staff %}
     <menu>
-    <a id="delete" href="/workspace/{{workspace.id}}/delete?next={{request.path}}">Borrar</a>
+    <a id="delete" href="/workspace/{{workspace.id}}/delete?next={% url workspace %}">Borrar</a>
     <a href="#add-form" class="control">Crear Conjunto de Datos</a>
     </menu>
     <form id="add-form" method="post" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
