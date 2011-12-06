@@ -13,7 +13,7 @@ from maap.models import MaapPoint, MaapArea
 from unicodedata import normalize
 
 
-@task
+
 def generate_documents(datasource, columns=None):
     gmaps = GoogleMaps(settings.GOOGLEMAPS_API_KEY)
     datasource = DataSource.objects.get(id=datasource)
