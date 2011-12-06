@@ -443,7 +443,7 @@ def pieplot_view(request):
 
         name_file = "torta"+var1
         png(file=suffix_dir+name_file+ext_file)
-        pie(vector_var1)
+        piechart(vector_var1)
         off()
         out = Out()
         out.img = str(name_file+ext_file)
