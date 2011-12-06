@@ -3,6 +3,7 @@ $('document').ready(function(){
         form = $(this).parents('form');
         data = $(form).serializeArray();
         target = $(form).attr('action');
+        console.log(target);
         $.post(
             target, 
             data, 
@@ -16,7 +17,7 @@ $('document').ready(function(){
                     $(json).find('input[name="object_id"]').insertBefore('#import_form input');
                 }
                 if ( !(is_available) && $('#import_form').has('input[value="'+object_id+'"]').length <=1 ){
-                    $('#import_form input[value="'+object_id+'"]').remove();
+                    $('#column-'+object_id+'"').remove();
                 }
             }
         );

@@ -15,11 +15,11 @@
 {% block page %}
     {% if user.is_staff %}
     <menu>
-    <a id="delete" href="/dataset/{{dataset.id}}/delete?next={{request.path}}">Borrar</a>
+    <a id="delete" href="/dataset/{{dataset.id}}/delete?next={% url workspace_detail dataset.workspace.id %}">Borrar</a>
     <a href="#add-form" class="control">Importar Datos</a>
     </menu>
     <form id="add-form" method="post" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
-    <legend>Importar Datos </legend>
+    Importar Datos 
     {{ form.as_p }}
     <a href="#add-form" class="control">cerrar</a>   
     <input type="submit" name="Guardar" value="Submit"/>
@@ -32,7 +32,7 @@
         <li>
             <h2><a href="{{datasource.get_absolute_url}}" class="pjax">#{{datasource.pk}}-{{ datasource.name }}</a></h2>
         </li>
-    {% empty %}
     {% endfor %}
+    </ul>
     
 {% endblock %}
