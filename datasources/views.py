@@ -192,7 +192,7 @@ def import_data(request, id):
         columns=request.POST.getlist('object_id')
     )
     messages.info(request, u'Se procesaron exitosamente los datos')
-    return redirect("detail", id)
+    return redirect("dataset_detail", id)
 
 def download_attach(request, id):
 
