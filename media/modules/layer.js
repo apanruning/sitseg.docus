@@ -75,8 +75,12 @@ Maap.Layer.prototype = {
         'area': {
             strokeColor: '#ff333f',
             strokeWidth: 1, 
-            fillColor: '#f0aa22',
-            fillOpacity: 0.3,
+            label: '${label}',
+            fontColor: 'blue',
+            fontFamily: 'Arial', 
+            fontSize: '12px',
+            fillColor: '${color}',
+            fillOpacity: 0.7,
             strokeDashstyle: 'dashdot'
         },
         'line': {

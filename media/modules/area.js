@@ -12,10 +12,9 @@ Maap.Area = Maap.Geom.extend({
         this.features = Array();
         var geojson_format = new OpenLayers.Format.GeoJSON();
         var geom = geojson_format.read(this.geojson,"Geometry");
-
         this.features.push(new OpenLayers.Feature.Vector(
             geom,
-            {style: 'area', maap:this}
+            {style: 'area', color: this.color, label: this.name, maap:this}
         ));            
     }
 });

@@ -19,16 +19,15 @@
         function init(){
             state = new Maap.State();
             state.init();   
-            //json_layer = {{ json_layer|safe }};
-            //state.setLayer(json_layer).show(); 
+            json_layer = {{ json_layer|safe }};
+            state.setLayer(json_layer).show(); 
         }
     </script>
   </head>
   <body onload="init()">
 
         <h1>MAPA FORMULARIO:</h1>
-        {{ colors }}
-        {{ rows }}
+
 
 
 
