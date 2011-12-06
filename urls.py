@@ -46,7 +46,8 @@ urlpatterns += patterns('datasources.plots',
     (r'^plots/(?P<id>\w+)/scattermatrix$', 'scattermatrix', {}, 'scattermatrix'),
     (r'^plots/(?P<id>\w+)/stripchart$', 'stripchart', {}, 'stripchart'),
     (r'^plots/(?P<id>\w+)/density$', 'density', {}, 'density'),
-    
+
+        
     #Funciones que grafican (se conectan directamente con R)
     (r'^graph/scatterplot$', 'scatterplot_view', {}, 'scatterplot_view'),
     (r'^graph/scatterplotmatrix$', 'scatterplotmatrix_view', {}, 'scatterplotmatrix_view'),
@@ -59,6 +60,12 @@ urlpatterns += patterns('datasources.plots',
 
     (r'^outqueue$', 'outqueue', {}, 'outqueue'),
 )
+
+urlpatterns += patterns('datasources.maps',
+    (r'^plots/(?P<id>\w+)/map$', 'map_form', {}, 'map_form'),
+    (r'^graph/mapplot$', 'mapplot_view', {}, 'mapplot_view'),
+)
+
 
 if settings.DEBUG:
     urlpatterns += patterns('',
