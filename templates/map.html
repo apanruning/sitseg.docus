@@ -1,0 +1,21 @@
+{% extends "index.html" %}
+{% block title %}
+    Mapa de {{datasource.name}}
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}
+
+{% block page %}
+<h1>MAPA FORMULARIO:</h1>
+
+<div id="rightSide" class="anchosesenta">
+<form action='{{action|safe}}' method='post'>
+{{form.as_p}}
+{% csrf_token %}
+    <input type='submit' value='graficar' />
+
+</form>
+</div>
+{% endblock %}  
