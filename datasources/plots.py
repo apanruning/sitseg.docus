@@ -53,6 +53,7 @@ def histplot(request,id):
         {          
             'datasources':datasources,
             'options':options,
+            'dataset':dataset,
         }
     )
 
@@ -76,26 +77,7 @@ def box(request,id):
         {          
             'datasources':datasources,
             'options':options,
-        }
-    )
-
-def pieplot(request,id):
-    col = Column.objects.get(pk=int(id))
-    values = Value.objects.filter(column=col.id)
-    list_values = [v.cast_value() for v in values]
-    vector = robjects.FloatVector(list_values)
-    suffix_dir = "media/graphics/"
-    name_file = col.datasource.name+"-"+col.name+"-torta"
-    ext_file = ".png"
-    png(file=suffix_dir+name_file+ext_file)
-    graph = piechart(x, labels=names(x), shadow=FALSE,edges=200, radius=0.8, col=NULL, main="Grafico de Torta para %s" %(col.name))
-    g = {'name':str(name_file+ext_file)}
-    off()
-    return render(
-        request,
-        'graphic.html',
-        {          
-            'graphic':g,
+            'dataset':dataset,
         }
     )
 
@@ -116,6 +98,7 @@ def scatter(request,id):
         {          
             'datasources':datasources,
             'options':options,
+            'dataset':dataset,
         }
     )
 
@@ -136,6 +119,7 @@ def scattermatrix(request,id):
         {          
             'datasources':datasources,
             'options':options,
+            'dataset':dataset,
         }
     )
 
@@ -156,6 +140,7 @@ def stripchart(request,id):
         {          
             'datasources':datasources,
             'options':options,
+            'dataset':dataset,
         }
     )
 
@@ -176,6 +161,7 @@ def pieplot(request,id):
         {          
             'datasources':datasources,
             'options':options,
+            'dataset':dataset,
         }
     )
 
@@ -436,6 +422,34 @@ def barplot_view(request):
 
         return outqueue(request)
 
+def pieplot_view(request):
+    if request.method == "POST":
+        var1 = request.POST['var-0']
+        
+        suffix_dir = "media/graphics/"
+        ext_file = ".png"
+        
+        values_var1 = Value.objects.filter(column=var1)
+
+        list_values_var1 = [v.cast_value() for v in values_var1]
+        
+        errors=""
+        #configuracion para el grafico     
+        try:
+            vector_var1 = robjects.FloatVector(list_values_var1)
+        
+        except e:
+            errors = e
+
+        name_file = "torta"+var1
+        png(file=suffix_dir+name_file+ext_file)
+        pie(vector_var1)
+        off()
+        out = Out()
+        out.img = str(name_file+ext_file)
+        out.save()
+
+        return outqueue(request)
 
 def outqueue(request):
     

@@ -19,6 +19,9 @@
             });
     };
 {% endblock %}
+{% block head %}
+    <h1><a href="/">Indice</a>/<a href="{{dataset.workspace.get_absolute_url}}">{{dataset.workspace.name}}</a>/{{dataset.name}}</h1>
+{% endblock %}
 {% block page %}
 
 <div id="leftSide" class="anchotreinta">
