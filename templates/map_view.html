@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>OpenLayers Basic Single WMS Example</title>
+
+    <script src="/static/js/OpenLayers.js"></script>
+    <script src="/static/js/OpenStreetMap.js"></script>
+    <script src="/static/modules/base.js"></script>
+    <script src="/static/modules/state.js"></script>
+    <script src="/static/modules/point.js"></script>
+    <script src="/static/modules/multiline.js"></script>
+    <script src="/static/modules/area.js"></script>
+    <script src="/static/modules/layer.js"></script>
+    <script src="/static/modules/init.js"></script>
+    <script type="text/javascript">
+        var map, layer;
+        function init(){
+            state = new Maap.State();
+            state.init();   
+            //json_layer = {{ json_layer|safe }};
+            //state.setLayer(json_layer).show(); 
+        }
+    </script>
+  </head>
+  <body onload="init()">
+
+        <h1>MAPA FORMULARIO:</h1>
+        {{ colors }}
+        {{ rows }}
+
+
+
+    <div id="map" ></div>
+
+
+  </body>
+</html>
+
+
+

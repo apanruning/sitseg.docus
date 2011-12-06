@@ -116,6 +116,10 @@ class MultiLine(GeoElement):
 
 class Area(GeoElement):
     type = 'area'
-
+    
+    @property
+    def meta(self):
+        return super(Point, self).meta + \
+               ['color']
 
 
