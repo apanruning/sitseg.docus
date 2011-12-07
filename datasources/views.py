@@ -169,7 +169,7 @@ def show_data(request, id):
         'show_data.html',
         {
             'datasource': DataSource.objects.get(pk=id),
-            'rows':Row.objects.filter(datasource=id),
+            'values':Value.objects.filter(column__datasource=id),
         }
     )
 def download_attach(request, id):

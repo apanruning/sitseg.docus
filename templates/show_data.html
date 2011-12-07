@@ -1,3 +1,10 @@
+{% regroup values by row as rows %}
 {% for row in rows %}
-    {{row.pk}}
+        <ul>
+        {% for value in row.list %}
+         {{value}}
+        {% endfor %}
+        </ul>
 {% endfor %}
+
+
