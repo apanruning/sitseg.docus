@@ -1,8 +1,36 @@
+{% extends "index.html" %}
+{% load pagination_tags %}
+{% block title %}
+    Detalles de {{datasource.name}}
+{% endblock %}
+{% block js %}
+    $('.accordion').click(function(event){
+		var elem = $(this);
+			event.preventDefault();
+			$(elem.attr('href')).not(elem.attr('href')).slideDown();
+			$(elem.attr('href')).slideToggle();
+            return false;
+		}
+	);
+
+{% endblock %}
+{% block head %}
+
+    <h1><a href="/">Indice</a>/<a href="{{datasource.dataset.workspace.get_absolute_url}}">{{datasource.dataset.workspace.name}}</a>/<a href="{{datasource.dataset.get_absolute_url}}">{{datasource.dataset.name}}</a>/{{datasource.name}}</h1>
+    <p>
+      {{datasource.created|date}} - {{datasource.author}}
+    </p>
+
+{% endblock %}
+{% block page %}
+    
+
     <menu>
-    <a id="delete" href="/datasource/{{datasource.id}}/delete?next={{request.path}}">Borrar</a>
+    <a id="delete" href="/datasource/{{datasource.id}}/delete?next={{ datasource.get_absolute_url }}">Borrar</a>
     <a title="{{datasource.attach.name}}" 
          href="/datasource/{{datasource.id}}/download_attach">
          Descargar Fuente</a>
+    <a href="#add-form" class="control">Nueva Columna</a>
     </menu>
     <form id="add-form" action="/column/" class="{{form.errors|yesno:'errors,valid'}}" method="post">{% csrf_token %}
         <legend>Nueva Columna</legend>
@@ -11,67 +39,13 @@
         <input type="submit" value="Guardar" />
     </form>
     <h3><a href="#"> Informacion de Columnas </a></h3>
-        <form action="/datasource/{{datasource.id}}/import_data" id="import_form" method="post">{% csrf_token %}
         <ul>
         {% for column in column_forms  %}
             {% include 'column_obj.html' %}
         {% endfor %}
         </ul>
+        <form action="/datasource/{{datasource.id}}/import_data" id="import_form" method="post">{% csrf_token %}
         <p class="clear"><input type="submit" value="Importar columnas seleccionadas" /></p>
         </form>
-    </div>
-    <h3><a  href="#"> Mostrar Datos </a></h3>
-    <div>
-        {% if rows %}
-        <h3> Datos Importados </h3>
-        <table class="table_data">
-        <tr class="table_data">    
-        <th class="table_data">
-        Nro    
-        </th>
-        {% for label in data_labels  %}
-            <th class="table_data">{{label}}</th> 
-        {% endfor %}
-        </tr>
-        {% for value in rows %}
-        <tr class="table_data">
-            <td class="table_data">
-                {{ forloop.counter }}
-            </td>
-            {% for field in value.value_set.all %}
-                
-                <td class="table_data">
-                {{ field.value }}            
-                </td>
-                {% if field.point %}
-                <td class="table_data">
-                    {{ field.point.id }}
-                </td>
-                {% endif %}
-                {% if field.point %}
-                <td class="table_data">
-                    {{ field.area.id }}
-                </td>
-                {% endif %}
-            {% endfor %}
-        </tr>
-        {% endfor %}
-        </table>
-        {% else %}
-                No hay datos importados aún.
-                <a href="/datasource/{{datasource.id}}/import_data">Importar desde el archivo.</a>
-        {% endif %}
-    </div>
-    <h3><a href="#"> Estadisticas </a></h3>
-    <div>
-        <p>Elija un grafico a realizar.</p>
-        <ul>
-        {% for k, v in plots.iteritems %}
-            <li>
-                <a href="{{v}}"> {{ k }}</a>
-            </li>
-        {% endfor %}
-        <li>
-        </ul>    
-    </div>
-    
+
+{% endblock %}

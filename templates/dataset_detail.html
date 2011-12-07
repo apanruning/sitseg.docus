@@ -3,12 +3,6 @@
 {% block title %}
     Detalles de {{dataset.name}}
 {% endblock %}
-{% block js %}
-    $('#delete').click(function(){
-        window.location="/datasource/"+this.attr('href')+"/delete";
-        return false;
-    })
-{% endblock %}
 {% block head %}
     <h1><a href="/">Indice</a>/<a href="{{dataset.workspace.get_absolute_url}}">{{dataset.workspace.name}}</a>/{{dataset.name}}</h1>
 {% endblock %}
@@ -30,7 +24,7 @@
     <ul id="datasources">
     {% for datasource in datasources_list %}
         <li>
-            <h2><a href="{{datasource.get_absolute_url}}" class="pjax">#{{datasource.pk}}-{{ datasource.name }}</a></h2>
+            <h2><a href="{{datasource.get_absolute_url}}" >#{{datasource.pk}}-{{ datasource.name }}</a></h2>
         </li>
     {% endfor %}
     </ul>

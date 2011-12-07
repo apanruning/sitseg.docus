@@ -1,0 +1,6 @@
+{% for message in messages %}
+<li class="{{message.tags}}">
+    <a href="#message-{{forloop.counter}}" class="control">!</a><strong id="message-{{forloop.counter}}">{{message}}</strong>
+</li>
+{% endfor %}
+
