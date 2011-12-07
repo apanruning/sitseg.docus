@@ -79,30 +79,6 @@ def dataset_detail(request,id):
         }
     )
 
-def datasource(request):
-    form = DataSourceForm()
-    column_form = ColumnFormSet()
-    if request.method == 'POST':
-
-       form = DataSourceForm(request.POST, request.FILES)
-
-       if form.is_valid():
-            data = form.cleaned_data
-            datasource = form.save()
-            datasource.import_columns()
-       
-       return redirect("/")
-
-    return render(
-        request,
-        'index.html',
-        {
-            'datasource_list': DataSource.objects.order_by('-created'),
-            'form': form,
-            'column_form': column_form
-        }
-    )
-
 def datasource_detail(request, id):
 
     instance = get_object_or_404(DataSource, pk=id)
@@ -128,6 +104,7 @@ def datasource_detail(request, id):
         {
             'datasource': instance,
             'rows':Row.objects.filter(datasource=id),
+            'column_form' : ColumnForm,
             'column_forms':[ColumnForm(instance=column) for column in instance.column_set.all()],
             'column_labels':(v for v in ColumnForm()),
             'data_labels':(c.label for c in Column.objects.filter(datasource=id)),
@@ -152,7 +129,9 @@ def delete(request, id, model=None):
 def column_detail(request, id):
     instance = get_object_or_404(Column, pk=id)
     if request.method == "POST":
+
         column_form = ColumnForm(request.POST, instance=instance )
+ 
         if column_form.is_valid():
             instance = column_form.save()
 
@@ -177,24 +156,17 @@ def column_detail(request, id):
     )
 
 def import_data(request, id):
-    if request.method == 'POST':
-        #Aqui hay que setear los valores para cada columna que viene
-        for i, v in enumerate(request.POST.getlist('object_id')):
-            import ipdb; ipdb.set_trace()
-            col = Column.objects.get(pk=v)
-            col.data_type = request.POST.getlist('data_type')[i]
-            if i < len(request.POST.getlist('has_geodata')):
-                col.has_geodata = request.POST.getlist('has_geodata')[i]    
-            else:
-                col.has_geodata = False
-            col.save()                            
-
     generate_documents(
         datasource=id,
         columns=request.POST.getlist('object_id')
     )
     messages.info(request, u'Se procesaron exitosamente los datos')
-    return redirect("dataset_detail", id)
+    if request.is_ajax:
+        return render(
+            request,
+            'response.html',
+        )
+    return redirect("datasource_detail", id)
 
 def download_attach(request, id):
 

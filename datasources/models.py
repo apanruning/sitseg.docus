@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 
 from django.template.defaultfilters import slugify
@@ -22,7 +23,7 @@ class Column(models.Model):
     label = models.CharField(max_length=50, editable=False)
     created = models.DateTimeField(auto_now_add=True, editable = False)
     datasource = models.ForeignKey('DataSource', editable=False)
-    is_available = models.BooleanField(default=True,editable=False)
+    is_available = models.BooleanField(default=True,)
     csv_index = models.IntegerField(editable=False)
     data_type = models.CharField(max_length=50, default='str')
     has_geodata = models.BooleanField(default=False)
@@ -142,7 +143,8 @@ class Value(models.Model):
     column = models.ForeignKey(Column)
     data_type = models.CharField(max_length=100)
     value = models.CharField(max_length=100)
-    point = models.ForeignKey(MaapPoint, null=True)
+    point = models.ManyToManyField(MaapPoint, null=True)
+    multiple = models.BooleanField()
     area = models.ForeignKey(MaapArea, null=True)
     row = models.ForeignKey(Row)
 

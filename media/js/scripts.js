@@ -3,29 +3,17 @@ $('document').ready(function(){
         form = $(this).parents('form');
         data = $(form).serializeArray();
         target = $(form).attr('action');
-        console.log(target);
         $.post(
             target, 
             data, 
-            function(json){
+            function(response){
                 data_column = $(form).parent('.data_column ');
-
-                data_column = $(data_column).replaceWith(json);
-                object_id = $(json).find('input[name="object_id"]').val();
-                is_available = $(json).find('input[name="is_available"]').attr('checked');
-                if (is_available && $('#import_form').has('input[value="'+object_id+'"]').length === 0){
-                    $(json).find('input[name="object_id"]').insertBefore('#import_form input');
-                }
-                if ( !(is_available) && $('#import_form').has('input[value="'+object_id+'"]').length <=1 ){
-                    $('#column-'+object_id+'"').remove();
-                }
+                data_column = $(data_column).replaceWith(response);
             }
         );
-        
-
     }
     $('.column_form :input').live('change', column_form_change)
-    $('.control').click(function(){
+    $('.control').live('click',function(){
         target = $(this).attr('href');
         $(this).toggleClass('active');
         $(target).toggle('fade', 300);
@@ -39,6 +27,25 @@ $('document').ready(function(){
         $('#id_name').val(value);
         
     });
+    $('#import_form').submit(function(){
+        target = $(this).attr('action');
+        data = $('.column_form').serializeArray();
+        message = $('<li>').append($('<strong>').text('Los datos se están procesando'));
+        $('#messages').append(message);
+        $.post(
+            target, 
+            data, 
+            function(response){
+                $('#messages li').remove();
+                $('#messages').append(response);
+                window.setTimeout(function(){
+                    $('#messages .control').click()
+                }, 3000);
+            }
+        );
+
+        return false;
+    })
     window.setTimeout(function(){
         $('#messages .control').click()
     }, 3000);
@@ -51,7 +58,6 @@ $('document').ready(function(){
             function(data){
                 wrapper = $('<div">').attr('id','ajax-container').append(data);
                 $(container).append(wrapper).effect('highlight', {}, 2000);
-                $(container).find('#accordion').accordion();
             }
         
         );
@@ -59,5 +65,5 @@ $('document').ready(function(){
         
         
     })
-    
+    $('#accordion').accordion();    
 })
