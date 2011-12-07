@@ -31,3 +31,6 @@ x11 = robjects.r['x11']
 pdf = robjects.r['pdf']
 png = robjects.r['png']
 off = robjects.r['dev.off']
+
+#others
+par = robjects.r['par']

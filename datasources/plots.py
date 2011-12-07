@@ -259,19 +259,37 @@ def stripchart_view(request):
     if request.method == "POST":
         var = request.POST['var-0']
         
+        #configuracion para tipo de archivo donde se guarda el grafico y nombre del mismo
         suffix_dir = "media/graphics/"
         ext_file = ".png"
-        
+        name_file = "stripchart"+var
+        png(file=suffix_dir+name_file+ext_file)
+
+        #se preparan los valores. TODO: Refactorizar casteo. Hacer mas eficiente. 
         values = Value.objects.filter(column=var)
         list_values = [v.cast_value() for v in values]
         
-        #configuracion para el grafico     
+        #creacion de vector R con los valores correspondientes (R)     
         vector = robjects.FloatVector(list_values)
-        name_file = "stripchart"+var
-        png(file=suffix_dir+name_file+ext_file)
-        strip(list_values)
+
+        #parametros del grafico
+        jitter=0.1 
+        offset=1/3
+        vertical=True
+        #group.names,
+        #xlim=NULL, 
+        #ylim=NULL, 
+        main=Column.objects.get(pk=var).name
+        ylab=""
+        xlab="Valores"
+        pch=1
+        col=par("fg")
+        cex=par("cex")
+
+        strip(list_values,method="overplot",jitter=jitter,offset=offset,vertical=vertical,main=main,xlab=xlab,pch=pch,col=col,cex=cex)
         off()
      
+        #Guaro el resultado en la cola de salida
         out = Out()
         out.img = str(name_file+ext_file)
         out.save()
