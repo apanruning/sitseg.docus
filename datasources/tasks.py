@@ -41,22 +41,28 @@ def generate_documents(datasource, columns=None):
             value.data_type = column.data_type
             value.column = column
             value.row = row_obj
-
+            value.save()
+            
             if column.data_type == 'point':
-                latlng = gmaps.address_to_latlng('%s, cordoba, argentina' %value.value )
-                try:
-                    point =  MaapPoint(
-                        geom=Point(latlng).wkt,
-                        name=value.value,
-                        name_norm = normalize('NFKD', row[column.csv_index].decode('utf-8')).encode('UTF-8', 'ignore').lower()
-                    )
-                    point.save()
-     
-                except Exception, e:
-                    errors.append(e)
-                else:
-                    value.point = point
+                
+                results = gmaps.local_search('%s, cordoba, argentina' %value.value )['responseData']['results']
+                for result in results:
+                    latlng = [float(result.get('lat')), float(result.get('lng'))]
 
+                    try:
+                        point =  MaapPoint(
+                            geom=Point(latlng).wkt,
+                            name=value.value,
+                            name_norm = normalize('NFKD', row[column.csv_index].decode('utf-8')).encode('UTF-8', 'ignore').lower()
+                        )
+                        point.save()
+         
+                    except Exception, e:
+                        errors.append(e)
+                    else:
+                        value.point.add(point)
+                        value.save()
+                        
             if column.data_type == 'area':
                 try:
                     barrio = MaapArea.objects.filter(name_norm=normalize('NFKD', row[column.csv_index].decode('utf-8')).encode('UTF-8', 'ignore').lower())    
@@ -65,7 +71,7 @@ def generate_documents(datasource, columns=None):
                 else:
                     if len(barrio) == 1:
                         value.area = barrio[0]
-            value.save()
+                        value.save()
             
     if len(errors) == 0:
         datasource.is_dirty = False 

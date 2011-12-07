@@ -267,3 +267,7 @@ fieldset {
 #delete {
     color:#500;
 }
+.ui-accordion-content {
+    max-height:400px;
+    overflow-y:auto;
+}
