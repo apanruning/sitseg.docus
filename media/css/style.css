@@ -271,3 +271,28 @@ fieldset {
     max-height:400px;
     overflow-y:auto;
 }
+.ui-tabs-nav li{
+    float:left;
+    list-style-type:none;
+}
+.ui-tabs-selected {
+    border:1px solid #CCC;
+    border-color: #CCC #CCC #FFF;
+    margin-bottom:-1px;
+}
+
+
+.ui-tabs-nav li a{
+    padding:2px 1em 0;
+    outline:none;
+}
+
+.ui-tabs-panel{
+    clear:both;
+    border-top:1px solid #CCC;
+    padding:1em 1em 0;
+}
+
+.ui-tabs-hide {
+    display:none;
+}

@@ -24,7 +24,7 @@ def workspace(request):
        form = WorkspaceForm(request.POST)
        if form.is_valid():
             workspace = form.save()
-       return redirect("/")
+            return redirect(workspace.get_absolute_url)
 
     return render(
         request,
@@ -45,7 +45,7 @@ def workspace_detail(request, id):
        form = DataSetForm(request.POST, initial={'workspace':obj.id})
        if form.is_valid():
             dataset = form.save()
-       return redirect(obj.get_absolute_url())
+            return redirect(dataset.get_absolute_url())
 
     return render(
         request,
@@ -67,7 +67,7 @@ def dataset_detail(request,id):
             datasource = form.save()
             datasource.import_columns()
 
-        return redirect(obj.get_absolute_url())
+            return redirect(datasource.get_absolute_url())
 
     return render(
         request,
@@ -113,12 +113,6 @@ def datasource_detail(request, id):
         }
 
     )
-
-def datasource_get(request, id):
-
-    instance = get_object_or_404(DataSource, pk=id)
-    
-    return instance
 
 def delete(request, id, model=None):
     instance = get_object_or_404(model, pk=id)
@@ -168,6 +162,16 @@ def import_data(request, id):
         )
     return redirect("datasource_detail", id)
 
+def show_data(request, id):
+
+    return render(
+        request,
+        'show_data.html',
+        {
+            'datasource': DataSource.objects.get(pk=id),
+            'rows':Row.objects.filter(datasource=id),
+        }
+    )
 def download_attach(request, id):
 
     datasource = DataSource.objects.get(id=id)

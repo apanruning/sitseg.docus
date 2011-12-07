@@ -17,11 +17,11 @@ urlpatterns = patterns('datasources.views',
     (r'^dataset/(?P<id>\w+)/delete', 'delete', {'model':models.DataSet}),
 
     (r'^datasource/(?P<id>\w+)/$', 'datasource_detail', {}, 'datasource_detail'),
-    (r'^datasource/(?P<id>\w+)/get$', 'datasource_get', {}, 'datasource_get'),
     (r'^datasource/(?P<id>\w+)/delete$', 'delete', {'model':models.DataSource}),
 
     (r'^datasource/(?P<id>\w+)/download_attach$', 'download_attach', {}, 'download_attach'),
     (r'^datasource/(?P<id>\w+)/import_data$', 'import_data', {}, 'import_data'),
+    (r'^datasource/(?P<id>\w+)/show_data$', 'show_data', {}, 'show_data'),
 
     (r'^column/(?P<id>\w+)$', 'column_detail', {}, 'column'),
    

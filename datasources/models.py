@@ -48,7 +48,9 @@ class Column(models.Model):
 class Workspace(models.Model):
     name = models.CharField(max_length=50)
     slug = models.CharField(max_length=50, editable=False)
-    
+    created = models.DateTimeField(auto_now_add=True, editable = False)
+    author = models.ForeignKey('auth.User')
+        
     @models.permalink
     def get_absolute_url(self):
         return ('workspace_detail',[self.pk])
@@ -65,6 +67,8 @@ class DataSet(models.Model):
     name = models.CharField(max_length=50)
     slug = models.CharField(max_length=50, editable=False)
     workspace = models.ForeignKey('Workspace')
+    created = models.DateTimeField(auto_now_add=True, editable = False)
+    author = models.ForeignKey('auth.User')
 
     @models.permalink
     def get_absolute_url(self):

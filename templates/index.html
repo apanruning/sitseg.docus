@@ -75,6 +75,9 @@
     {% endblock %}
     </section>
     <footer>
+    {% block footer %}
+        
+    {% endblock %}
     <ul id="messages">
       {% for message in messages %}
       <li class="{{message.tags}}">

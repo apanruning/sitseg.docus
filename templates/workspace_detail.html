@@ -12,13 +12,9 @@
 {% endblock %}
 
 {% block head %}
-
     <h1><a href="/">Indice</a>/{{workspace.name}}</h1>
-{% endblock %}
-{% block page %}
     {% if user.is_staff %}
     <menu>
-    <a id="delete" href="/workspace/{{workspace.id}}/delete?next={% url workspace %}">Borrar</a>
     <a href="#add-form" class="control">Crear Conjunto de Datos</a>
     </menu>
     <form id="add-form" method="post" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
@@ -29,6 +25,8 @@
     </form>
     {% endif %}    
 
+{% endblock %}
+{% block page %}
     <h1> Conjuntos de Datos </h1>
     <ul id="workspaces">
     {% for dataset in dataset_list %}
@@ -39,4 +37,10 @@
     </ul>
     {% endfor %}
     
+{% endblock %}
+{% block footer %}
+    <p class="details">
+      {{workspace.name}} creado: {{workspace.created|date}} por: {{workspace.author}} 
+      <a id="delete" href="/workspace/{{workspace.id}}/delete?next={% url workspace %}">Borrar</a>
+    </p>
 {% endblock %}
