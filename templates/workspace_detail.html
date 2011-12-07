@@ -12,7 +12,9 @@
 {% endblock %}
 
 {% block head %}
-    <h1><a href="/">Indice</a>/{{workspace.name}}</h1>
+    <h1><a href="/">Indice</a>/<a href="{{workspace.get_absolute_url}}">{{workspace.name}}</a></h1>
+{% endblock %}
+{% block page %}
     {% if user.is_staff %}
     <menu>
     <a href="#add-form" class="control">Crear Conjunto de Datos</a>
