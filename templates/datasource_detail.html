@@ -36,7 +36,8 @@
     <div class="tabs">
         <ul>
             <li><h3><a href="#columns">Columnas</a></h3></li>
-            <li><h3><a href="/datasource/{{datasource.id}}/show_data">Data</a></h3></li>
+            <li><h3><a href="/datasource/{{datasource.id}}/show_data">Datos</a></h3></li>
+            <li><h3><a href="#graphs">Graficos</a></h3></li>
         </ul>
         <div id="columns">
             <ul>
@@ -48,6 +49,16 @@
             <p class="clear"><input type="submit" value="Importar columnas seleccionadas" /></p>
             </form>        
         </div>
+        <div id="graphs" class="ui-tabs-hide">
+        <p>Elija un grafico a realizar.</p>
+        <ul>
+        {% for k, v in plots.iteritems %}
+            <li>
+                <a href="{{v}}"> {{ k }}</a>
+            </li>
+        {% endfor %}
+        <li>
+        </ul> 
     </div>
 
 {% endblock %}
