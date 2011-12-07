@@ -24,7 +24,7 @@ def workspace(request):
        form = WorkspaceForm(request.POST)
        if form.is_valid():
             workspace = form.save()
-            return redirect(workspace.get_absolute_url)
+            return redirect(workspace.get_absolute_url())
 
     return render(
         request,
