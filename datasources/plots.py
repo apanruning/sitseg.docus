@@ -208,7 +208,7 @@ def barplot(request,id):
 #Funciones que graficar (se conectan directamente con R)
 def histogram_view(request):
     if request.method == "POST":
-        var = request.POST['var-0']
+        var = request.POST['variable']
         
         suffix_dir = "media/graphics/"
         ext_file = ".png"
@@ -235,7 +235,7 @@ def histogram_view(request):
 
 def boxplot_view(request):
     if request.method == "POST":
-        var = request.POST['var-0']
+        var = request.POST['variable']
         
         suffix_dir = "media/graphics/"
         ext_file = ".png"
@@ -257,7 +257,7 @@ def boxplot_view(request):
 
 def stripchart_view(request):
     if request.method == "POST":
-        var = request.POST['var-0']
+        var = request.POST['variable']
         
         #configuracion para tipo de archivo donde se guarda el grafico y nombre del mismo
         suffix_dir = "media/graphics/"
@@ -298,7 +298,7 @@ def stripchart_view(request):
 
 def pieplot_view(request):
     if request.method == "POST":
-        var = request.POST['var-0']
+        var = request.POST['variable']
         
         suffix_dir = "media/graphics/"
         ext_file = ".png"
@@ -321,7 +321,7 @@ def pieplot_view(request):
 
 def scatterplot_view(request):
     if request.method == "POST":
-        var1 = request.POST['var-0']
+        var1 = request.POST['variable']
         var2 = request.POST['var-1']
         
         suffix_dir = "media/graphics/"
@@ -353,7 +353,7 @@ def scatterplot_view(request):
 
 def scatterplotmatrix_view(request):
     if request.method == "POST":
-        var1 = request.POST['var-0']
+        var1 = request.POST['variable']
         var2 = request.POST['var-1']
         
         suffix_dir = "media/graphics/"
@@ -384,7 +384,7 @@ def scatterplotmatrix_view(request):
 
 def densityplot_view(request):
     if request.method == "POST":
-        var1 = request.POST['var-0']
+        var1 = request.POST['variable']
         
         suffix_dir = "media/graphics/"
         ext_file = ".png"
@@ -413,7 +413,7 @@ def densityplot_view(request):
 
 def barplot_view(request):
     if request.method == "POST":
-        var1 = request.POST['var-0']
+        var1 = request.POST['variable']
         
         suffix_dir = "media/graphics/"
         ext_file = ".png"
@@ -442,7 +442,7 @@ def barplot_view(request):
 
 def pieplot_view(request):
     if request.method == "POST":
-        var1 = request.POST['var-0']
+        var1 = request.POST['variable']
         
         suffix_dir = "media/graphics/"
         ext_file = ".png"

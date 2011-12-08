@@ -16,22 +16,9 @@
         {% block linkjs %}
         
         {% endblock %}
-        <script type="text/javascript">
-        $(document).ready(function() {
-        {% block js %}
-            $('#delete').click(function(){
-                window.location="/workspace/"+this.attr('href')+"/delete";
-                return false;
-            })
-            
-        {% endblock %}
-        });
-        </script>
     </head>
     <body>
-    <header>
-
-      <menu>
+      <menu id="session">
         {% if user.is_authenticated %}
           {% if user.is_staff %}
           <a href="/admin">Administración </a>
@@ -41,6 +28,7 @@
             <a href="/login?next={{request.path}}">Iniciar sesión</a>
         {% endif %}
       </menu>
+    <header>
     {% block head %}
       <h1>Indice/</h1>
     {% endblock %}

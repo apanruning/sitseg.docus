@@ -3,17 +3,6 @@
 {% block title %}
     Detalles de {{datasource.name}}
 {% endblock %}
-{% block js %}
-    $('.accordion').click(function(event){
-		var elem = $(this);
-			event.preventDefault();
-			$(elem.attr('href')).not(elem.attr('href')).slideDown();
-			$(elem.attr('href')).slideToggle();
-            return false;
-		}
-	);
-
-{% endblock %}
 {% block head %}
 
     <h1><a href="/">Indice</a>/<a href="{{datasource.dataset.workspace.get_absolute_url}}">{{datasource.dataset.workspace.name}}</a>/<a href="{{datasource.dataset.get_absolute_url}}">{{datasource.dataset.name}}</a>/{{datasource.name}}</h1>
@@ -51,14 +40,16 @@
         </div>
         <div id="graphs" class="ui-tabs-hide">
         <p>Elija un grafico a realizar.</p>
-        <ul>
-        {% for k, v in plots.iteritems %}
-            <li>
-                <a href="{{v}}"> {{ k }}</a>
-            </li>
-        {% endfor %}
-        <li>
-        </ul> 
+        <div id="graphs-wrapper">
+            <ul id="graph-select">
+            {% for k, v in plots.iteritems %}
+                <li>
+                    <a href="{{v}}" class="pjax" rel="#plots-container"> {{ k }}</a>
+                </li>
+            {% endfor %}
+            </ul>
+            <div id="plots-container"></div>
+        </div>
     </div>
 
 {% endblock %}

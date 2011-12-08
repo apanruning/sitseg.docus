@@ -1,58 +1,16 @@
-{% extends "index.html" %}
-{% block title %}
-    Estadisticas de {{datasource.name}}
-{% endblock %}
-{% block js %}
-     $('.accordion').click(function(event){
-		var elem = $(this);
-			event.preventDefault();
-			$(elem.attr('href')).not(elem.attr('href')).slideDown();
-			$(elem.attr('href')).slideToggle();
-            return false;
-	});
-    buttons = $("input[type='button']");
-    for(i=0;i<buttons.length;i++) {
-        $(buttons[i]).click(function() {
-                   i = $(this).attr('id');
-                   $('#var-'+i).val($("input[type='radio']:checked").val());
-                   return false; 
-            });
-    };
-{% endblock %}
-{% block head %}
-    <h1><a href="/">Indice</a>/<a href="{{dataset.workspace.get_absolute_url}}">{{dataset.workspace.name}}</a>/{{dataset.name}}</h1>
-{% endblock %}
-{% block page %}
-
-<div id="leftSide" class="anchotreinta">
-<div id="variables">
+<form action="{{options.action|safe}}" method="post" id="column-select" >
+<p>Elija una variable</p>
+<ul id="variables">
 {% for ds in datasources %}
-    <a href="#{{ds.id}}" class="accordion" >{{ ds.name }}</a>
-    <div id="{{ds.id}}">
+    <li id="{{ds.id}}">
     {% for v in ds.column_set.all %}
         <input type="radio" name="variable" value="{{v.id}}" /> {{v.name}} <br />
     {% endfor %}    
-    </div>
+    </li>
 {% endfor %}
 </ul>
-</div>
-
-</div>
-<div id="rightSide" class="anchosesenta">
-<form action='{{options.action|safe}}' method='post'>
-
-{% for o in options.labels %}
-    <p> {{ o }} </p> 
-    <input type='text' id='var-{{forloop.counter0}}' name='var-{{forloop.counter0}}' value="Ingrese valor" />    
-    <input type='button' id='{{forloop.counter0}}' value=">>" /> 
-{% endfor %}
     <input type='submit' value='graficar' />
 {% csrf_token %}
 </form>
-
-</div>
-<div class="clear"></div>
 <div id="graph">
-    // Aqui se muestra el grafico con el resultado
 </div>
-{% endblock %}  
