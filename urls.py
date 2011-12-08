@@ -21,7 +21,7 @@ urlpatterns = patterns('datasources.views',
 
     (r'^datasource/(?P<id>\w+)/download_attach$', 'download_attach', {}, 'download_attach'),
     (r'^datasource/(?P<id>\w+)/import_data$', 'import_data', {}, 'import_data'),
-    (r'^datasource/(?P<id>\w+)/show_data$', 'show_data', {}, 'show_data'),
+    (r'^datasource/(?P<id>\w+)/show_data', 'show_data', {}, 'show_data'),
 
     (r'^column/(?P<id>\w+)$', 'column_detail', {}, 'column'),
    
