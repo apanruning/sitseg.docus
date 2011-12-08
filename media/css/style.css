@@ -209,9 +209,6 @@ fieldset {
     display:none;
 }
 
-.table_data {
-}
-
 #leftSide {
     float:left;   
     margin:0px;
@@ -311,7 +308,7 @@ fieldset {
 }
 
 
-/*interfaz para graficos*/
+/*Issnterfaz para graficos*/
 
 #graph-select {
     float:left;
@@ -320,5 +317,14 @@ fieldset {
 }
 #graph-select a {
     display:block;
+}
+
+/* Tablas */
+
+th {
+    background: #EEE;
+}
+td {
+    padding: 0 1em;
 }
 

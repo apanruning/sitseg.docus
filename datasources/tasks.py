@@ -54,7 +54,7 @@ def generate_documents(datasource, columns=None):
 
                 for result in results:
                     latlng = [float(result.get('lat')), float(result.get('lng'))]
-
+                    map_url = result.get('staticMapUrl', None)
                     try:
                         point =  MaapPoint(
                             geom=Point(latlng).wkt,
@@ -67,6 +67,8 @@ def generate_documents(datasource, columns=None):
                         errors.append(e)
                     else:
                         value.point.add(point)
+                        value.map_url = map_url 
+
                         value.save()
 
             if column.data_type == 'area':

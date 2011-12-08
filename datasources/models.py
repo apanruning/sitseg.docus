@@ -148,6 +148,7 @@ class Value(models.Model):
     data_type = models.CharField(max_length=100)
     value = models.CharField(max_length=100)
     point = models.ManyToManyField(MaapPoint, null=True)
+    map_url = models.URLField()
     multiple = models.BooleanField()
     area = models.ForeignKey(MaapArea, null=True)
     row = models.ForeignKey(Row)

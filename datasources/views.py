@@ -160,8 +160,13 @@ def import_data(request, id):
 
 def show_data(request, id):
     qs = Row.objects.filter(datasource=id, value__isnull=False)
+
     sort_by = request.GET.get('sort_by')
-    
+    if sort_by == 'multiple':
+        qs = qs.filter(value__multiple=True)
+    if sort_by == 'empty':
+        qs = qs.filter(value__point__isnull=True)
+
     return render(
         request,
         'show_data.html',
