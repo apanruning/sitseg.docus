@@ -47,7 +47,6 @@ def generate_documents(datasource, columns=None):
             if column.data_type == 'point':
                 hashing = sha1(value.value).hexdigest()[:6]
                 results = cache.get(hashing)
-                import ipdb; ipdb.set_trace()   
                 if not results:
                     results = gmaps.local_search('%s, cordoba, argentina' %value.value )['responseData']['results']
                     cache.set(hashing,results)
