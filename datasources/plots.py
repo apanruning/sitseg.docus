@@ -62,7 +62,7 @@ def scatter(request,id):
         datasources.append(ds)
     
     options = {
-        'labels':['Seleccione Variable','Seleccione Variable'],
+        'labels':['Seleccione Variable','Seleccione Variable','Seleccione'],
         'action':'/graph/scatterplot',
     }
     return render(
@@ -181,7 +181,7 @@ def barplot(request,id):
 #Funciones que graficar (se conectan directamente con R)
 def histogram_view(request):
     if request.method == "POST":
-        var = request.POST['variable']
+        var = request.POST['var-0']
         
         #configuracion para tipo de archivo donde se guarda el grafico y nombre del mismo
         suffix_dir = "media/graphics/"
@@ -220,7 +220,7 @@ def histogram_view(request):
 
 def boxplot_view(request):
     if request.method == "POST":
-        var = request.POST['variable']
+        var = request.POST['var-0']
 
         #configuracion para tipo de archivo donde se guarda el grafico y nombre del mismo
         suffix_dir = "media/graphics/"
@@ -261,7 +261,7 @@ def boxplot_view(request):
 
 def stripchart_view(request):
     if request.method == "POST":
-        var = request.POST['variable']
+        var = request.POST['var-0']
         
         #configuracion para tipo de archivo donde se guarda el grafico y nombre del mismo
         suffix_dir = "media/graphics/"
@@ -300,32 +300,9 @@ def stripchart_view(request):
 
         return redirect("/outqueue")
 
-def pieplot_view(request):
-    if request.method == "POST":
-        var = request.POST['variable']
-        
-        suffix_dir = "media/graphics/"
-        ext_file = ".png"
-        
-        values = Value.objects.filter(column=var)
-        list_values = [v.cast_value() for v in values]
-        
-        #configuracion para el grafico     
-        vector = robjects.FloatVector(list_values)
-        name_file = "stripchart"+var
-        png(file=suffix_dir+name_file+ext_file)
-        piechart(vector)
-        off()
-     
-        out = Out()
-        out.img = str(name_file+ext_file)
-        out.save()
-
-        return redirect("/outqueue")
-
 def scatterplot_view(request):
     if request.method == "POST":
-        var1 = request.POST['variable']
+        var1 = request.POST['var-0']
         var2 = request.POST['var-1']
         
         suffix_dir = "media/graphics/"
@@ -357,7 +334,7 @@ def scatterplot_view(request):
 
 def scatterplotmatrix_view(request):
     if request.method == "POST":
-        var1 = request.POST['variable']
+        var1 = request.POST['var-0']
         var2 = request.POST['var-1']
         
         suffix_dir = "media/graphics/"
@@ -395,7 +372,7 @@ def scatterplotmatrix_view(request):
 
 def densityplot_view(request):
     if request.method == "POST":
-        var1 = request.POST['variable']
+        var1 = request.POST['var-0']
         
         suffix_dir = "media/graphics/"
         ext_file = ".png"
@@ -426,7 +403,7 @@ def densityplot_view(request):
 
 def barplot_view(request):
     if request.method == "POST":
-        var1 = request.POST['variable']
+        var1 = request.POST['var-0']
         
         suffix_dir = "media/graphics/"
         ext_file = ".png"
@@ -455,7 +432,7 @@ def barplot_view(request):
 
 def pieplot_view(request):
     if request.method == "POST":
-        var1 = request.POST['variable']
+        var1 = request.POST['var-0']
         
         suffix_dir = "media/graphics/"
         ext_file = ".png"
@@ -481,6 +458,7 @@ def pieplot_view(request):
         out.save()
 
         return redirect("/outqueue")
+
 
 def outqueue(request):
     
