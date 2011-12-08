@@ -6,33 +6,6 @@ from datasources.models import Column, Value, DataSource, Out
 from datasources.interface_r import *
 from django import forms
 
-def stats(request,id):
-    datasource = DataSource.objects.get(pk=int(id))
-    plots_function = {
-            'Cajas':'/plots/'+str(column[0].id)+'/boxplot',
-            'Barras':'/plots/'+str(column[0].id)+'/barplot',
-            'Torta':'/plots/'+str(column[0].id)+'/pieplot',
-            'Histograma':'/plots/'+str(column[0].id)+'/histplot',
-            'Stripchart':'/plots/'+str(column[0].id)+'/stripchart',
-            'Densidad':'/plots/'+str(column[0].id)+'/densityplot',
-            'Puntos':'/plots/'+str(column[0].id)+'/ptosplot',
-            'Pareto':'/plots/'+str(column[0].id)+'/paretoplot',
-            'Generico':'/plots/'+str(column[0].id)+'/genericplot',
-            'ECDF':'/plots/'+str(column[0].id)+'/ecdfplot',            
-            'Scatter':'/plots/'+str(column[0].id)+'/scatterplot',
-            'Scatter Matrix':'/plots/'+str(column[0].id)+'/scattermatrixplot',     
-            'Geo':'/plots/'+str(column[0].id)+'/scattermatrixplot',
-        }
-
-    return render(
-        request,
-        'stats.html',
-        {
-            'plots':plots_function,            
-            'datasource': datasource,
-        }
-    )
-
 def histplot(request,id):
     #This function populate manager's graphic for produce Histogram 
     #id is a parameter that represent the dataset id
@@ -210,50 +183,81 @@ def histogram_view(request):
     if request.method == "POST":
         var = request.POST['variable']
         
+        #configuracion para tipo de archivo donde se guarda el grafico y nombre del mismo
         suffix_dir = "media/graphics/"
         ext_file = ".png"
+        name_file = "histograma"+var
+        png(file=suffix_dir+name_file+ext_file)
         
+        #se preparan los valores. TODO: Refactorizar casteo. Hacer mas eficiente. 
         values = Value.objects.filter(column=var)
         list_values = [v.cast_value() for v in values]
         
-        #configuracion para el grafico     
+        #creacion de vector R con los valores correspondientes (R)     
         vector = robjects.FloatVector(list_values)
-        name_file = "histograma"+var
-        png(file=suffix_dir+name_file+ext_file)
-        hist(vector)
+
+        #parametros del grafico
+        freq = False
+        probability = not freq
+        include = True
+        right = True
+        col = "blue"
+        border = par("fg")
+
+        main = "Histograma de %s" %(Column.objects.get(pk=var).name)
+        xlab = "Valores"
+        ylab = "Frecuencia"
+
+        hist(vector,col=col,border=border,main=main,xlab=xlab,ylab=ylab)
         off()
+
+        #Guardo el resultado y lo muestro en la cola de salida
         out = Out()
         out.img = str(name_file+ext_file)
         out.save()
-        return render(
-            request,
-            'outqueue.html',
-            {          
-                'outs':Out.objects.all(),
-            }
-        )
+
+        return redirect("/outqueue")
 
 def boxplot_view(request):
     if request.method == "POST":
-        var = request.POST['variable']
-        
+        var = request.POST['var-0']
+
+        #configuracion para tipo de archivo donde se guarda el grafico y nombre del mismo
         suffix_dir = "media/graphics/"
         ext_file = ".png"
-        
+        name_file = "cajas"+var
+        png(file=suffix_dir+name_file+ext_file)
+
+        #se preparan los valores. TODO: Refactorizar casteo. Hacer mas eficiente. 
         values = Value.objects.filter(column=var)
         list_values = [v.cast_value() for v in values]
         
-        #configuracion para el grafico     
+        #creacion de vector R con los valores correspondientes (R)     
         vector = robjects.FloatVector(list_values)
-        name_file = "cajas"+var
-        png(file=suffix_dir+name_file+ext_file)
+
+        #parametros del grafico
+        jitter=0.1 
+        offset=1/3
+        vertical=True
+        #group.names
+        #xlim=NULL 
+        #ylim=NULL
+        main=Column.objects.get(pk=var).name
+        ylab=""
+        xlab="Valores"
+        pch=1
+        col=par("fg")
+        cex=par("cex")
+
         boxplot(vector)
         off()
+     
+        #Guardo el resultado y lo muestro en la cola de salida
         out = Out()
         out.img = str(name_file+ext_file)
         out.save()
 
-        return outqueue(request)
+        return redirect("/outqueue")
 
 def stripchart_view(request):
     if request.method == "POST":
@@ -276,9 +280,9 @@ def stripchart_view(request):
         jitter=0.1 
         offset=1/3
         vertical=True
-        #group.names,
-        #xlim=NULL, 
-        #ylim=NULL, 
+        #group.names
+        #xlim=NULL 
+        #ylim=NULL
         main=Column.objects.get(pk=var).name
         ylab=""
         xlab="Valores"
@@ -289,12 +293,12 @@ def stripchart_view(request):
         strip(list_values,method="overplot",jitter=jitter,offset=offset,vertical=vertical,main=main,xlab=xlab,pch=pch,col=col,cex=cex)
         off()
      
-        #Guaro el resultado en la cola de salida
+        #Guardo el resultado y lo muestro en la cola de salida
         out = Out()
         out.img = str(name_file+ext_file)
         out.save()
 
-        return outqueue(request)
+        return redirect("/outqueue")
 
 def pieplot_view(request):
     if request.method == "POST":
@@ -317,7 +321,7 @@ def pieplot_view(request):
         out.img = str(name_file+ext_file)
         out.save()
 
-        return outqueue(request)
+        return redirect("/outqueue")
 
 def scatterplot_view(request):
     if request.method == "POST":
@@ -349,7 +353,7 @@ def scatterplot_view(request):
         out.img = str(name_file+ext_file)
         out.save()
 
-        return outqueue(request)
+        return redirect("/outqueue")
 
 def scatterplotmatrix_view(request):
     if request.method == "POST":
@@ -380,7 +384,7 @@ def scatterplotmatrix_view(request):
         out.img = str(name_file+ext_file)
         out.save()
 
-        return outqueue(request)
+        return redirect("/outqueue")
 
 def densityplot_view(request):
     if request.method == "POST":
@@ -409,7 +413,7 @@ def densityplot_view(request):
         out.img = str(name_file+ext_file)
         out.save()
 
-        return outqueue(request)
+        return redirect("/outqueue")
 
 def barplot_view(request):
     if request.method == "POST":
@@ -438,7 +442,7 @@ def barplot_view(request):
         out.img = str(name_file+ext_file)
         out.save()
 
-        return outqueue(request)
+        return redirect("/outqueue")
 
 def pieplot_view(request):
     if request.method == "POST":
@@ -467,7 +471,7 @@ def pieplot_view(request):
         out.img = str(name_file+ext_file)
         out.save()
 
-        return outqueue(request)
+        return redirect("/outqueue")
 
 def outqueue(request):
     
