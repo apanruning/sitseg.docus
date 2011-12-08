@@ -160,13 +160,15 @@ def import_data(request, id):
     return redirect("datasource_detail", id)
 
 def show_data(request, id):
-
+    qs = Row.objects.filter(datasource=id, value__isnull=False)
+    sort_by = request.GET.get('sort_by')
+    
     return render(
         request,
         'show_data.html',
         {
             'datasource': DataSource.objects.get(pk=id),
-            'values':Value.objects.filter(column__datasource=id),
+            'rows':qs,
         }
     )
 def download_attach(request, id):

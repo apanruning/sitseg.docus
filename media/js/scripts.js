@@ -49,15 +49,14 @@ $('document').ready(function(){
     window.setTimeout(function(){
         $('#messages .control').click()
     }, 3000);
-    $('.pjax').click(function(){
-        $('#ajax-container').remove();
+    $('.pjax').live('click', function(){
         target = $(this).attr('href');
-        container = $(this).parents('li');
+        container = $(this).attr('rel');
         $.get(
             target,
             function(data){
-                wrapper = $('<div">').attr('id','ajax-container').append(data);
-                $(container).append(wrapper).effect('highlight', {}, 2000);
+                $(container).empty();
+                $(container).append(data).effect('highlight', {}, 2000);
             }
         
         );
@@ -67,4 +66,5 @@ $('document').ready(function(){
     })
     $('#accordion').accordion();    
     $('.tabs').tabs();
+
 })

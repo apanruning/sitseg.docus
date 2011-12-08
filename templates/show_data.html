@@ -1,10 +1,17 @@
-{% regroup values by row as rows %}
-{% for row in rows %}
-        <ul>
-        {% for value in row.list %}
-         {{value}}
-        {% endfor %}
-        </ul>
-{% endfor %}
+{% load pagination_tags %}
+<p id="sort_by">Filtrar: 
+<a class="pjax" rel="#ui-tabs-1" href="/datasource/{{datasource.id}}/show_data?sort_by='empty'">Vacíos</a>
+<a class="pjax" rel="#ui-tabs-1" href="/datasource/{{datasource.id}}/show_data?sort_by='multiple'">Ambiguos</a>
+<a class="pjax" rel="#ui-tabs-1" href="/datasource/{{datasource.id}}/show_data?sort_by='right'">Correctos</a>
+<a class="pjax" rel="#ui-tabs-1" href="/datasource/{{datasource.id}}/show_data?sort_by='all'">Todos</a>
+</p>
 
+<table>
+    <tr>{% for value in rows.0.value_set.all %}<th>{{value.column}}</th>{% endfor %}</tr>
+    {% autopaginate rows 20 %}
+    {% for row in rows %}
 
+    <tr>{% for value in row.value_set.all %}<td>{{value}}</td>{% endfor %}</tr>
+    {% endfor %}     
+</table>
+{% paginate %}
