@@ -48,7 +48,7 @@ def generate_documents(datasource, columns=None):
                 results = gmaps.local_search('%s, cordoba, argentina' %value.value )['responseData']['results']
                 for result in results:
                     latlng = [float(result.get('lat')), float(result.get('lng'))]
-
+                    map_url = result.get('staticMapUrl', None)
                     try:
                         point =  MaapPoint(
                             geom=Point(latlng).wkt,
@@ -61,8 +61,9 @@ def generate_documents(datasource, columns=None):
                         errors.append(e)
                     else:
                         value.point.add(point)
+                        value.map_url = map_url 
                         value.save()
-                        
+  
             if column.data_type == 'area':
                 try:
                     barrio = MaapArea.objects.filter(name_norm=normalize('NFKD', row[column.csv_index].decode('utf-8')).encode('UTF-8', 'ignore').lower())    
