@@ -7,6 +7,9 @@
 </p>
 
 <table>
+    <summary> 
+    {{rows|length}}
+    </summary>
     <tr>{% for value in rows.0.value_set.all %}<th>{{value.column}}</th>{% endfor %}</tr>
     {% autopaginate rows 20 %}
     {% for row in rows %}

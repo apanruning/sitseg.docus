@@ -162,10 +162,13 @@ def show_data(request, id):
     qs = Row.objects.filter(datasource=id, value__isnull=False)
 
     sort_by = request.GET.get('sort_by')
+    if sort_by == 'right':
+        qs = Row.objects.filter(datasource=id, value__point__isnull=True, value__isnull=False)
     if sort_by == 'multiple':
-        qs = qs.filter(value__multiple=True)
+        qs = Row.objects.filter(datasource=id, value__multiple=True, value__isnull=False)
     if sort_by == 'empty':
-        qs = qs.filter(value__point__isnull=True)
+        qs = Row.objects.filter(datasource=id, value__map_url__isnull=True, value__isnull=False)
+        
 
     return render(
         request,
