@@ -2,12 +2,16 @@
 <p>Elija una variable</p>
 <ul id="variables">
 {% for ds in datasources %}
-    <li id="{{ds.id}}">
+    <li>
+    <label for="#{{ds.id}}" >{{ds.name}}</label>
+    <select name="var-{{forloop.counter0}}" id="{{ds.id}}">
     {% for v in ds.column_set.all %}
         {% if column.data_type != 'str' %}
-        <input type="radio" name="variable" value="{{v.id}}" /> {{v.name}} <br />
+        <option value="{{v.id}}"> {{v.name}} </option>
         {% endif %}
     {% endfor %}    
+    </select>
+    
     </li>
 {% endfor %}
 </ul>
