@@ -89,7 +89,6 @@ def datasource_detail(request, id):
             'Histograma':'/plots/'+id+'/hist',
             'Stripchart':'/plots/'+id+'/stripchart',
             'Densidad':'/plots/'+id+'/density',
-            'Puntos':'/plots/'+id+'/stripchart',
             'Scatter':'/plots/'+id+'/scatter',
             'Scatter Matrix':'/plots/'+id+'/scattermatrix',  
             'Map':'/plots/'+id+'/map',

@@ -220,7 +220,7 @@ def histogram_view(request):
 
 def boxplot_view(request):
     if request.method == "POST":
-        var = request.POST['var-0']
+        var = request.POST['variable']
 
         #configuracion para tipo de archivo donde se guarda el grafico y nombre del mismo
         suffix_dir = "media/graphics/"
@@ -369,6 +369,7 @@ def scatterplotmatrix_view(request):
         list_values_var1 = [v.cast_value() for v in values_var1]
         list_values_var2 = [v.cast_value() for v in values_var2]
         errors=""
+
         #configuracion para el grafico     
         try:
             vector_var1 = robjects.FloatVector(list_values_var1)
@@ -376,7 +377,13 @@ def scatterplotmatrix_view(request):
         except e:
             errors = e
 
-        name_file = "scatter"+var1+var2
+
+        main=Column.objects.get(pk=var1).name+'-'+Column.objects.get(pk=var2).name
+        ylab=""
+        xlab="Valores"
+
+
+        name_file = "scatterplotmatrix"+var1+var2
         png(file=suffix_dir+name_file+ext_file)
         scatterplotmatrix([vector_var1, vector_var2])
         off()
@@ -407,7 +414,9 @@ def densityplot_view(request):
 
         name_file = "density"+var1
         png(file=suffix_dir+name_file+ext_file)
+
         densityplot(vector_var1)
+
         off()
         out = Out()
         out.img = str(name_file+ext_file)

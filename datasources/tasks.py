@@ -11,7 +11,8 @@ from django.contrib.gis.geos import Point
 from datasources.models import DataSource, Value
 from maap.models import MaapPoint, MaapArea
 from unicodedata import normalize
-
+from django.core.cache import cache
+from hashlib import sha1
 
 
 def generate_documents(datasource, columns=None):
@@ -44,8 +45,13 @@ def generate_documents(datasource, columns=None):
             value.save()
             
             if column.data_type == 'point':
-                
-                results = gmaps.local_search('%s, cordoba, argentina' %value.value )['responseData']['results']
+                hashing = sha1(value.value).hexdigest()[:6]
+                results = cache.get(hashing)
+                import ipdb; ipdb.set_trace()   
+                if not results:
+                    results = gmaps.local_search('%s, cordoba, argentina' %value.value )['responseData']['results']
+                    cache.set(hashing,results)
+
                 for result in results:
                     latlng = [float(result.get('lat')), float(result.get('lng'))]
 
@@ -62,7 +68,7 @@ def generate_documents(datasource, columns=None):
                     else:
                         value.point.add(point)
                         value.save()
-                        
+
             if column.data_type == 'area':
                 try:
                     barrio = MaapArea.objects.filter(name_norm=normalize('NFKD', row[column.csv_index].decode('utf-8')).encode('UTF-8', 'ignore').lower())    

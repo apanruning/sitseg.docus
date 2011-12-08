@@ -99,6 +99,13 @@ MIDDLEWARE_CLASSES = (
     'pagination.middleware.PaginationMiddleware',
 )
 
+CACHES = {
+        'default':{
+            'BACKEND':'django.core.cache.backends.filebased.FileBasedCache',
+            'LOCATION':os.path.join(BASE_DIR, 'cache')
+         }
+}
+
 DEFAULT_REGION = 'Cordoba, Argentina'
 PAGINATION_DEFAULT_WINDOW = 2
 
