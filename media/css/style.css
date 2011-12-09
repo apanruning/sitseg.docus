@@ -297,11 +297,16 @@ fieldset {
 }
 .details-wrapper {
     display:none;
-    overflow:hidden;
     background: #F0F0F0;
     box-shadow: 0 1px 2px #000;
     border-radius: 0 0 3px 3px;
-    padding-bottom: 3px;
+    margin-bottom:0.5em;
+}
+.details-wrapper menu {
+    padding: 0.5em 1em;
+    clear:both;
+    float:none;
+    text-align: right;
 }
 /* Tabs */
 .tabs {
@@ -312,6 +317,7 @@ fieldset {
 }
 .ui-tabs-nav {
     padding:0 1em;
+    margin:0;
 }
 .ui-tabs-nav li{
     float:right;
@@ -325,12 +331,15 @@ fieldset {
 .ui-tabs-selected {
     border:1px solid #CCC;
     border-color: #CCC #CCC #FFF;
-    margin-bottom:-1px;
+    margin: -5px 0 -1px;
+    padding: 5px 0 0;
     background: #FFF;
 }
 .ui-tabs-panel{
     clear:both;
-    border-top:1px solid #CCC;
+    border:1px solid #CCC;
+    border-color: #CCC #F0F0F0;
+    border-width:1px 0;
     background: #FFF;
     padding:1em 1em 0;
 }
