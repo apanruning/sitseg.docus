@@ -13,10 +13,6 @@
     <tr>
         {% for value in row.value_set.all %}
         <td>{{value}}
-            {% if value.map_url %}
-            <br />
-            <img src="{{value.map_url}}" />
-            {% endif %}
         </td>
         {% endfor %}
     </tr>

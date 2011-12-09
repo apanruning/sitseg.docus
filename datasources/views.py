@@ -59,7 +59,12 @@ def workspace_detail(request, id):
 
 def dataset_detail(request,id):
     obj = DataSet.objects.get(pk=id)
-    form = DataSourceForm(initial={'dataset':obj.id})
+    form = DataSourceForm(
+        initial={
+            'dataset':obj.id, 
+            'author':request.user.id
+        }
+    )
     if request.method == 'POST':
         form = DataSourceForm(request.POST, request.FILES, initial={'dataset':obj.id})
         if form.is_valid():
@@ -157,7 +162,7 @@ def import_data(request, id):
     return redirect("datasource_detail", id)
 
 def show_data(request, id):
-    qs = Row.objects.filter(datasource=id, value__isnull=False)
+    qs = Row.objects.select_related.filter(datasource=id, value__isnull=False)
 
     sort_by = request.GET.get('sort_by')
     if sort_by == 'right':

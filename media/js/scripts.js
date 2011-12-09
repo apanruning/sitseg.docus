@@ -54,6 +54,7 @@ $(function(){
         $('#id_name').val(value);
         
     });
+    
     $('body').on('submit', '.import_form', function(){
         target = $(this).attr('action');
         container = $(this).parents('div');
@@ -73,17 +74,25 @@ $(function(){
         );
 
         return false;
-    })
-    window.setTimeout(function(){
+    });
+    $('.graph-select>li a ').on('click', function(){
+        $('.selected').toggleClass('selected');
+        $(this).parents('li').toggleClass('selected');
+    });
+
+//    TODO: Tratar de darle tab-focus a la primera pestaña
+//    TODO: Asignar eventos de teclado
+//    $('body').on('tabscreate', function(event, ui){
+//        console.log(event, ui)
+//    })    
+   
+    $('body').on('click.pjax', '.pjax', pjax)
+    
+    $('body').on('click.collapsable','.collapsable', collapsable)
+    
+   
+
+     window.setTimeout(function(){
         $('#messages .control').click()
     }, 3000);
-    $('body').on(
-        'click.pjax',
-        '.pjax',
-        pjax
-    )
-    $('body').on('click.collapsable','.collapsable', collapsable)
-    $('#accordion').accordion();
-    $('.tabs').tabs();
-
 });

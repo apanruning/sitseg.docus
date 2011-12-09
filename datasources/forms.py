@@ -2,11 +2,16 @@
 
 from django import forms
 from models import DataSource, Annotation, Column, Value, Workspace, DataSet
+from django.contrib.auth.models import User
 
 class DataSourceForm(forms.ModelForm):
+    author = forms.ModelChoiceField(label='', queryset=User.objects.all(),widget=forms.HiddenInput)
+    dataset = forms.ModelChoiceField(label='', queryset=DataSet.objects.all(),widget=forms.HiddenInput)
+
     class Meta:
         model = DataSource    
-
+        fields = ('attach','name','author','dataset')
+        
 class WorkspaceForm(forms.ModelForm):
     class Meta:  
         model = Workspace
@@ -28,8 +33,8 @@ class ColumnForm(forms.ModelForm):
         ],
         required=False
     )
-
     class Meta:
+
         model = Column
         
 class ValueForm(forms.ModelForm):

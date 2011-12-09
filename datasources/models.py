@@ -86,9 +86,9 @@ class DataSource(models.Model):
     name = models.CharField(max_length=50)
     slug = models.CharField(max_length=50,editable=False)
     attach = models.FileField(upload_to='docs/')
-    created = models.DateTimeField(auto_now_add=True, editable = False)
+    created = models.DateTimeField(auto_now_add=True, editable=False)
     author = models.ForeignKey('auth.User')
-    is_dirty = models.BooleanField(default=True)
+    is_dirty = models.BooleanField(default=True, editable=False)
     dataset = models.ForeignKey('DataSet')
     
 

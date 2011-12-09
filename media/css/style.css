@@ -341,7 +341,7 @@ fieldset {
     border-color: #CCC #F0F0F0;
     border-width:1px 0;
     background: #FFF;
-    padding:1em 1em 0;
+    padding:0 1em;
 }
 
 .ui-tabs-hide {
