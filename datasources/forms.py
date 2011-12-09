@@ -13,10 +13,13 @@ class DataSourceForm(forms.ModelForm):
         fields = ('attach','name','author','dataset')
         
 class WorkspaceForm(forms.ModelForm):
+    author = forms.ModelChoiceField(label='', queryset=User.objects.all(),widget=forms.HiddenInput)
     class Meta:  
         model = Workspace
 
 class DataSetForm(forms.ModelForm):
+    author = forms.ModelChoiceField(label='', queryset=User.objects.all(),widget=forms.HiddenInput)
+    workspace = forms.ModelChoiceField(label='', queryset=Workspace.objects.all(),widget=forms.HiddenInput)
     class Meta:
         model = DataSet
         

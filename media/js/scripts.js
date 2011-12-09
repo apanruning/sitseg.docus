@@ -18,7 +18,6 @@ function collapsable(){
     $('.active').toggleClass('active');
     container = $(this).attr('rel'),
     target = $(this).attr('href');
-
     $(this).toggleClass('active');
     $(container).toggleClass('expanded');
     $(container).toggle('blind');

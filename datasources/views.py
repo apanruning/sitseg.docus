@@ -18,7 +18,7 @@ import simplejson
 
 def workspace(request):
     ''' This function list all workspace present in database. Here is possible create a new workspace '''
-    form = WorkspaceForm()
+    form = WorkspaceForm(initial={'author':request.user.id})
     if request.method == 'POST':
 
        form = WorkspaceForm(request.POST)
@@ -38,11 +38,15 @@ def workspace(request):
 def workspace_detail(request, id):
     ''' This function show the workspace's detail. It consist in a list of dataset associated with it. Here is possible create a new dataset'''
     obj = Workspace.objects.get(pk=id)
-    form = DataSetForm(initial={'workspace':obj.id})
+    initial={
+        'workspace':obj.id,
+        'author':request.user.id
+    }
+    form = DataSetForm(initial=initial)
     
     if request.method == 'POST':
 
-       form = DataSetForm(request.POST, initial={'workspace':obj.id})
+       form = DataSetForm(request.POST, initial=initial)
        if form.is_valid():
             dataset = form.save()
             return redirect(dataset.get_absolute_url())
@@ -59,14 +63,13 @@ def workspace_detail(request, id):
 
 def dataset_detail(request,id):
     obj = DataSet.objects.get(pk=id)
-    form = DataSourceForm(
-        initial={
-            'dataset':obj.id, 
-            'author':request.user.id
-        }
-    )
+    initial={
+        'dataset':obj.id, 
+        'author':request.user.id
+    }
+    form = DataSourceForm(initial=initial)
     if request.method == 'POST':
-        form = DataSourceForm(request.POST, request.FILES, initial={'dataset':obj.id})
+        form = DataSourceForm(request.POST, request.FILES, initial=initial)
         if form.is_valid():
             #import pdb; pdb.set_trace()
             datasource = form.save()
@@ -162,15 +165,16 @@ def import_data(request, id):
     return redirect("datasource_detail", id)
 
 def show_data(request, id):
-    qs = Row.objects.select_related.filter(datasource=id, value__isnull=False)
-
+    rows = Row.objects.annotate(points=Count('value__point'))
+    qs = rows.filter(datasource=id, value__isnull=False)
+        
     sort_by = request.GET.get('sort_by')
     if sort_by == 'right':
-        qs = Row.objects.filter(datasource=id, value__point__isnull=True, value__isnull=False)
+        qs = rows.filter(datasource=id, value__point__isnull=True, value__isnull=False)
     if sort_by == 'multiple':
-        qs = Row.objects.filter(datasource=id, value__multiple=True, value__isnull=False)
+        qs = rows.filter(datasource=id, value__multiple=True, value__isnull=False)
     if sort_by == 'empty':
-        qs = Row.objects.filter(datasource=id, value__map_url__isnull=True, value__isnull=False)
+        qs = rows.filter(datasource=id, value__map_url__isnull=True, value__isnull=False)
         
 
     return render(

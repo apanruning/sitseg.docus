@@ -12,7 +12,12 @@
     {% for row in rows %}
     <tr>
         {% for value in row.value_set.all %}
-        <td>{{value}}
+        <td class="{{value.data_type}}">
+        {% if value.data_type == "point" %}
+            <a href="/map/{{value.id}}">{{value}} ({{value.points}})</a>
+        {% else %}
+        {{value}}
+        {% endif %}
         </td>
         {% endfor %}
     </tr>

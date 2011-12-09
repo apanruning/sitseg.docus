@@ -143,6 +143,13 @@ class Row(models.Model):
     csv_index = models.IntegerField()
 
 
+class ValueManager(models.Manager):
+
+    def get_query_set(self):
+        return super(ValueManager, self).get_query_set().annotate(
+            points=models.Count('point')
+        ).order_by('column')
+
 class Value(models.Model):
     column = models.ForeignKey(Column)
     data_type = models.CharField(max_length=100)
@@ -152,10 +159,11 @@ class Value(models.Model):
     multiple = models.BooleanField()
     area = models.ForeignKey(MaapArea, null=True)
     row = models.ForeignKey(Row)
-
+    objects = ValueManager()
+        
     def __unicode__(self):
-        return self.value
-    
+        return self.cast_value()
+        
     def cast_value(self):
         tests = (
             str,
@@ -169,7 +177,7 @@ class Value(models.Model):
                 return test(self.value)
             except ValueError:
                 continue
-        return value
+        return self.value
 
 class Out(models.Model):
     session = models.DateTimeField(default=datetime.now(),editable=False) 
