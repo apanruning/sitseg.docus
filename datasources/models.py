@@ -1,7 +1,6 @@
 
 # -*- coding: utf-8 -*-
 
-from django.template.defaultfilters import slugify
 
 from csv import reader
 from django.db import models
@@ -9,6 +8,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from maap.models import MaapPoint, MaapArea
 from dateutil.parser import parse as date_parser
+from django.template.defaultfilters import slugify
 from django import forms
 from datetime import datetime
 
@@ -97,7 +97,7 @@ class DataSource(models.Model):
         return ('datasource_detail',[self.pk])
 
     def __unicode__(self):
-        return self.name
+        return '%s-%d' %(slugify(self.name), self.id)
 
     def save(self):
         if self.slug is None:

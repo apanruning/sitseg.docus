@@ -1,9 +1,9 @@
 {% load pagination_tags %}
 <p id="sort_by">Filtrar: 
-<a class="pjax" rel="#{{datasource.name|slugify}}{{datasource.id}}-data" href="/datasource/{{datasource.id}}/show_data?sort_by=empty">Vacíos</a>
-<a class="pjax" rel="#{{datasource.name|slugify}}{{datasource.id}}-data" href="/datasource/{{datasource.id}}/show_data?sort_by=multiple">Ambiguos</a>
-<a class="pjax" rel="#{{datasource.name|slugify}}{{datasource.id}}-data" href="/datasource/{{datasource.id}}/show_data?sort_by=right">Correctos</a>
-<a class="pjax" rel="#{{datasource.name|slugify}}{{datasource.id}}-data" href="/datasource/{{datasource.id}}/show_data?sort_by=all">Todos</a>
+<a class="pjax" rel="#{{datasource}}-data" href="/datasource/{{datasource.id}}/show_data?sort_by=empty">Vacíos</a>
+<a class="pjax" rel="#{{datasource}}-data" href="/datasource/{{datasource.id}}/show_data?sort_by=multiple">Ambiguos</a>
+<a class="pjax" rel="#{{datasource}}-data" href="/datasource/{{datasource.id}}/show_data?sort_by=right">Correctos</a>
+<a class="pjax" rel="#{{datasource}}-data" href="/datasource/{{datasource.id}}/show_data?sort_by=all">Todos</a>
 </p>
 
 <table>
@@ -20,9 +20,9 @@
 </table>
 <p class="pagination">
     {% if page_obj.has_previous %}
-        <a class="prev pjax" rel="rel="#{{datasource.name|slugify}}{{datasource.id}}-data"" href="/datasource/{{datasource.id}}/show_data?sort_by='empty'&page={{ page_obj.previous_page_number }}{{ getvars }}{{ hashtag }}">Prev</a>
+        <a class="prev pjax" rel="rel="#{{datasource}}-data"" href="/datasource/{{datasource.id}}/show_data?sort_by='empty'&page={{ page_obj.previous_page_number }}{{ getvars }}{{ hashtag }}">Prev</a>
     {% endif %}
     {% if page_obj.has_next %}
-        <a class="next pjax" rel="#{{datasource.name|slugify}}{{datasource.id}}-data" href="/datasource/{{datasource.id}}/show_data?sort_by='empty'&page={{ page_obj.next_page_number }}{{ getvars }}{{ hashtag }}">Next</a>
+        <a class="next pjax" rel="#{{datasource}}-data" href="/datasource/{{datasource.id}}/show_data?sort_by='empty'&page={{ page_obj.next_page_number }}{{ getvars }}{{ hashtag }}">Next</a>
     {% endif %}
 </p>

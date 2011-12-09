@@ -13,11 +13,12 @@ function pjax(){
     );
 }
 function collapsable(){
+    $(this).off('click');
     $('.expanded').toggle('blind').toggleClass('expanded')
     $('.active').toggleClass('active');
     container = $(this).attr('rel'),
     target = $(this).attr('href');
-    $(this).off('click.pjax');
+
     $(this).toggleClass('active');
     $(container).toggleClass('expanded');
     $(container).toggle('blind');
