@@ -22,13 +22,12 @@
     {% endif %}    
     
     <h1>Fuentes de Datos </h1>
-    <ul id="datasources">
+    <article id="datasources">
     {% for datasource in datasources_list %}
-        <li>
-            <h2><a href="{{datasource.get_absolute_url}}" >#{{datasource.pk}}-{{ datasource.name }}</a></h2>
-        </li>
+            <h2><a href="{{datasource.get_absolute_url}}" class="pjax collapsable" rel="#details-{{datasource.name|slugify}}">#{{datasource.pk}}-{{ datasource.name }}</a></h2>
+            <div id="details-{{datasource.name|slugify}}" class="details-wrapper"></div>
     {% endfor %}
-    </ul>
+    </article>
     
 {% endblock %}
 {% block footer %}

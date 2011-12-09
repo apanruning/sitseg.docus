@@ -1,9 +1,10 @@
-<form action="{{options.action|safe}}" method="post" id="column-select" >
-<p>Elija una variable</p>
+<form action="{{options.action|safe}}" method="post" class="column-select" >
 <ul id="variables">
 {% for ds in datasources %}
     <li>
-    <label for="#{{ds.id}}" >{{ds.name}}</label>
+    <input type="hidden" name="datasource_id" value="{{ds.id}}" />
+    <label for="#{{ds.id}}" >En {{ds.name}}</label>
+
     <select name="var-{{forloop.counter0}}" id="{{ds.id}}">
     {% for v in ds.column_set.all %}
         {% if column.data_type != 'str' %}
@@ -17,5 +18,3 @@
     <input type='submit' value='graficar' />
 {% csrf_token %}
 </form>
-<div id="graph">
-</div>

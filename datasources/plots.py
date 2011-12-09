@@ -461,7 +461,6 @@ def pieplot_view(request):
 
 
 def outqueue(request):
-    
     return render(
         request,
         'outqueue.html',

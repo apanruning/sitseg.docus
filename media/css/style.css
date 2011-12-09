@@ -1,3 +1,4 @@
+
 /*base*/
 body {
     font: 100% "Droid Sans", "Lucida Grande", Verdana, sans-serif;
@@ -277,29 +278,60 @@ fieldset {
 #delete {
     color:#500;
 }
+#datasources>h2 {
+    clear:both;
+}
+#datasources .details{
+    clear:both;
+    
+}
+.collapsable {
+    display:block;
+    padding: 3px;
+    border-radius:3px 3px 0 0;
+    margin-bottom:-2px;
+}
+.active {
+    background:#F0F0F0;
+    box-shadow: 0 0 2px #000;
+}
+.details-wrapper {
+    display:none;
+    overflow:hidden;
+    background: #F0F0F0;
+    box-shadow: 0 1px 2px #000;
+    border-radius: 0 0 3px 3px;
+    padding-bottom: 3px;
+}
+/* Tabs */
+.tabs {
+}
 .ui-accordion-content {
     max-height:400px;
     overflow-y:auto;
 }
+.ui-tabs-nav {
+    padding:0 1em;
+}
 .ui-tabs-nav li{
-    float:left;
+    float:right;
     list-style-type:none;
 }
-.ui-tabs-selected {
-    border:1px solid #CCC;
-    border-color: #CCC #CCC #FFF;
-    margin-bottom:-1px;
-}
-
 
 .ui-tabs-nav li a{
     padding:2px 1em 0;
     outline:none;
 }
-
+.ui-tabs-selected {
+    border:1px solid #CCC;
+    border-color: #CCC #CCC #FFF;
+    margin-bottom:-1px;
+    background: #FFF;
+}
 .ui-tabs-panel{
     clear:both;
     border-top:1px solid #CCC;
+    background: #FFF;
     padding:1em 1em 0;
 }
 
@@ -308,14 +340,16 @@ fieldset {
 }
 
 
-/*Issnterfaz para graficos*/
-
-#graph-select {
+/*Interfaz para graficos*/
+.graph {
+    clear:both;   
+}
+.graph-select {
     float:left;
-    width:15em;
+    width:10em;
     margin:0;
 }
-#graph-select a {
+.graph-select a {
     display:block;
 }
 

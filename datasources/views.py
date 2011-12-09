@@ -67,7 +67,7 @@ def dataset_detail(request,id):
             datasource = form.save()
             datasource.import_columns()
 
-            return redirect(datasource.get_absolute_url())
+            return redirect(obj.get_absolute_url())
 
     return render(
         request,
@@ -102,8 +102,6 @@ def datasource_detail(request, id):
             'rows':Row.objects.filter(datasource=id),
             'column_form' : ColumnForm,
             'column_forms':[ColumnForm(instance=column) for column in instance.column_set.all()],
-            'column_labels':(v for v in ColumnForm()),
-            'data_labels':(c.label for c in Column.objects.filter(datasource=id)),
             'plots':plots_function,
             
         }
