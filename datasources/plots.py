@@ -236,20 +236,11 @@ def boxplot_view(request):
         vector = robjects.FloatVector(list_values)
 
         #parametros del grafico
-        jitter=0.1 
-        offset=1/3
-        vertical=True
-        #group.names
-        #xlim=NULL 
-        #ylim=NULL
-        main=Column.objects.get(pk=var).name
-        ylab=""
+        main="Grafico de Caja para %s" %(Column.objects.get(pk=var).name)
         xlab="Valores"
-        pch=1
-        col=par("fg")
-        cex=par("cex")
 
-        boxplot(vector)
+
+        boxplot(vector,main=main,xlab=xlab)
         off()
      
         #Guardo el resultado y lo muestro en la cola de salida
@@ -283,14 +274,14 @@ def stripchart_view(request):
         #group.names
         #xlim=NULL 
         #ylim=NULL
-        main=Column.objects.get(pk=var).name
+        main="Grafico de Puntos para %s" %(Column.objects.get(pk=var).name)
         ylab=""
         xlab="Valores"
         pch=1
         col=par("fg")
         cex=par("cex")
 
-        strip(list_values,method="overplot",jitter=jitter,offset=offset,vertical=vertical,main=main,xlab=xlab,pch=pch,col=col,cex=cex)
+        strip(vector,method="overplot",jitter=jitter,offset=offset,vertical=vertical,main=main,xlab=xlab,pch=pch,col=col,cex=cex)
         off()
      
         #Guardo el resultado y lo muestro en la cola de salida
@@ -355,7 +346,7 @@ def scatterplotmatrix_view(request):
             errors = e
 
 
-        main=Column.objects.get(pk=var1).name+'-'+Column.objects.get(pk=var2).name
+        main="Grafico de Dispersion para %s" %(Column.objects.get(pk=var1).name+'-'+Column.objects.get(pk=var2).name)
         ylab=""
         xlab="Valores"
 
@@ -373,28 +364,28 @@ def scatterplotmatrix_view(request):
 def densityplot_view(request):
     if request.method == "POST":
         var1 = request.POST['var-0']
-        
+
+        #configuracion para tipo de archivo donde se guarda el grafico y nombre del mismo
         suffix_dir = "media/graphics/"
         ext_file = ".png"
+        name_file = "density"+var1
+        png(file=suffix_dir+name_file+ext_file)
         
         values_var1 = Value.objects.filter(column=var1)
 
         list_values_var1 = [v.cast_value() for v in values_var1]
         
         errors=""
+
         #configuracion para el grafico     
-        try:
-            vector_var1 = robjects.FloatVector(list_values_var1)
+        vector = robjects.IntVector(list_values_var1)
         
-        except e:
-            errors = e
+        main="Grafico de Densidad para"+Column.objects.get(pk=var1).name
+        xlab="Valores"
 
-        name_file = "density"+var1
-        png(file=suffix_dir+name_file+ext_file)
-
-        densityplot(vector_var1)
-
+        densityplot(vector,main=main,xlab=xlab)
         off()
+
         out = Out()
         out.img = str(name_file+ext_file)
         out.save()
