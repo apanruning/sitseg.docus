@@ -53,7 +53,7 @@ def generate_documents(datasource, columns=None):
 
                 for result in results:
                     latlng = [float(result.get('lat')), float(result.get('lng'))]
-                    import pdb;pdb.set_trace()
+         
                     map_url = result.get('staticMapUrl', None)
                     try:
                         point =  MaapPoint(
