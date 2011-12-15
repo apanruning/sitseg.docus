@@ -13,7 +13,7 @@ from maap.models import MaapPoint, MaapArea
 from unicodedata import normalize
 from django.core.cache import cache
 from hashlib import sha1
-
+from djangoosm.utils.words import normalize_street_name
 
 def generate_documents(datasource, columns=None):
     gmaps = GoogleMaps(settings.GOOGLEMAPS_API_KEY)
@@ -59,8 +59,8 @@ def generate_documents(datasource, columns=None):
                         point =  MaapPoint(
                             geom=Point(latlng).wkt,
                             name=value.value,
-                            name_norm = normalize('NFKD', row[column.csv_index].decode('utf-8')).encode('UTF-8', 'ignore').lower()
                         )
+
                         point.save()
          
                     except Exception, e:
@@ -73,13 +73,14 @@ def generate_documents(datasource, columns=None):
 
             if column.data_type == 'area':
                 try:
-                    barrio = MaapArea.objects.filter(name_norm=normalize('NFKD', row[column.csv_index].decode('utf-8')).encode('UTF-8', 'ignore').lower())    
-                    import pdb; pdb.set_trace()
+                    search_term = normalize_street_name(value.value)
+ 
+                    barrio = MaapArea.objects.filter(name_norm=search_term) 
+                     
                 except Exception, e:
                     errors.append(e)
                 else:
                     if len(barrio) == 1:
-                        import pdb; pdb.set_trace()
                         value.area = barrio[0]
                         value.save()
             

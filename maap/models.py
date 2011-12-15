@@ -11,7 +11,7 @@ from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
 from unicodedata import normalize
-
+from djangoosm.utils.words import normalize_street_name 
 from maap.layers import Point, Area, MultiLine, Layer
 
 class MaapQuerySet(GeoQuerySet):
@@ -45,7 +45,9 @@ class MaapModel(models.Model):
         return out
 
     def save(self, *args, **kwargs):
+
         self.slug = slugify(self.name)
+        self.name_norm = normalize_street_name(self.name)
         super(MaapModel, self).save(*args, **kwargs)
     
     def __unicode__(self):
