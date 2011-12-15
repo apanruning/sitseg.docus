@@ -166,7 +166,7 @@ class Value(models.Model):
         
     def cast_value(self):
         tests = (
-            str,
+            unicode,
             int,
             float,
             lambda value: date_parser(value)

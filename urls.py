@@ -22,7 +22,7 @@ urlpatterns = patterns('datasources.views',
     (r'^datasource/(?P<id>\w+)/download_attach$', 'download_attach', {}, 'download_attach'),
     (r'^datasource/(?P<id>\w+)/import_data$', 'import_data', {}, 'import_data'),
     (r'^datasource/(?P<id>\w+)/show_data', 'show_data', {}, 'show_data'),
-
+    (r'^value/(?P<id>\d+)$', 'value_detail', {}, 'value_detail'),
     (r'^column/(?P<id>\w+)$', 'column_detail', {}, 'column'),
     (r'^map/point/(?P<id>\w+)$', 'maap_point_view', {}, 'maap_point_view'),
    

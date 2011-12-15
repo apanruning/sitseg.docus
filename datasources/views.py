@@ -118,12 +118,6 @@ def datasource_detail(request, id):
 
     )
 
-def delete(request, id, model=None):
-    instance = get_object_or_404(model, pk=id)
-    instance.delete()
-    next = request.GET.get('next', '/')
-    return redirect(next)
-
 def column_detail(request, id):
     instance = get_object_or_404(Column, pk=id)
     if request.method == "POST":
@@ -153,6 +147,17 @@ def column_detail(request, id):
         }
     )
 
+def value_detail(request, id):
+    """Renders a value for disambiguation"""
+    value = get_object_or_404(Value, pk=id)
+    import ipdb; ipdb.set_trace()
+    return render (
+        request,
+        'value.html',
+        {
+            'value': value,
+        }
+    )
 def import_data(request, id):
     generate_documents(
         datasource=id,
@@ -187,6 +192,14 @@ def show_data(request, id):
             'rows':qs,
         }
     )
+
+def delete(request, id, model=None):
+    instance = get_object_or_404(model, pk=id)
+    instance.delete()
+    next = request.GET.get('next', '/')
+
+    return redirect(next)
+
 def download_attach(request, id):
 
     datasource = DataSource.objects.get(id=id)

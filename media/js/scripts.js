@@ -7,7 +7,6 @@ function pjax(){
         function(data){
             $(container).empty();
             $(container).append(data);
-            $(container).find('.tabs').tabs();
         }
     
     );
@@ -38,6 +37,10 @@ function column_form_change(){
 }
 
 $(function(){
+    $('body').on('ajaxComplete', function(){
+        $(this).find('.tabs').tabs();
+    });
+    $('.tabs').tabs();
 
     $('body').on('change', '.column_form :input', column_form_change);
     $('body').on('click', '.control',function(){

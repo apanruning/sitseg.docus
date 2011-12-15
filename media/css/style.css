@@ -292,13 +292,12 @@ fieldset {
     margin-bottom:-2px;
 }
 .active {
-    background:#F0F0F0;
-    box-shadow: 0 0 2px #000;
+    background: -webkit-linear-gradient(top, #FFF, #F6FAFF);
 }
 .details-wrapper {
     display:none;
-    background: #F0F0F0;
-    box-shadow: 0 1px 2px #000;
+    background: -webkit-linear-gradient(top, #F6FAFF, #E3E8EF);
+    box-shadow: 0 2px 3px #CCC; 
     border-radius: 0 0 3px 3px;
     margin-bottom:0.5em;
 }
@@ -364,10 +363,16 @@ fieldset {
 
 /* Tablas */
 
+table {
+    margin: 0 -1.1em;    
+}
 th {
     background: #EEE;
 }
 td {
     padding: 0 1em;
+}
+tr:hover td {
+    background: #EFEFEF;
 }
 

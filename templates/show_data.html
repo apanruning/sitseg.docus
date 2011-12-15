@@ -1,9 +1,9 @@
 {% load pagination_tags %}
 <p id="sort_by">Filtrar: 
-<a class="pjax" rel="#{{datasource}}-data" href="/datasource/{{datasource.id}}/show_data?sort_by=empty">Vacíos</a>
-<a class="pjax" rel="#{{datasource}}-data" href="/datasource/{{datasource.id}}/show_data?sort_by=multiple">Ambiguos</a>
-<a class="pjax" rel="#{{datasource}}-data" href="/datasource/{{datasource.id}}/show_data?sort_by=right">Correctos</a>
-<a class="pjax" rel="#{{datasource}}-data" href="/datasource/{{datasource.id}}/show_data?sort_by=all">Todos</a>
+    <a class="pjax" rel="#{{datasource}}-data" href="{{request.path}}?sort_by=empty">Vacíos</a>
+    <a class="pjax" rel="#{{datasource}}-data" href="/datasource/{{datasource.id}}/show_data?sort_by=multiple">Ambiguos</a>
+    <a class="pjax" rel="#{{datasource}}-data" href="/datasource/{{datasource.id}}/show_data?sort_by=right">Correctos</a>
+    <a class="pjax" rel="#{{datasource}}-data" href="/datasource/{{datasource.id}}/show_data?sort_by=all">Todos</a>
 </p>
 
 <table>
@@ -14,27 +14,21 @@
         {% for value in row.value_set.all %}
         <td class="{{value.data_type}}">
         {% if value.data_type == "point" %}
-            <a href="/map/point/{{value.id}}">{{value}} ({{value.points}})</a>
-        {% else %}
-        {% if value.data_type == "area" %}
-            <a href="/map/area/{{value.id}}">{{value}}</a>
+            <a href="/value/{{value.id}}" rel="#edit-value" class="pjax">{{value}} ({{value.points}})</a>
         {% else %}
             {{value}}
         {% endif %}
-        {% endif %}
-      
-        
-
         </td>
         {% endfor %}
     </tr>
     {% endfor %}     
 </table>
+<div id="edit-value"></div>
 <p class="pagination">
     {% if page_obj.has_previous %}
-        <a class="prev pjax" rel="rel="#{{datasource}}-data"" href="/datasource/{{datasource.id}}/show_data?sort_by='empty'&page={{ page_obj.previous_page_number }}{{ getvars }}{{ hashtag }}">Prev</a>
+        <a class="prev pjax" rel="rel="#{{datasource}}-data"" href="/datasource/{{datasource.id}}/show_data?page={{ page_obj.previous_page_number }}{{ getvars }}{{ hashtag }}">Prev</a>
     {% endif %}
     {% if page_obj.has_next %}
-        <a class="next pjax" rel="#{{datasource}}-data" href="/datasource/{{datasource.id}}/show_data?sort_by='empty'&page={{ page_obj.next_page_number }}{{ getvars }}{{ hashtag }}">Next</a>
+        <a class="next pjax" rel="#{{datasource}}-data" href="/datasource/{{datasource.id}}/show_data?page={{ page_obj.next_page_number }}{{ getvars }}{{ hashtag }}">Next</a>
     {% endif %}
 </p>

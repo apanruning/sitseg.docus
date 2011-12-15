@@ -89,7 +89,7 @@
     {% endif %}
 {% endblock %}                
 {% block head %}
-    <h1><a href="/">Indice</a>/<a href="{{column.datasource.dataset.workspace.get_absolute_url}}">{{column.datasource.dataset.workspace.name}}</a>/<a href="{{column.datasource.dataset.get_absolute_url}}">{{column.datasource.dataset.name}}</a>/<a href="{{column.datasource.get_absolute_url}}">{{column.datasource.name}}</a>
+    <h1><a href="/">Indice</a>/<a href="{{column.datasource.dataset.workspace.get_absolute_url}}">{{column.datasource.dataset.workspace.name}}</a>/<a href="{{column.datasource.dataset.get_absolute_url}}">{{column.datasource.dataset.name}}</a>
     {% if not column.has_geodata %}        
     /Cantidades por {{column.name}}</h1>
     {% else%}

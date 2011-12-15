@@ -37,9 +37,9 @@ def map_form(request, id):
     )
 
 def mapplot_view(request):
-    datasource_id = request.POST['datasource']
-    column_geo = request.POST['column_geo']
-    column_value = request.POST['column_value']
+    datasource_id = request.POST.get('datasource')
+    column_geo = request.POST.get('column_geo')
+    column_value = request.POST.get('column_value')
     datasource = DataSource.objects.get(pk=datasource_id)
     
     
