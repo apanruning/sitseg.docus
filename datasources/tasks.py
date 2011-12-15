@@ -74,10 +74,12 @@ def generate_documents(datasource, columns=None):
             if column.data_type == 'area':
                 try:
                     barrio = MaapArea.objects.filter(name_norm=normalize('NFKD', row[column.csv_index].decode('utf-8')).encode('UTF-8', 'ignore').lower())    
+                    import pdb; pdb.set_trace()
                 except Exception, e:
                     errors.append(e)
                 else:
                     if len(barrio) == 1:
+                        import pdb; pdb.set_trace()
                         value.area = barrio[0]
                         value.save()
             

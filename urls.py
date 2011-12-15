@@ -24,6 +24,7 @@ urlpatterns = patterns('datasources.views',
     (r'^datasource/(?P<id>\w+)/show_data', 'show_data', {}, 'show_data'),
 
     (r'^column/(?P<id>\w+)$', 'column_detail', {}, 'column'),
+    (r'^map/point/(?P<id>\w+)$', 'maap_point_view', {}, 'maap_point_view'),
    
 )
 
@@ -59,6 +60,7 @@ urlpatterns += patterns('datasources.plots',
     (r'^graph/barplot$', 'barplot_view', {}, 'barplot_view'),
 
     (r'^outqueue$', 'outqueue', {}, 'outqueue'),
+
 )
 
 urlpatterns += patterns('datasources.maps',

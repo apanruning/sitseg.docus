@@ -13,6 +13,8 @@ from datasources.tasks import generate_documents
 from datasources.utils import *
 from django.db.models import Count
 from django import forms
+from maap.models import MaapPoint
+from datasources.forms import MaapPointForm
 
 import simplejson
 
@@ -195,3 +197,24 @@ def download_attach(request, id):
     response['Content-Disposition'] = 'attachment; filename=%s' % name
 
     return response
+
+def maap_point_view(request,id):
+    instance = get_object_or_404(Value, pk=id)
+    maap_form = {}
+    if request.method == "POST":
+
+        maap_form = ValueForm(request.POST, instance=instance )
+ 
+        if maap_form.is_valid():
+            instance = maap_form.save()
+    else:
+        maap_form = ValueForm()
+    import pdb; pdb.set_trace()
+    return render(
+        request,
+        'geo.html',
+        {
+            'instance':instance,
+            'geo':maap_form,
+        }
+    )

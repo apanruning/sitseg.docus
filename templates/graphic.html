@@ -1,20 +1,26 @@
+{% block js %}
+    buttons = $("input[type='button']");
+    for(i=0;i<buttons.length;i++) {
+        $(buttons[i]).click(function() {
+                   i = $(this).attr('id');
+                   $('#var-'+i).val($("input[type='radio']:checked").val());
+                   return false; 
+            });
+    };
+{% endblock %}
 <form action="{{options.action|safe}}" method="post" class="column-select" >
-<ul id="variables">
-{% for ds in datasources %}
-    <li>
-    <input type="hidden" name="datasource_id" value="{{ds.id}}" />
-    <label for="#{{ds.id}}" >En {{ds.name}}</label>
 
-    <select name="var-{{forloop.counter0}}" id="{{ds.id}}">
+{% for ds in datasources %}
+    <input type="hidden" name="datasource_id" value="{{ds.id}}" />
+    <p>{{ ds.name }}</p>
     {% for v in ds.column_set.all %}
-        {% if column.data_type != 'str' %}
-        <option value="{{v.id}}"> {{v.name}} </option>
-        {% endif %}
+        <input type="radio" id="{{ds.id}}" name="{{ds.id}}" value="{{v.id}}" /> {{v.name}} <br />
     {% endfor %}    
-    </select>
-    </li>
 {% endfor %}
-</ul>
+{% for o in options.labels %}
+    <input type="text" name="var-{{forloop.counter0}}" /> 
+    <input type="button" id="{{forloop.counter0}}" value=">>" />
+{% endfor %}
     <input type='submit' value='graficar' />
 {% csrf_token %}
 </form>

@@ -62,7 +62,7 @@ def scatter(request,id):
         datasources.append(ds)
     
     options = {
-        'labels':['Seleccione Variable','Seleccione Variable','Seleccione'],
+        'labels':['Seleccione Variable','Seleccione Variable'],
         'action':'/graph/scatterplot',
     }
     return render(

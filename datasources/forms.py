@@ -3,6 +3,15 @@
 from django import forms
 from models import DataSource, Annotation, Column, Value, Workspace, DataSet
 from django.contrib.auth.models import User
+from maap.models import MaapArea, MaapPoint
+
+class MaapAreaForm():
+    class Meta:
+        model = MaapArea
+
+class MaapPointForm():
+    class Meta:
+        model = MaapPoint
 
 class DataSourceForm(forms.ModelForm):
     author = forms.ModelChoiceField(label='', queryset=User.objects.all(),widget=forms.HiddenInput)
