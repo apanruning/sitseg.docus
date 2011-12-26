@@ -46,7 +46,7 @@ class Column(models.Model):
         
         
 class Workspace(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField("Nombre",max_length=50)
     slug = models.CharField(max_length=50, editable=False)
     created = models.DateTimeField(auto_now_add=True, editable = False)
     author = models.ForeignKey('auth.User')
@@ -64,7 +64,7 @@ class Workspace(models.Model):
 
     
 class DataSet(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField("Nombre", max_length=50)
     slug = models.CharField(max_length=50, editable=False)
     workspace = models.ForeignKey('Workspace')
     created = models.DateTimeField(auto_now_add=True, editable = False)
@@ -83,9 +83,9 @@ class DataSet(models.Model):
 
 
 class DataSource(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField("Nombre",max_length=50)
     slug = models.CharField(max_length=50,editable=False)
-    attach = models.FileField(upload_to='docs/')
+    attach = models.FileField("Archivo", upload_to='docs/')
     created = models.DateTimeField(auto_now_add=True, editable=False)
     author = models.ForeignKey('auth.User')
     is_dirty = models.BooleanField(default=True, editable=False)

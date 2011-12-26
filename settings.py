@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from mongoengine import connect
-import djcelery
+#import djcelery
 
 
 POSTGIS_SQL_PATH = '/usr/share/postgresql/8.4/contrib'
@@ -122,7 +121,7 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'pagination',
     'datasources',
-    'djcelery',
+#    'djcelery',
     'maap',
     'mptt',
     'rpy2',
@@ -137,17 +136,17 @@ DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
 }
 
-CELERY_RESULT_BACKEND = "mongodb"
-CELERY_MONGODB_BACKEND_SETTINGS = {
-    "host": "localhost",
-    "port": 27017,
-    "database": "queue",
-    "taskmeta_collection": "tasks",
-}
+#CELERY_RESULT_BACKEND = "postgres"
+#CELERY_MONGODB_BACKEND_SETTINGS = {
+#    "host": "localhost",
+#    "port": 5432,
+#    "database": "queue",
+#    "taskmeta_collection": "tasks",
+#}
 
-BROKER_TRANSPORT = "mongodb"
-BROKER_HOST = "localhost"
-BROKER_PORT = 27017
+#BROKER_TRANSPORT = "postgres"
+#BROKER_HOST = "localhost"
+#BROKER_PORT = 5432
 
 # OSM absolute path to csv sources
 OSM_CSV_ROOT = os.path.join(os.path.dirname(__file__), 'csv')
@@ -157,4 +156,4 @@ try:
 except ImportError:
     pass
     
-djcelery.setup_loader()
+#djcelery.setup_loader()

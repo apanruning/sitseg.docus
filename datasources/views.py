@@ -5,12 +5,12 @@ from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse
 from django.conf import settings
 from django.contrib import messages
-from bson.objectid import ObjectId
+#from bson.objectid import ObjectId
 from datasources.models import DataSource, Column, Value, Row, Workspace, DataSet
 from datasources.forms import DataSourceForm, ColumnFormSet, ColumnForm, \
                                 ValueForm, WorkspaceForm, DataSetForm
 from datasources.tasks import generate_documents 
-from datasources.utils import *
+#from datasources.utils import *
 from django.db.models import Count
 from django import forms
 from maap.models import MaapPoint

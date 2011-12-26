@@ -16,4 +16,4 @@ git+git://github.com/jdunck/python-unicodecsv.git#egg=unicodecsv
 psycopg2
 PIL
 rpy2
-python-gdal
+
