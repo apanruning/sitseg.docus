@@ -45,44 +45,41 @@ def generate_documents(datasource, columns=None):
             value.save()
             
             if column.data_type == 'point':
-                hashing = sha1(value.value).hexdigest()[:6]
+                hashing = sha1(value.value).hexdigest()
                 results = cache.get(hashing)
                 if not results:
                     results = gmaps.local_search('%s, cordoba, argentina' %value.value )['responseData']['results']
                     cache.set(hashing,results)
 
                 for result in results:
-                    latlng = [float(result.get('lat')), float(result.get('lng'))]
-         
-                    map_url = result.get('staticMapUrl', None)
                     try:
+                        latlng = [float(result.get('lat')), float(result.get('lng'))]
                         point =  MaapPoint(
                             geom=Point(latlng).wkt,
                             name=value.value,
                         )
-
+                        map_url = result.get('staticMapUrl', None)
                         point.save()
-         
-                    except Exception, e:
-                        errors.append(e)
-                    else:
                         value.point.add(point)
                         value.map_url = map_url 
-
                         value.save()
+                        print point.name 
+                    except Exception, e:
+                        errors.append(e)
 
             if column.data_type == 'area':
                 try:
                     search_term = normalize_street_name(value.value)
- 
                     barrio = MaapArea.objects.filter(name_norm=search_term) 
-                     
-                except Exception, e:
-                    errors.append(e)
-                else:
+
                     if len(barrio) == 1:
                         value.area = barrio[0]
                         value.save()
+                    print search_term 
+                except Exception, e:
+                    errors.append(e)
+                
+                
             
     if len(errors) == 0:
         datasource.is_dirty = False 

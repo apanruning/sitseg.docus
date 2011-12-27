@@ -14,10 +14,9 @@ from settings import MEDIA_URL
 class GeoCordobaAdmin(admin.OSMGeoAdmin):
     default_lat = -3686022.8143382
     default_lon = -7145792.0249884
-    #display_wkt = True
-    default_zoom = 12
+    default_zoom = 10
     map_width = 800
-    map_height = 600
+    map_height = 800
     
     extra_js =[MEDIA_URL+'js/OpenStreetMap.js',
                MEDIA_URL+'js/jquery.min.js', 

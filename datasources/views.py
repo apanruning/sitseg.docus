@@ -150,7 +150,7 @@ def column_detail(request, id):
 def value_detail(request, id):
     """Renders a value for disambiguation"""
     value = get_object_or_404(Value, pk=id)
-    import ipdb; ipdb.set_trace()
+
     return render (
         request,
         'value.html',
@@ -164,6 +164,7 @@ def import_data(request, id):
         columns=request.POST.getlist('object_id')
     )
     messages.info(request, u'Se procesaron exitosamente los datos')
+
     if request.is_ajax:
         return render(
             request,
