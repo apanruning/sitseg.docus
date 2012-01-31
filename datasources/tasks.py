@@ -22,12 +22,12 @@ def generate_documents(datasource, columns=None):
     csv_attach = reader(StringIO(datasource.attach.read()))
     first_column = csv_attach.next() # skip the title column.
     errors = []
-    
+
     if columns:
         columns = datasource.column_set.filter(pk__in=columns)
     else:
         columns = datasource.column_set.all()
-        
+
     Value.objects.filter(column__datasource=datasource.id).delete()
     
     for i, row in enumerate(csv_attach):
@@ -36,6 +36,7 @@ def generate_documents(datasource, columns=None):
             csv_index = i,
         )
         row_obj.save()
+
         for column in columns:
             value = Value()
             value.value = row[column.csv_index]
@@ -44,40 +45,48 @@ def generate_documents(datasource, columns=None):
             value.row = row_obj
             value.save()
             
+            print "lelelelelelel"
             if column.data_type == 'point':
                 hashing = sha1(value.value).hexdigest()
                 results = cache.get(hashing)
+                
                 if not results:
-                    results = gmaps.local_search('%s, cordoba, argentina' %value.value )['responseData']['results']
+                    #se debe hacer primero una consulta a la base local
+                    results = MaapPoint.objects.filter(name=value.value)
+                    if len(results) < 1: #Aca se debe controlar solo el caso que sea unico. Ahora esta asi porque hay muchos MaapPoint iguales
+                        results = gmaps.local_search('%s, cordoba, argentina' %value.value )['responseData']['results']
                     cache.set(hashing,results)
-
+                    results = cache.get(hashing)
+                
+                
                 for result in results:
-                    try:
-                        latlng = [float(result.get('lat')), float(result.get('lng'))]
-                        point =  MaapPoint(
-                            geom=Point(latlng).wkt,
-                            name=value.value,
-                        )
-                        map_url = result.get('staticMapUrl', None)
-                        point.save()
-                        value.point.add(point)
-                        value.map_url = map_url 
-                        value.save()
-                        print point.name 
-                    except Exception, e:
-                        errors.append(e)
+                    #try:
+                    latlng = [float(result.get('lat')), float(result.get('lng'))]
+                    point =  MaapPoint(
+                        geom=Point(latlng).wkt,
+                        name=value.value,
+                    )
+                    map_url = result.get('staticMapUrl', None)
+                    point.save()
+                    value.point.add(point)
+                    value.map_url = map_url 
+                    value.save()
+                    print point.name 
+                    #except Exception, e:
+                    #    errors.append(e)
 
             if column.data_type == 'area':
-                try:
-                    search_term = normalize_street_name(value.value)
-                    barrio = MaapArea.objects.filter(name_norm=search_term) 
-
-                    if len(barrio) == 1:
-                        value.area = barrio[0]
-                        value.save()
+                #try:
+                search_term = normalize_street_name(value.value)
+                barrio = MaapArea.objects.filter(name_norm=search_term) 
+                print search_term 
+                if len(barrio) == 1:
+                    value.area = barrio[0]
+                    value.save()
                     print search_term 
-                except Exception, e:
-                    errors.append(e)
+
+                #except Exception, e:
+                #    errors.append(e)
                 
                 
             
