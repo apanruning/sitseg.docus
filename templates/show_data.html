@@ -14,7 +14,7 @@
         {% for value in row.value_set.all %}
         <td class="{{value.data_type}}">
         {% if value.data_type == "point" %}
-            <a href="/admin/maap/maappoint/{{value.point.id}}" rel="#edit-value" >{{value}} ({{value.points}})</a>
+            <a href="/admin/maap/maappoint/{{value.point.0.id}}" rel="#edit-value" >{{value}} ({{value.points}})</a>
         {% else %}
             {% if value.data_type == "area" %}
                 <a href="/admin/maap/maaparea/{{value.area.id}}" rel="#edit-value" >{{value}}</a>

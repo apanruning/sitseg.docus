@@ -154,7 +154,7 @@ class Value(models.Model):
     column = models.ForeignKey(Column)
     data_type = models.CharField(max_length=100)
     value = models.CharField(max_length=100)
-    point = models.ManyToManyField(MaapPoint, null=True)
+    point = models.ForeignKey(MaapPoint, null=True)
     map_url = models.URLField()
     multiple = models.BooleanField()
     area = models.ForeignKey(MaapArea, null=True)

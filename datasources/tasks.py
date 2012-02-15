@@ -45,36 +45,40 @@ def generate_documents(datasource, columns=None):
             value.row = row_obj
             value.save()
             
-            print "lelelelelelel"
             if column.data_type == 'point':
-                hashing = sha1(value.value).hexdigest()
-                results = cache.get(hashing)
-                
-                if not results:
-                    #se debe hacer primero una consulta a la base local
-                    results = MaapPoint.objects.filter(name=value.value)
-                    if len(results) < 1: #Aca se debe controlar solo el caso que sea unico. Ahora esta asi porque hay muchos MaapPoint iguales
-                        results = gmaps.local_search('%s, cordoba, argentina' %value.value )['responseData']['results']
-                    cache.set(hashing,results)
-                    results = cache.get(hashing)
-                
-                
-                for result in results:
-                    #try:
-                    latlng = [float(result.get('lat')), float(result.get('lng'))]
-                    point =  MaapPoint(
-                        geom=Point(latlng).wkt,
-                        name=value.value,
-                    )
-                    map_url = result.get('staticMapUrl', None)
-                    point.save()
-                    value.point.add(point)
-                    value.map_url = map_url 
-                    value.save()
-                    print point.name 
-                    #except Exception, e:
-                    #    errors.append(e)
 
+                    #se debe hacer primero una consulta a la base local
+                    results = MaapPoint.objects.filter(name=value.value.lower())
+                    if len(results) >= 1:
+                        #En este caso quiere decir que la consulta a la base local fue exitosa
+                        print "looooooooo"
+                        for point in results:
+                            value.point = point
+                            value.map_url = point.static_url
+                            value.save()
+                        
+                    if len(results) < 1: 
+                        #Este caso quiere decir que la consulta a la base local no fue exitosa y por lo tanto se procede a buscarlo via web. Aca se debe controlar solo el caso que sea unico. Ahora esta asi porque hay muchos MaapPoint iguales
+                        print "lalalala"
+                        results = gmaps.local_search('%s, cordoba, argentina' %value.value )['responseData']['results']
+                        for result in results:
+                            #try:
+                            latlng = [float(result.get('lat')), float(result.get('lng'))]
+                            point =  MaapPoint(
+                                geom=Point(latlng).wkt,
+                                name=value.value,
+                            )
+                            point.static_url = result.get('staticMapUrl', None)
+                            point.save()
+                                    
+                            value.point = point
+                            value.map_url = point.static_url
+                            value.save()
+
+                            #except Exception, e:
+                            #    errors.append(e)
+
+                                        
             if column.data_type == 'area':
                 #try:
                 search_term = normalize_street_name(value.value)

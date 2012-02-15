@@ -37,7 +37,7 @@
     <menu class="details">
     {% if user.is_staff %}
     <a title="{{datasource.attach.name}}" 
-         href="/datasource/{{datasource.id}}/download_attach" title="Descargar el archivo">Descargar {{datasource.name}}</a> creado: {{datasource.created|date}} por: {{datasource.author}} <a id="{{datasource.name|slugify}}{{datasource.id|slugify}}-delete" href="/datasource/{{datasource.id}}/delete?next={{ datasource.get_absolute_url }}">Borrar</a>
+         href="/datasource/{{datasource.id}}/download_attach" title="Descargar el archivo">Descargar {{datasource.name}}</a> creado: {{datasource.created|date}} por: {{datasource.author}} <a id="{{datasource.name|slugify}}{{datasource.id|slugify}}-delete" href="/datasource/{{datasource.id}}/delete?next={{ datasource.dataset.get_absolute_url }}">Borrar</a>
     {% endif %}
     </menu>
 {% endblock %}
