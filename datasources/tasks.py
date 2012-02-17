@@ -45,8 +45,9 @@ def generate_documents(datasource, columns=None):
             value.row = row_obj
             value.save()
             
+            datasource.geopositionated = False
             if column.data_type == 'point':
-
+                    datasource.geopositionated = True
                     #se debe hacer primero una consulta a la base local
                     results = MaapPoint.objects.filter(name=value.value.lower())
                     if len(results) >= 1:
@@ -80,6 +81,7 @@ def generate_documents(datasource, columns=None):
 
                                         
             if column.data_type == 'area':
+                datasource.geopositionated = True
                 #try:
                 search_term = normalize_street_name(value.value.lower())
                 barrio = MaapArea.objects.filter(name_norm=search_term) 
@@ -87,10 +89,9 @@ def generate_documents(datasource, columns=None):
                 if len(barrio) == 1:
                     value.area = barrio[0]
                     value.save()
-                    print value.area.id    
+                    
                 #except Exception, e:
                 #    errors.append(e)
-                
                 
             
     if len(errors) == 0:

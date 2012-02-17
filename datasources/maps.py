@@ -11,16 +11,13 @@ from maap.layers import Layer
 class CommentForm(forms.Form):
     column_geo = forms.ChoiceField(label='Columna Geoposicionada')
     column_value = forms.ChoiceField(label='Columna de Ponderación')
-    datasource = forms.CharField(widget= forms.HiddenInput)
+    datasource = forms.CharField(widget=forms.HiddenInput)
     
 def map_form(request, id):
-    #This function populate manager's graphic for produce Maps 
-    #id is a parameter that represent the dataset id
-   
     datasource = DataSource.objects.get(pk=id)
     
     # Create form on the fly. Problem? 
-    columns = [(c.pk, c.name) for c in datasource.column_set.all()]
+    columns = [(c.pk, c.name) for c in datasource.column_set.filter(has_geodata=False)]
     geo_columns = [(c.pk, c.name) for c in datasource.column_set.filter(has_geodata=True)]
     form = CommentForm({'datasource':id})
     form.fields['column_value'].choices = columns
@@ -40,26 +37,27 @@ def mapplot_view(request):
     datasource_id = request.POST.get('datasource')
     column_geo = request.POST.get('column_geo')
     column_value = request.POST.get('column_value')
+    
     datasource = DataSource.objects.get(pk=datasource_id)
     
+
     # Problem? :D
-    rows = [(
-                r.value_set.get(column__pk=column_geo).area, 
-                r.value_set.get(column__pk=column_value).value
-            ) 
+    rows = [(r.value_set.get(column__pk=column_geo).area,r.value_set.get(column__pk=column_value).value) 
             for r in datasource.row_set.all()]
 
     #Assume that column has only numbers
     
     areas = {}
+
     for geo, value in rows:
-        if geo.pk in areas.keys():
-            areas[geo.pk]['total'] += float(value)
-        else:
-            areas[geo.pk] = {
-                'total':float(value),
-                'geo': geo.to_geo_element(),
-            }
+        if geo:
+            if geo.pk in areas.keys():
+                areas[geo.pk]['total'] += float(value)
+            else:
+                areas[geo.pk] = {
+                    'total':float(value),
+                    'geo': geo.to_geo_element(),
+                }
 
     min_val = min(r['total'] for r in areas.itervalues())
     max_val = max(r['total'] for r in areas.itervalues())
