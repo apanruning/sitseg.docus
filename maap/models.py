@@ -47,7 +47,7 @@ class MaapModel(models.Model):
     def save(self, *args, **kwargs):
 
         self.slug = slugify(self.name)
-        self.name_norm = normalize_street_name(self.name)
+        self.name_norm = normalize_street_name(self.name.lower())
         super(MaapModel, self).save(*args, **kwargs)
     
     def __unicode__(self):

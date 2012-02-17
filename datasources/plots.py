@@ -37,6 +37,7 @@ def box(request,id):
     datasource = DataSource.objects.get(pk=id)
     dataset = datasource.dataset
     datasources = []
+
     for ds in dataset.datasource_set.all():
         datasources.append(ds)
    
@@ -44,6 +45,7 @@ def box(request,id):
                 'labels':['Seleccione Variable'],
                 'action':'/graph/boxplot',
     }
+
     return render(
         request,
         'graphic.html',
@@ -457,5 +459,5 @@ def outqueue(request):
         'outqueue.html',
         {          
             'outs':Out.objects.all().order_by('-session'),
-        }
+            }
     )

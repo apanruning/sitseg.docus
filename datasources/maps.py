@@ -42,8 +42,6 @@ def mapplot_view(request):
     column_value = request.POST.get('column_value')
     datasource = DataSource.objects.get(pk=datasource_id)
     
-    
-    
     # Problem? :D
     rows = [(
                 r.value_set.get(column__pk=column_geo).area, 

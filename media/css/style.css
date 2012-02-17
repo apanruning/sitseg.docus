@@ -354,8 +354,7 @@ fieldset {
 }
 .graph-select {
     float:left;
-    width:10em;
-    margin:0;
+    height:100%;
 }
 .graph-select a {
     display:block;
@@ -376,3 +375,6 @@ tr:hover td {
     background: #EFEFEF;
 }
 
+.plots-container {
+    float:right;
+}

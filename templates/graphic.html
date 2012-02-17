@@ -1,4 +1,6 @@
-{% block js %}
+<div>
+<script>
+
     buttons = $("input[type='button']");
     for(i=0;i<buttons.length;i++) {
         $(buttons[i]).click(function() {
@@ -7,20 +9,23 @@
                    return false; 
             });
     };
-{% endblock %}
+</script>
+<span> Elija una variable numérica para realizar el gráfico </span>
 <form action="{{options.action|safe}}" method="post" class="column-select" >
+    {% for o in options.labels %}
+        <input type="text" id='var-{{forloop.counter0}}' name="var-{{forloop.counter0}}" value="ingrese valor numérico"/> 
+        <input type="button" id="{{forloop.counter0}}" value=">>" />
+    {% endfor %}
 
-{% for ds in datasources %}
-    <input type="hidden" name="datasource_id" value="{{ds.id}}" />
-    <p>{{ ds.name }}</p>
-    {% for v in ds.column_set.all %}
-        <input type="radio" id="{{ds.id}}" name="{{ds.id}}" value="{{v.id}}" /> {{v.name}} <br />
-    {% endfor %}    
-{% endfor %}
-{% for o in options.labels %}
-    <input type="text" name="var-{{forloop.counter0}}" /> 
-    <input type="button" id="{{forloop.counter0}}" value=">>" />
-{% endfor %}
-    <input type='submit' value='graficar' />
-{% csrf_token %}
+    {% for ds in datasources %}
+        <p>Fuente de Datos:</p> {{ ds.name }}
+        <p> Variable </p>
+        {% for v in ds.column_set.all %}
+            <input type="radio" id="{{v.id}}" name="variable" value="{{v.id}}" /> {{v.name}} <br />
+        {% endfor %}    
+    {% endfor %}            
+        <input type='submit' value='graficar' />
+    {% csrf_token %}
 </form>
+</div>
+
