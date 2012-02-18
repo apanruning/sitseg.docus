@@ -12,7 +12,7 @@ Maap.State.prototype.initializeBaseLayers = function() {
     );
     this.map.addLayer(layerMapnik); 
     this.base_layers = this.base_layers.concat(layerMapnik);
-    
+
     return 0;
 }
 
@@ -34,14 +34,15 @@ Maap.State.prototype.initializeBounds = function() {
 // This function initialize the control objects of state 
 Maap.State.prototype.initializeControls = function () {
     //add and/or remove controls to map
-    this.map.addControl(new OpenLayers.Control.PanZoomBar());
-    //this.map.addControl(new OpenLayers.Control.OverviewMap());
     this.map.addControl(new OpenLayers.Control.Navigation()); 
+    this.map.addControl(new OpenLayers.Control.PanZoomBar());
+    this.map.addControl(new OpenLayers.Control.OverviewMap());
+    this.map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending':false}))
+    this.map.addControl(new OpenLayers.Control.ScaleLine());
+    this.map.addControl(new OpenLayers.Control.Permalink('permalink'));
+    this.map.addControl(new OpenLayers.Control.KeyboardDefaults());
     this.map.addControl(new OpenLayers.Control.Attribution());
     this.map.addControl(new OpenLayers.Control.MousePosition());
-    this.map.addControl(new OpenLayers.Control.Permalink());
-    this.map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
-
 
     return 0;
 }
@@ -53,8 +54,34 @@ Maap.State.prototype.init = function() {
     //add initial layers to map
     this.initializeBaseLayers();
 
-    //center the map in Cordoba position
-    //map.setCenter(cordoba, 19);
+    var ol_wms = new OpenLayers.Layer.WMS(
+                "OpenLayers WMS",
+                "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                {layers: 'basic'} 
+            );
+
+    var gwc = new OpenLayers.Layer.WMS(
+                "Global Imagery",
+                "http://maps.opengeo.org/geowebcache/service/wms",
+                {layers: "bluemarble"},
+                {tileOrigin: new OpenLayers.LonLat(-180, -90)}
+            );
+    var dm_wms = new OpenLayers.Layer.WMS(
+                "DM Solutions Demo",
+                "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap",
+                {layers: "bathymetry,land_fn,park,drain_fn,drainage," +
+                     "prov_bound,fedlimit,rail,road,popplace",
+                 transparent: "true", format: "image/png"},
+                {visibility: false}
+            );
+
+    this.map.addLayers([ol_wms, gwc, dm_wms]);
+
+    var layOsmarender = new OpenLayers.Layer.OSM.Osmarender("Osmarender");
+    this.map.addLayer(layOsmarender);
+
+    var layCycleMap = new OpenLayers.Layer.OSM.CycleMap("CycleMap");
+    this.map.addLayer(layCycleMap);
 
     //load controls to map
     this.initializeControls();

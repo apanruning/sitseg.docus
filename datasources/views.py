@@ -99,9 +99,9 @@ def datasource_detail(request, id):
             'Histograma':'/plots/'+id+'/hist',
             'Stripchart':'/plots/'+id+'/stripchart',
             'Densidad':'/plots/'+id+'/density',
-            'Scatter':'/plots/'+id+'/scatter',
-            'Scatter Matrix':'/plots/'+id+'/scattermatrix',  
-            'Map':'/plots/'+id+'/map',
+            'Dispersión':'/plots/'+id+'/scatter',
+            'Matriz de Dispersión':'/plots/'+id+'/scattermatrix',  
+            'Mapas':'/plots/'+id+'/map',
      }
 
     return render(
@@ -118,46 +118,6 @@ def datasource_detail(request, id):
 
     )
 
-def column_detail(request, id):
-    instance = get_object_or_404(Column, pk=id)
-    if request.method == "POST":
-
-        column_form = ColumnForm(request.POST, instance=instance )
- 
-        if column_form.is_valid():
-            instance = column_form.save()
-
-        return render(
-            request,
-            'column_obj.html',
-            {
-                'column':column_form,
-            }
-        )
-
-    dataset = Value.objects.filter(column=instance)
-
-    return render(
-        request,
-        'column.html',
-        {
-            'column':instance,
-            'dataset': dataset.annotate(count = Count('value')), 
-            'label':instance.label,
-        }
-    )
-
-def value_detail(request, id):
-    """Renders a value for disambiguation"""
-    value = get_object_or_404(Value, pk=id)
-
-    return render (
-        request,
-        'value.html',
-        {
-            'value': value,
-        }
-    )
 def import_data(request, id):
     generate_documents(
         datasource=id,
@@ -211,24 +171,3 @@ def download_attach(request, id):
     response['Content-Disposition'] = 'attachment; filename=%s' % name
 
     return response
-
-def maap_point_view(request,id):
-    instance = get_object_or_404(Value, pk=id)
-    maap_form = {}
-    if request.method == "POST":
-
-        maap_form = ValueForm(request.POST, instance=instance )
- 
-        if maap_form.is_valid():
-            instance = maap_form.save()
-    else:
-        maap_form = ValueForm()
-    import pdb; pdb.set_trace()
-    return render(
-        request,
-        'geo.html',
-        {
-            'instance':instance,
-            'geo':maap_form,
-        }
-    )

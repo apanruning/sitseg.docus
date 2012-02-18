@@ -97,5 +97,14 @@ def generate_documents(datasource, columns=None):
     if len(errors) == 0:
         datasource.is_dirty = False 
         datasource.save() 
+        
+        if datasource.geopositionated:
+            values_geo = Value.objects.filter(column__datasource=datasource.id,column__has_geodata=True)
+            xs = []            
+            for t in values_geo:
+                qs = Value.objects.filter(column__datasource=datasource.id,column__has_geodata=False,row=t.row)        
+                for u in qs:
+                    u.area = t.area
+                    u.save()
 
     print errors

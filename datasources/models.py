@@ -90,7 +90,8 @@ class DataSource(models.Model):
     author = models.ForeignKey('auth.User')
     is_dirty = models.BooleanField(default=True, editable=False)
     dataset = models.ForeignKey('DataSet')
-
+    geopositionated = models.BooleanField(default=False, editable=False)
+    
     @models.permalink
     def get_absolute_url(self):
         return ('datasource_detail',[self.pk])

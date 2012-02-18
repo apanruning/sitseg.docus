@@ -2,7 +2,7 @@
     <form action="/column/{{column.instance.pk}}" method="post" class="column_form">{% csrf_token %}
     <h3>
         {{column.is_available}}
-        <a href="/column/{{column.instance.pk}}">{{column.instance.name}}</a>
+        {{column.instance.name}}
     </h3>
     <input type="hidden" name="object_id"  value="{{column.instance.pk}}"/>
     <input type="hidden" name="name"  value="{{column.instance.name}}"/>

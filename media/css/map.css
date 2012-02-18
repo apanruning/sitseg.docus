@@ -1,0 +1,13 @@
+#map {
+    width:1000px;
+    height:1000px;
+    margin:50px;
+    float:left;
+}
+
+#info {
+    float:left;
+    clear:right;
+}
+
+

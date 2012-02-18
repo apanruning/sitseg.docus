@@ -2,9 +2,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>OpenLayers Basic Single WMS Example</title>
-
+    <link rel="stylesheet" href="/static/css/map.css" type="text/css" media="screen" />   
     <script src="/static/js/OpenLayers.js"></script>
     <script src="/static/js/OpenStreetMap.js"></script>
     <script src="/static/modules/base.js"></script>
@@ -25,14 +23,13 @@
     </script>
   </head>
   <body onload="init()">
-
-        <h1>MAPA FORMULARIO:</h1>
-
-
-
-
-    <div id="map" ></div>
-
+  <div id="map" ></div>
+  <div id="info">
+  <h2> Mapa </h2>
+  
+      <h3> Variable Observada </h3>
+    <p>  {{column_geo|lower}}    </p> 
+  </div>
 
   </body>
 </html>
