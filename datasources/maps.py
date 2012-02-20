@@ -10,10 +10,10 @@ from maap.layers import Layer
 from django.db.models import Count
 
 class CommentForm(forms.Form):
-    column_geo = forms.ChoiceField(label='Columna Geoposicionada')
+    column_geo = forms.ChoiceField(label='Variable')
     datasource = forms.CharField(widget=forms.HiddenInput)
     
-def map_form(request, id):
+def density_by_area_form(request, id):
     datasource = DataSource.objects.get(pk=id)
     
     # Create form on the fly. Problem? 
@@ -27,41 +27,24 @@ def map_form(request, id):
         {
             'datasource': datasource,
             'form':form,
-            'action':'/graph/mapplot',
+            'action':'/graph/density_by_area_plot',
         }
     )
 
-def mapplot_view(request):
+def density_by_area_view(request):
     datasource_id = request.POST.get('datasource')
     column_geo = request.POST.get('column_geo')
     
     datasource = DataSource.objects.get(pk=datasource_id)
     flag = Column.objects.get(pk=column_geo).data_type
+
     if flag == 'area':
         areas = Value.objects.filter(column__datasource=datasource_id,column=column_geo).values("area").annotate(Count('area')).order_by()
     else:
           areas = Value.objects.filter(column__datasource=datasource_id,column=column_geo).values("point").annotate(Count('point')).order_by()      
 
-   # Problem? :D
-    #rows = [(r.value_set.get(column__pk=column_geo).area,r.value_set.get(column__pk=column_geo).value) 
-    #        for r in datasource.row_set.all()]
-
-    #Assume that column has only numbers
-    
-    #areas = {}
-
-    #for geo, value in rows:
-    #    if geo:
-    #        if geo.pk in areas.keys():
-    #            areas[geo.pk]['total'] += float(value)
-    #        else:
-    #            areas[geo.pk] = {
-    #                'total':float(value),
-    #                'geo': geo.to_geo_element(),
-    #            }
-
     min_val = 0
-    max_val = 255
+    max_val = 1023
 
     layer = Layer()
     for area in areas:
@@ -85,7 +68,7 @@ def mapplot_view(request):
 
     return render(
         request,
-        'map_view.html',
+        'map_density_area.html',
         {
             #'colors': colors,
             'rows': areas,
@@ -100,3 +83,4 @@ def zonemap():
 
 def pointmap():
     pass
+

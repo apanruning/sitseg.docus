@@ -26,12 +26,12 @@
             <ul class="graph-select">
             {% for k, v in plots.iteritems %}
                 <li>
-                    <a href="{{v}}" class="pjax" rel="#{{datasource}}-plots-container"> {{ k }}</a>
+                     <a href="{{v}}" class="pjax" rel="#{{datasource}}-plots-container"> {{ k }}</a>
                 </li>
             {% endfor %}
             </ul>
             <div id="{{datasource}}-plots-container" class="plots-container"></div>
-            <div class="graph"></div>
+            
         </div>
     </div>
     <menu class="details">

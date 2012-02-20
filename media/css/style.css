@@ -376,7 +376,8 @@ tr:hover td {
 }
 
 .plots-container {
-    float:right;
+    float:left;
+    clear:right;
 }
 
 

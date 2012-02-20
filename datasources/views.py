@@ -101,7 +101,7 @@ def datasource_detail(request, id):
             'Densidad':'/plots/'+id+'/density',
             'Dispersión':'/plots/'+id+'/scatter',
             'Matriz de Dispersión':'/plots/'+id+'/scattermatrix',  
-            'Mapas':'/plots/'+id+'/map',
+            'Mapa Densidad por Area':'/plots/'+id+'/map_density_area',
      }
 
     return render(
