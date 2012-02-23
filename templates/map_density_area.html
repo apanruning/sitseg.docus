@@ -1,0 +1,26 @@
+{% extends 'maps.html' %}
+{% block javascript %}
+        $(window).load(function(){     
+        var map, layer;
+        function init(){
+            state = new Maap.State();
+            state.init();   
+            json_layer = {{ json_layer|safe }};
+            state.setLayer(json_layer).show(); 
+        };
+        init();
+        }
+        );
+        
+{% endblock %}
+{% block content %}
+  <div id="map" ></div>
+  <div id="info">
+  <h2> Mapa </h2>
+  
+      <h3> Variable Observada </h3>
+    <p>  {{column_geo|lower}}    </p> 
+  </div>
+
+{% endblock %}
+

@@ -3,11 +3,14 @@
     height:1000px;
     margin:50px;
     float:left;
+    border: 1px solid;
 }
 
 #info {
     float:left;
     clear:right;
 }
+
+
 
 
