@@ -6,9 +6,10 @@
     <h1><a href="/">Indice</a>/</h1>
 {% endblock %}
 {% block page %}
+<h2> Resultados </h2>
 <ul>
 {% for o in outs %}
-    <li>
+    <li class="result">
         <img src="/media/graphics/{{o.img|safe}}" />
         <p> {{ o.session }} </p>
     </li>

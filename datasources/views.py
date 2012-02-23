@@ -13,6 +13,7 @@ from datasources.tasks import generate_documents
 #from datasources.utils import *
 from django.db.models import Count
 from django import forms
+from django.core.files.base import ContentFile
 from maap.models import MaapPoint
 from datasources.forms import MaapPointForm
 
@@ -102,7 +103,7 @@ def datasource_detail(request, id):
             'Dispersión':'/plots/'+id+'/scatter',
             'Matriz de Dispersión':'/plots/'+id+'/scattermatrix',  
             'Mapa Densidad por Area':'/plots/'+id+'/map_density_area',
-     }
+    }
 
     return render(
         request,
@@ -161,13 +162,58 @@ def delete(request, id, model=None):
 
     return redirect(next)
 
-def download_attach(request, id):
-
+def download_attach_source(request, id):
     datasource = DataSource.objects.get(id=id)
-    attach = datasource.attach.read()
-    name = datasource.slug
+    rows = Row.objects.filter(datasource=datasource).order_by('-csv_index')
+    value_string = ""
+    separator = ';'
+
+    #aqui se arma la primera fila del archivo 
+    columns = Column.objects.filter(datasource=datasource)
+    column_title=''            
+    for c in columns:
+        column_title += c.name.upper() + separator
+        if c.has_geodata:
+            if c.data_type=="point":
+                column_title += "LAT" + separator
+                column_title += "LNG" + separator
+            else:
+                column_title += "AREA" + separator
+        value_string += column_title
+        column_title = ''
     
+    value_string = value_string[0:len(value_string)-1]
+    value_string += '\n'
+    
+    #aqui se escriben las filas correspondientes a los datos    
+    for r in range(1,len(rows)):
+        row = rows[r]
+        value_line = ''
+        values = row.value_set.all()
+
+        for v in values:
+            print v.value    
+            value_line += v.value.lower() + separator
+            if v.column.has_geodata:
+                if v.column.data_type=="point":
+                    if v.point:
+                        value_line += str(v.point.geom.x) + separator
+                        value_line += str(v.point.geom.y) + separator
+                elif v.column.data_type=="area":
+                    if v.area:
+                        value_line += str(v.area.geom) + separator
+                else:
+                    pass    
+        value_line = value_line[0:len(value_line)-1]     
+        value_string += value_line + '\n'
+        value_line = ''
+
+    attach = value_string
+    value_string = ''
+            
     response = HttpResponse(attach, mimetype='application/force-download')
-    response['Content-Disposition'] = 'attachment; filename=%s' % name
+    response['Content-Disposition'] = 'attachment; filename=%s.csv' % datasource.name.lower()
 
     return response
+    
+

@@ -380,4 +380,7 @@ tr:hover td {
     clear:right;
 }
 
-
+.result {
+    border-bottom:2px solid;
+    padding-bottom:10px;
+}
