@@ -119,6 +119,35 @@ def datasource_detail(request, id):
 
     )
 
+def column_detail(request, id):
+    instance = get_object_or_404(Column, pk=id)
+    if request.method == "POST":
+
+        column_form = ColumnForm(request.POST, instance=instance )
+ 
+        if column_form.is_valid():
+            instance = column_form.save()
+
+        return render(
+            request,
+            'column_obj.html',
+            {
+                'column':column_form,
+            }
+        )
+
+    dataset = Value.objects.filter(column=instance)
+
+    return render(
+        request,
+        'column.html',
+        {
+            'column':instance,
+            'dataset': dataset.annotate(count = Count('value')), 
+            'label':instance.label,
+        }
+    )
+
 def import_data(request, id):
     generate_documents(
         datasource=id,

@@ -64,14 +64,14 @@ def generate_documents(datasource, columns=None):
                         results = gmaps.local_search('%s, cordoba, argentina' %value.value )['responseData']['results']
                         for result in results:
                             #try:
-                            import pdb
+
                             latlng = [float(result.get('lat')), float(result.get('lng'))]
-                            pdb.set_trace()
+
                             point =  MaapPoint(
                                 geom=Point(latlng).wkt,
                                 name=value.value,
                             )
-                            pdb.set_trace()
+
                             point.static_url = result.get('staticMapUrl', None)
                             point.save()
                                     

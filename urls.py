@@ -23,6 +23,7 @@ urlpatterns = patterns('datasources.views',
     (r'^datasource/(?P<id>\w+)/download_attach_geom$', 'download_attach_geom', {}, 'download_attach_geom'),
     (r'^datasource/(?P<id>\w+)/import_data$', 'import_data', {}, 'import_data'),
     (r'^datasource/(?P<id>\w+)/show_data', 'show_data', {}, 'show_data'),
+    (r'^column/(?P<id>\w+)$', 'column_detail', {}, 'column'),
    
 )
 
@@ -58,6 +59,8 @@ urlpatterns += patterns('datasources.plots',
     (r'^graph/barplot$', 'barplot_view', {}, 'barplot_view'),
 
     (r'^outqueue$', 'outqueue', {}, 'outqueue'),
+
+
 
 )
 
