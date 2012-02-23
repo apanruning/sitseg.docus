@@ -162,7 +162,7 @@ def delete(request, id, model=None):
 
     return redirect(next)
 
-def download_attach_source(request, id):
+def download_attach_geom(request, id):
     datasource = DataSource.objects.get(id=id)
     rows = Row.objects.filter(datasource=datasource).order_by('-csv_index')
     value_string = ""
@@ -216,4 +216,48 @@ def download_attach_source(request, id):
 
     return response
     
+def download_attach_source(request, id):
+    datasource = DataSource.objects.get(id=id)
+    rows = Row.objects.filter(datasource=datasource).order_by('-csv_index')
+    value_string = ""
+    separator = ';'
+
+    #aqui se arma la primera fila del archivo 
+    columns = Column.objects.filter(datasource=datasource)
+    column_title=''            
+    for c in columns:
+        column_title += c.name.upper() + separator
+        if c.has_geodata:
+            if c.data_type=="point":
+                column_title += "LAT" + separator
+                column_title += "LNG" + separator
+            else:
+                column_title += "AREA" + separator
+        value_string += column_title
+        column_title = ''
+    
+    value_string = value_string[0:len(value_string)-1]
+    value_string += '\n'
+    
+    #aqui se escriben las filas correspondientes a los datos    
+    for r in range(1,len(rows)):
+        row = rows[r]
+        value_line = ''
+        values = row.value_set.all()
+
+        for v in values:
+            print v.value    
+            value_line += v.value.lower() + separator
+
+        value_line = value_line[0:len(value_line)-1]     
+        value_string += value_line + '\n'
+        value_line = ''
+
+    attach = value_string
+    value_string = ''
+            
+    response = HttpResponse(attach, mimetype='application/force-download')
+    response['Content-Disposition'] = 'attachment; filename=%s.csv' % datasource.name.lower()
+
+    return response
 

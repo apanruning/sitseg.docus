@@ -26,7 +26,7 @@
             <ul class="graph-select">
             {% for k, v in plots.iteritems %}
                 <li>
-                     <a href="{{v}}" class="pjax" rel="#{{datasource}}-plots-container"> {{ k }}</a>
+                     <a href="{{v}}" class="pjax" rel="#{{datasource}}-plots-container" blank='True'> {{ k }}</a>
                 </li>
             {% endfor %}
             </ul>
@@ -36,8 +36,11 @@
     </div>
     <menu class="details">
     {% if user.is_staff %}
-    <a title="{{datasource.attach.name}}" 
-         href="/datasource/{{datasource.id}}/download_attach_source" title="Descargar el archivo">Descargar {{datasource.name}}</a> creado: {{datasource.created|date}} por: {{datasource.author}} <a id="{{datasource.name|slugify}}{{datasource.id|slugify}}-delete" href="/datasource/{{datasource.id}}/delete?next={{ datasource.dataset.get_absolute_url }}">Borrar</a>
+    <a href="/datasource/{{datasource.id}}/download_attach_source" title="Descargar el archivo original">Descargar {{datasource.name}} original</a>
+    {% if datasource.geopositionated %}
+        <a href="/datasource/{{datasource.id}}/download_attach_geom" title="Descargar el archivo con datos geograficos">Descargar {{datasource.name}} con datos geográficos </a> creado: {{datasource.created|date}} por: {{datasource.author}} 
     {% endif %}
+        <a id="{{datasource.name|slugify}}{{datasource.id|slugify}}-delete" href="/datasource/{{datasource.id}}/delete?next={{ datasource.dataset.get_absolute_url }}">Borrar</a>
+    {% endif %  }
     </menu>
 {% endblock %}

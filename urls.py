@@ -20,6 +20,7 @@ urlpatterns = patterns('datasources.views',
     (r'^datasource/(?P<id>\w+)/delete$', 'delete', {'model':models.DataSource}),
 
     (r'^datasource/(?P<id>\w+)/download_attach_source$', 'download_attach_source', {}, 'download_attach_source'),
+    (r'^datasource/(?P<id>\w+)/download_attach_geom$', 'download_attach_geom', {}, 'download_attach_geom'),
     (r'^datasource/(?P<id>\w+)/import_data$', 'import_data', {}, 'import_data'),
     (r'^datasource/(?P<id>\w+)/show_data', 'show_data', {}, 'show_data'),
    
