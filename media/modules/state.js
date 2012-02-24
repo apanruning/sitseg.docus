@@ -12,7 +12,7 @@ structure:
 // Initialization function
 Maap.State = function() {
     // create map whith map options     
-    mep = new OpenLayers.Map('map', this.map_options);
+    mep = new OpenLayers.Map('map');
 
     // update the state variable
     this.map = mep
@@ -22,13 +22,6 @@ Maap.State.prototype = {
     map: null,
     base_layers: [],
     layers: [],    
-    map_options: map_options = {
-           'projection' : new OpenLayers.Projection("EPSG:900913"),
-           'maxResolution' : 200000.0002,
-           'displayProjection' : new OpenLayers.Projection("EPSG:4326"),
-           'units' : "m",
-           'controls': []
-    }
 };
 
 

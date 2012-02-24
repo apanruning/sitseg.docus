@@ -180,8 +180,10 @@ class Value(models.Model):
         return self.value
 
 class Out(models.Model):
+    text = models.TextField()
     session = models.DateTimeField(default=datetime.now(),editable=False) 
     img = models.CharField(max_length=50)
     errors = models.TextField()
+    
     
 __all__ = ['DataSource', 'Column', 'Annotation']

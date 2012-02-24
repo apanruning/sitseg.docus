@@ -190,13 +190,17 @@ def histogram_view(request):
         ext_file = ".png"
         name_file = "histograma"+var
         png(file=suffix_dir+name_file+ext_file)
+        errors = ''
         
         #se preparan los valores. TODO: Refactorizar casteo. Hacer mas eficiente. 
         values = Value.objects.filter(column=var)
         list_values = [v.cast_value() for v in values]
         
         #creacion de vector R con los valores correspondientes (R)     
-        vector = robjects.FloatVector(list_values)
+        try:
+            vector = robjects.FloatVector(list_values)
+        except ValueError:
+            errors += 'El valor debe ser numérico'
 
         #parametros del grafico
         freq = False
@@ -210,12 +214,17 @@ def histogram_view(request):
         xlab = "Valores"
         ylab = "Frecuencia"
 
-        hist(vector,col=col,border=border,main=main,xlab=xlab,ylab=ylab)
-        off()
+        try:
+            hist(vector,col=col,border=border,main=main,xlab=xlab,ylab=ylab)
+            off()
+        except UnboundLocalError:
+            errors += ""
 
         #Guardo el resultado y lo muestro en la cola de salida
         out = Out()
         out.img = str(name_file+ext_file)
+        out.errors = errors
+        out.text = main
         out.save()
 
         return redirect("/outqueue")

@@ -98,11 +98,10 @@ def datasource_detail(request, id):
             'Barras':'/plots/'+id+'/bar',
             'Torta':'/plots/'+id+'/pie',
             'Histograma':'/plots/'+id+'/hist',
-            'Stripchart':'/plots/'+id+'/stripchart',
             'Densidad':'/plots/'+id+'/density',
             'Dispersión':'/plots/'+id+'/scatter',
             'Matriz de Dispersión':'/plots/'+id+'/scattermatrix',  
-            'Mapa Densidad por Area':'/plots/'+id+'/map_density_area',
+            'Mapa de Densidad':'/plots/'+id+'/map_density_area',
     }
     
     return render(

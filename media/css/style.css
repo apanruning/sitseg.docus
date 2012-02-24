@@ -384,3 +384,7 @@ tr:hover td {
     border-bottom:2px solid;
     padding-bottom:10px;
 }
+
+.graphic_form {
+    padding:10px;
+}
