@@ -6,6 +6,10 @@ from datasources.models import Column, Value, DataSource, Out
 from datasources.interface_r import *
 from django import forms
 
+class CommentForm(forms.Form):
+    column_geo = forms.ChoiceField(label='Variable')
+    datasource = forms.CharField(widget=forms.HiddenInput)
+
 def histplot(request,id):
     #This function populate manager's graphic for produce Histogram 
     #id is a parameter that represent the dataset id
@@ -179,6 +183,60 @@ def barplot(request,id):
             'options':options,
         }
     )
+
+def map_point_density_form(request,id):
+    datasource = DataSource.objects.get(pk=id)
+    
+    
+    # Create form on the fly. Problem? 
+    geo_columns = [(c.pk, c.name) for c in datasource.column_set.filter(has_geodata=True,data_type="point")]
+    form = CommentForm({'datasource':id})
+    form.fields['column_geo'].choices = geo_columns
+    description = u"Este gráfico se utiliza para ver como se concentran los datos espacialmente. Es una grafico de dispersión. "
+
+    return render(
+        request,
+        'map.html',
+        {          
+            'datasource': datasource,
+            'form':form,
+            'action':'/graph/map_point_density',
+        }
+    )
+
+def map_point_density_view(request):
+    if request.method == "POST":
+        var1 = request.POST['column_geo']
+        
+        suffix_dir = "media/graphics/"
+        ext_file = ".png"
+        
+        values_var1 = Value.objects.filter(column=var1)
+        point_values_lat = [p.point.geom.x for p in values_var1]
+        point_values_lng = [p.point.geom.y for p in values_var1]
+        
+        errors=""
+        #configuracion para el grafico     
+        try:
+            vector_var1 = robjects.FloatVector(point_values_lat)
+            vector_var2 = robjects.FloatVector(point_values_lng)
+        except ValueError,e:
+            pass
+
+        main = "Grafico de Densidad Por Puntos de %s" %(Column.objects.get(pk=int(var1)).name)
+        xlab = "Latitud"
+        ylab = "Longitud"
+
+        name_file = "density_point"+var1
+        png(file=suffix_dir+name_file+ext_file)
+        scatterplot(vector_var1,vector_var2,main=main,xlab=xlab,ylab=ylab)
+        off()
+        out = Out()
+        out.img = str(name_file+ext_file)
+        out.save()
+
+        return redirect("/outqueue")
+
 
 #Funciones que graficar (se conectan directamente con R)
 def histogram_view(request):
@@ -460,7 +518,6 @@ def pieplot_view(request):
         out.save()
 
         return redirect("/outqueue")
-
 
 def outqueue(request):
     return render(

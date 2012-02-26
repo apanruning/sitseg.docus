@@ -66,7 +66,7 @@ class MaapModel(models.Model):
         return out
 
 class MaapPoint(MaapModel):
-    geom = models.PointField(srid=DEFAULT_SRID)
+    geom = models.PointField()
     icon = models.ForeignKey('Icon', blank=True, null=True)
     static_url = models.CharField('Static URL', max_length=500)
     objects = MaapManager()

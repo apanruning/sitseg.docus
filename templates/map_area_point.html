@@ -19,8 +19,11 @@
     <h2> Mapa </h2>
   
     <h3> Variable Observada </h3>
-    <p>  {{column_geo|lower}}    </p>   
-
+    {% if column_value %}    
+        <p>  {{column_value|lower}}    </p>       
+    {% else %}
+        <p>  {{column_geo|lower}}    </p>       
+    {% endif %}
   </div>
 
 {% endblock %}

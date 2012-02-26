@@ -46,6 +46,7 @@ urlpatterns += patterns('datasources.plots',
     (r'^plots/(?P<id>\w+)/scattermatrix$', 'scattermatrix', {}, 'scattermatrix'),
     (r'^plots/(?P<id>\w+)/stripchart$', 'stripchart', {}, 'stripchart'),
     (r'^plots/(?P<id>\w+)/density$', 'density', {}, 'density'),
+    (r'^plots/(?P<id>\w+)/map_point_density$', 'map_point_density_form', {}, 'map_point_density_form'),
 
         
     #Funciones que grafican (se conectan directamente con R)
@@ -57,6 +58,7 @@ urlpatterns += patterns('datasources.plots',
     (r'^graph/pieplot$', 'pieplot_view', {}, 'pieplot_view'),
     (r'^graph/densityplot$', 'densityplot_view', {}, 'densityplot_view'),
     (r'^graph/barplot$', 'barplot_view', {}, 'barplot_view'),
+    (r'^graph/map_point_density$', 'map_point_density_view', {}, 'map_point_density_view'),
 
     (r'^outqueue$', 'outqueue', {}, 'outqueue'),
 
@@ -68,6 +70,10 @@ urlpatterns += patterns('datasources.maps',
     #(r'^plots/(?P<id>\w+)/map$', 'map_form', {}, 'map_form'),
     (r'^plots/(?P<id>\w+)/map_density_area$', 'density_by_area_form', {}, 'density_by_area_form'),
     (r'^graph/density_by_area_plot$', 'density_by_area_view', {}, 'density_by_area_view'),
+    (r'^plots/(?P<id>\w+)/map_points','map_points_form',{}, 'map_points_form'),
+    (r'^graph/map_points_plot$', 'map_points_view', {}, 'map_points_view'),
+    (r'^plots/(?P<id>\w+)/dist_by_area','dist_by_area_form',{}, 'dist_by_area_form'),
+    (r'^graph/dist_by_area_plot$', 'dist_by_area_view', {}, 'dist_by_area_view'),
     #(r'^graph/mapplot$', 'mapplot_view', {}, 'mapplot_view'),
 )
     

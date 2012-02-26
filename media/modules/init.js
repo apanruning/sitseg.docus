@@ -23,7 +23,9 @@ var gphy = new OpenLayers.Layer.Google(
         {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22}
     );
 
-    this.map.addLayers([gphy, gmap, ghyb, gsat]);
+    var osm = new OpenLayers.Layer.OSM()
+
+    this.map.addLayers([gphy, gmap, ghyb, gsat,osm]);
 
     this.base_layers = this.base_layers.concat([gphy]);
 
@@ -32,10 +34,11 @@ var gphy = new OpenLayers.Layer.Google(
 
 // This funcion set the initial bounds for map
 Maap.State.prototype.initializeBounds = function() {
-    this.map.setCenter(new OpenLayers.LonLat(-68, -34).transform(
-        new OpenLayers.Projection("EPSG:4326"),
-        this.map.getProjectionObject()
-    ), 5);
+    //this.map.setCenter(new OpenLayers.LonLat(-7144469.87711, -3685368.54651).transform(
+    //    new OpenLayers.Projection("EPSG:4326"),
+    //    this.map.getProjectionObject()
+    //), 10);
+    this.map.setCenter(new OpenLayers.LonLat(-7144469.87711, -3685368.54651), 12);
     return 0;
 }
 

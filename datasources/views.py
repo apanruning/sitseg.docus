@@ -93,16 +93,31 @@ def dataset_detail(request,id):
 def datasource_detail(request, id):
 
     instance = get_object_or_404(DataSource, pk=id)
-    plots_function = {
-            'Cajas':'/plots/'+id+'/box',
-            'Barras':'/plots/'+id+'/bar',
-            'Torta':'/plots/'+id+'/pie',
-            'Histograma':'/plots/'+id+'/hist',
-            'Densidad':'/plots/'+id+'/density',
-            'Dispersión':'/plots/'+id+'/scatter',
-            'Matriz de Dispersión':'/plots/'+id+'/scattermatrix',  
-            'Mapa de Densidad':'/plots/'+id+'/map_density_area',
-    }
+    plots = {}
+    columns_geo = Column.objects.filter(datasource=instance,has_geodata=True)
+    
+    if len(columns_geo) > 0:
+        is_point = columns_geo.filter(data_type="point")
+        is_area = columns_geo.filter(data_type="area")       
+
+        if is_point:
+            plots['Mapa de Puntos'] = '/plots/'+id+'/map_points'
+            plots['Grafico de Densidad de Puntos'] = '/plots/'+id+'/map_point_density'
+
+        if is_area:
+            plots['Mapa de Densidad por Area'] = '/plots/'+id+'/map_density_area'
+            plots['Mapa de Distribucion de una variable por area'] = '/plots/'+id+'/dist_by_area'
+
+
+    plots.update({
+        'Cajas':'/plots/'+id+'/box',
+        'Barras':'/plots/'+id+'/bar',
+        'Torta':'/plots/'+id+'/pie',
+        'Histograma':'/plots/'+id+'/hist',
+        'Densidad':'/plots/'+id+'/density',
+        'Dispersión':'/plots/'+id+'/scatter',
+        'Matriz de Dispersión':'/plots/'+id+'/scattermatrix',  
+    })
     
     return render(
         request,
@@ -112,7 +127,7 @@ def datasource_detail(request, id):
             'rows':Row.objects.filter(datasource=id),
             'column_form' : ColumnForm,
             'column_forms':[ColumnForm(instance=column) for column in instance.column_set.all()],
-            'plots':plots_function,
+            'plots':plots,
             
         }
 

@@ -44,43 +44,47 @@ def generate_documents(datasource, columns=None):
             value.column = column
             value.row = row_obj
             value.save()
-            
+    
             datasource.geopositionated = False
             if column.data_type == 'point':
                     datasource.geopositionated = True
+                    
                     #se debe hacer primero una consulta a la base local
-                    results = MaapPoint.objects.filter(name=value.value.lower())
-                    if len(results) >= 1:
+                    #results = MaapPoint.objects.filter(name=value.value.lower())
+
+                    #if len(results) >= 1:
                         #En este caso quiere decir que la consulta a la base local fue exitosa
 
-                        for point in results:
-                            value.point = point
-                            value.map_url = point.static_url
-                            value.save()
-                        
-                    if len(results) < 1: 
+                    #    for point in results:
+                    #        value.point = point
+                    #        value.map_url = point.static_url
+                    #        value.save()
+    
+                    #if len(results) < 1: 
                         #Este caso quiere decir que la consulta a la base local no fue exitosa y por lo tanto se procede a buscarlo via web. Aca se debe controlar solo el caso que sea unico. Ahora esta asi porque hay muchos MaapPoint iguales
 
-                        results = gmaps.local_search('%s, cordoba, argentina' %value.value )['responseData']['results']
-                        for result in results:
-                            #try:
+                    results = gmaps.local_search('%s, cordoba, argentina' %value.value )['responseData']['results']
+                    for result in results:
+                        #try:
 
-                            latlng = [float(result.get('lat')), float(result.get('lng'))]
+                        latlng = [float(result.get('lng')), float(result.get('lat'))]
+                        #import pdb; pdb.set_trace()
 
-                            point =  MaapPoint(
-                                geom=Point(latlng).wkt,
-                                name=value.value,
-                            )
+                        point =  MaapPoint(
+                            geom=Point(latlng).wkt,
+                            name=value.value,
+                        )
+                        
+                        point.static_url = result.get('staticMapUrl', None)
+                        point.save()
 
-                            point.static_url = result.get('staticMapUrl', None)
-                            point.save()
-                                    
-                            value.point = point
-                            value.map_url = point.static_url
-                            value.save()
+                        value.point = point
 
-                            #except Exception, e:
-                            #    errors.append(e)
+                        value.map_url = point.static_url
+                        value.save()
+                                
+                        #except Exception, e:
+                        #    errors.append(e)
 
                                         
             if column.data_type == 'area':
@@ -102,10 +106,9 @@ def generate_documents(datasource, columns=None):
         datasource.save() 
         
         if datasource.geopositionated:
-            values_geo = Value.objects.filter(column__datasource=datasource.id,column__has_geodata=True)
-            xs = []            
+            values_geo = Value.objects.filter(column__datasource=datasource,column__has_geodata=True)
             for t in values_geo:
-                qs = Value.objects.filter(column__datasource=datasource.id,column__has_geodata=False,row=t.row)        
+                qs = Value.objects.filter(column__datasource=datasource,column__has_geodata=False,row=t.row)        
                 for u in qs:
                     u.area = t.area
                     u.save()
