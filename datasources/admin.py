@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from models import DataSource, Column, Annotation, Value, Row, DataSet, Workspace
+from models import DataSource, Column, Annotation, Value, Row, DataSet
 from django.contrib import admin
 
 #class DataSourceAdmin(admin.ModelAdmin):
@@ -27,4 +27,3 @@ admin.site.register(Annotation)
 admin.site.register(Value)
 admin.site.register(Row)
 admin.site.register(DataSet, DataSetAdmin)
-admin.site.register(Workspace)

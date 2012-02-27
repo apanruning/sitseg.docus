@@ -13,6 +13,7 @@ from maap.models import MaapPoint, MaapArea
 from unicodedata import normalize
 from django.core.cache import cache
 from hashlib import sha1
+from django.template.defaultfilters import slugify
 from djangoosm.utils.words import normalize_street_name
 
 def generate_documents(datasource, columns=None):
@@ -90,8 +91,8 @@ def generate_documents(datasource, columns=None):
             if column.data_type == 'area':
                 datasource.geopositionated = True
                 #try:
-                search_term = normalize_street_name(value.value.lower())
-                barrio = MaapArea.objects.filter(name_norm=search_term) 
+                search_term = slugify(value.cast_value())
+                barrio = MaapArea.objects.filter(slug=search_term) 
                 print barrio     
                 if len(barrio) == 1:
                     value.area = barrio[0]

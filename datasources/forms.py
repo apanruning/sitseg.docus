@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
-from models import DataSource, Annotation, Column, Value, Workspace, DataSet
+from models import DataSource, Annotation, Column, Value, DataSet
 from django.contrib.auth.models import User
 from maap.models import MaapArea, MaapPoint
 
@@ -21,14 +21,9 @@ class DataSourceForm(forms.ModelForm):
         model = DataSource    
         fields = ('attach','name','author','dataset')
         
-class WorkspaceForm(forms.ModelForm):
-    author = forms.ModelChoiceField(label='', queryset=User.objects.all(),widget=forms.HiddenInput)
-    class Meta:  
-        model = Workspace
 
 class DataSetForm(forms.ModelForm):
     author = forms.ModelChoiceField(label='', queryset=User.objects.all(),widget=forms.HiddenInput)
-    workspace = forms.ModelChoiceField(label='', queryset=Workspace.objects.all(),widget=forms.HiddenInput)
     class Meta:
         model = DataSet
         

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from django.contrib.gis.db import models
 from django.contrib.gis.db.models.query import GeoQuerySet
 from django.utils import simplejson
@@ -47,7 +48,6 @@ class MaapModel(models.Model):
     def save(self, *args, **kwargs):
 
         self.slug = slugify(self.name)
-        self.name_norm = normalize_street_name(self.name.lower())
         super(MaapModel, self).save(*args, **kwargs)
     
     def __unicode__(self):

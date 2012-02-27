@@ -45,28 +45,9 @@ class Column(models.Model):
         return super(Column,self).save()
         
         
-class Workspace(models.Model):
-    name = models.CharField("Nombre",max_length=50)
-    slug = models.CharField(max_length=50, editable=False)
-    created = models.DateTimeField(auto_now_add=True, editable = False)
-    author = models.ForeignKey('auth.User')
-        
-    @models.permalink
-    def get_absolute_url(self):
-        return ('workspace_detail',[self.pk])
-
-    def save(self):
-        self.slug = slugify(self.name)
-        return super(Workspace, self).save()
-
-    def __str__(self):
-        return self.name
-
-    
 class DataSet(models.Model):
     name = models.CharField("Nombre", max_length=50)
     slug = models.CharField(max_length=50, editable=False)
-    workspace = models.ForeignKey('Workspace')
     created = models.DateTimeField(auto_now_add=True, editable = False)
     author = models.ForeignKey('auth.User')
 
@@ -154,8 +135,8 @@ class Value(models.Model):
     column = models.ForeignKey(Column)
     data_type = models.CharField(max_length=100)
     value = models.CharField(max_length=100)
-    point = models.ForeignKey(MaapPoint, null=True)
-    map_url = models.URLField()
+    point = models.ForeignKey(MaapPoint, null=True, blank=True)
+    map_url = models.URLField(null=True, blank=True)
     multiple = models.BooleanField()
     area = models.ForeignKey(MaapArea, null=True)
     row = models.ForeignKey(Row)

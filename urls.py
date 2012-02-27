@@ -8,10 +8,7 @@ from datasources import models
 admin.autodiscover()
 
 urlpatterns = patterns('datasources.views',
-    (r'^$', 'workspace', {}, 'workspace'),
-    (r'^workspace/$', 'workspace', {}, 'workspace'),
-    (r'^workspace/(?P<id>\w+)/$', 'workspace_detail', {}, 'workspace_detail'),
-    (r'^workspace/(?P<id>\w+)/delete', 'delete', {'model':models.Workspace}),
+    (r'^$', 'index', {}, 'index'),
 
     (r'^dataset/(?P<id>\w+)/$', 'dataset_detail', {}, 'dataset_detail'),
     (r'^dataset/(?P<id>\w+)/delete', 'delete', {'model':models.DataSet}),

@@ -6,9 +6,9 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.contrib import messages
 #from bson.objectid import ObjectId
-from datasources.models import DataSource, Column, Value, Row, Workspace, DataSet
+from datasources.models import DataSource, Column, Value, Row, DataSet
 from datasources.forms import DataSourceForm, ColumnFormSet, ColumnForm, \
-                                ValueForm, WorkspaceForm, DataSetForm
+                                ValueForm, DataSetForm
 from datasources.tasks import generate_documents 
 #from datasources.utils import *
 from django.db.models import Count
@@ -19,30 +19,8 @@ from datasources.forms import MaapPointForm
 
 import simplejson
 
-def workspace(request):
-    ''' This function list all workspace present in database. Here is possible create a new workspace '''
-    form = WorkspaceForm(initial={'author':request.user.id})
-    if request.method == 'POST':
-
-       form = WorkspaceForm(request.POST)
-       if form.is_valid():
-            workspace = form.save()
-            return redirect(workspace.get_absolute_url())
-
-    return render(
-        request,
-        'index.html',
-        {
-            'workspace_list': Workspace.objects.all(),
-            'form': form,
-        }
-    )
-
-def workspace_detail(request, id):
-    ''' This function show the workspace's detail. It consist in a list of dataset associated with it. Here is possible create a new dataset'''
-    obj = Workspace.objects.get(pk=id)
+def index(request):
     initial={
-        'workspace':obj.id,
         'author':request.user.id
     }
     form = DataSetForm(initial=initial)
@@ -56,10 +34,9 @@ def workspace_detail(request, id):
 
     return render(
         request,
-        'workspace_detail.html',
+        'index.html',
         {
-            'dataset_list': DataSet.objects.filter(workspace=obj),
-            'workspace': obj,
+            'dataset_list': DataSet.objects.all(),
             'form': form,
         }
     )
