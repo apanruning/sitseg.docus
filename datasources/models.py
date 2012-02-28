@@ -19,7 +19,7 @@ class Annotation(models.Model):
     datasource = models.ForeignKey('DataSource')
 
 class Column(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=200)
     label = models.CharField(max_length=50, editable=False)
     created = models.DateTimeField(auto_now_add=True, editable = False)
     datasource = models.ForeignKey('DataSource', editable=False)
@@ -111,7 +111,7 @@ class DataSource(models.Model):
         # Check: Is deleting the previous fields?
         #self.columns = []
         for i, column in enumerate(first_column):
-            new_column = Column(name=unicode(column),)
+            new_column = Column(name=column,)
             new_column.created = datetime.now()
             new_column.label = slugify(new_column.name)
             new_column.csv_index = i

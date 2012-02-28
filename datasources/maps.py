@@ -153,7 +153,7 @@ def dist_by_area_view(request):
                 r.value_set.get(column__pk=column_geo).area, 
                 r.value_set.get(column__pk=column_value).value
             ) 
-            for r in datasource.row_set.all()]
+            for r in datasource.row_set.all() if len(r.value_set.all())!=0]
 
     #Assume that column has only numbers
     areas = {}
