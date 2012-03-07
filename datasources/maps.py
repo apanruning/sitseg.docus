@@ -42,13 +42,12 @@ def density_by_area_form(request, id):
 def generate_shp(query, name_file):
     
     shp_cmd = settings.PATH_TO_PGSQL2SHP+"pgsql2shp -f " + settings.SHP_UPLOAD_DIR + name_file + ' -h localhost -u postgres ' + settings.DATABASES['default']['NAME']     
-    sql_query = "'select * from maap_maaparea where maapmodel_ptr_id in "
+    sql_query = " select * from maap_maaparea where maapmodel_ptr_id in "
     id_areas = []
     for area in query:
         if area['area']:
             id_areas.append(area['area'])            
-    import pdb; pdb.set_trace()
-    os.system(shp_cmd + sql_query + str(tuple(id_areas))+"'")
+    os.system(shp_cmd + "'" + sql_query + str(tuple(id_areas))+"'")
     shp_file = open(settings.SHP_UPLOAD_DIR+name_file, "rb").read()
 
     return shp_file
@@ -62,7 +61,7 @@ def density_by_area_view(request):
 
     areas = Value.objects.filter(column__datasource=datasource_id,column=column_geo).values("area").annotate(Count('area')).order_by()
 
-    shp_name = str(int(datasource_id)+int(column_geo))+'.shp'    
+    shp_name = str(int(datasource_id)+int(column_geo))
 
     min_val = 0
     max_val = 1023
@@ -77,15 +76,17 @@ def density_by_area_view(request):
     ylab = "Longitud"
 
 
-    #png(file=suffix_dir+name_file+ext_file)
+    png(file=suffix_dir+shp_name+ext_file)
     #scatterplot(vector_var1,vector_var2,main=main,xlab=xlab,ylab=ylab)
-    vector = robjects.FloatVector([-31.409033152571638, -64.18144226074219])
+    #vector = robjects.FloatVector([-31.409033152571638, -64.18144226074219])
     #RgoogleMaps.PlotOnStaticMap(RgoogleMaps.GetMap(center=vector, zoom =12, destfile =suffix_dir+name_file+ext_file,maptype = "mobile"),axes = True)
-    RgoogleMaps.PlotPolysOnStaticMap(RgoogleMaps.GetMap(center=vector, zoom =12, destfile =suffix_dir+shp_name+ext_file,maptype = "mobile"), polys=generate_shp(areas,shp_name))
-
+    #RgoogleMaps.PlotPolysOnStaticMap(RgoogleMaps.GetMap(center=vector, zoom =12, destfile =suffix_dir+shp_name+ext_file,maptype = "mobile"), polys=generate_shp(areas,shp_name))
+    generate_shp(areas,shp_name+'.shp')
+    shp_file = pbsmapping.importShapefile(settings.SHP_UPLOAD_DIR+shp_name)
+    pbsmapping.plotPolys(shp_file)
     off()
     out = Out()
-    out.img = str(name_file+ext_file)
+    out.img = str(shp_name+ext_file)
     out.save()
 
     return redirect("/outqueue")

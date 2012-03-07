@@ -29,7 +29,8 @@ strip = robjects.r['stripchart']
 RgoogleMaps = importr('RgoogleMaps')
 #rgdal = importr('rgdal')
 #sp = importr('sp')
-#maptools = importr('maptools')
+maptools = importr('maptools')
+pbsmapping = importr('PBSmapping')
 
 #device function
 x11 = robjects.r['x11']

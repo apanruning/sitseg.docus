@@ -118,7 +118,6 @@ def datasource_detail(request, id):
         {
             'datasource': instance,
             'rows':Row.objects.filter(datasource=id),
-            'column_form' : ColumnForm,
             'column_forms':[ColumnForm(instance=column) for column in instance.column_set.all()],
             'plots':plots,
             'form_export':form_export,
