@@ -51,10 +51,18 @@
           <legend>Nuevo Conjunto de Datos</legend>
             {{ form.as_p }}
           <a href="#add-form" class="control">cerrar</a>   
-          <input type="submit" name="Guardar" value="Submit"/>
+          <input type="submit" name="Guardar" value="Crear"/>
       </form>
       {% endif %}    
-       <h1>Conjunto de Datos</h1>
+       <h1>Bienvenido</h1>
+
+        <p>Un espacio de trabajo consiste en un repositorio donde se pueden alojar
+        diferentes <strong>Fuentes de Datos</strong>.</p> 
+        
+        <p>Para comenzar a trabajar elija un espacio de trabajo de la lista o
+        agregue un <strong>Conjunto de Datos</strong> nuevo.</p>
+        
+       <h1>Conjuntos de Datos</h1>
         {% autopaginate dataset_list 10 %}
         <ul>
         {% for dataset in dataset_list %}
@@ -66,13 +74,7 @@
         {% endfor %}        
         </ul>
         {% paginate %}
-        <h1>Bienvenido</h1>
         
-        <p>Para comenzar a trabajar elija un espacio de trabajo de la lista o
-        agregue un <strong>Conjunto de Datos</strong> nuevo.</p>
-        
-        <p>Un espacio de trabajo consiste en un repositorio donde se pueden alojar
-        diferentes <strong>Fuentes de Datos</strong>.</p>
     {% endblock %}
     </section>
     <footer>

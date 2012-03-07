@@ -24,6 +24,9 @@ def histplot(request,id):
                 'labels':['Seleccione Variable'],
                 'action':'/graph/histogram',
     }
+
+    description = u"Este gráfico permite construir histogramas a partir de una variable. Permite ver rapidamente la densidad de una variable"
+
     return render(
         request,
         'graphic.html',
@@ -31,6 +34,7 @@ def histplot(request,id):
             'datasources':datasources,
             'options':options,
             'dataset':dataset,
+            'description':description,
         }
     )
 
@@ -50,6 +54,8 @@ def box(request,id):
                 'action':'/graph/boxplot',
     }
 
+    description = u"El histograma de un conjunto de datos es un gráfico de barras que representan las frecuencias con que aparecen las mediciones agrupadas por variables"
+
     return render(
         request,
         'graphic.html',
@@ -57,6 +63,7 @@ def box(request,id):
             'datasources':datasources,
             'options':options,
             'dataset':dataset,
+            'description':description,
         }
     )
 
@@ -71,6 +78,8 @@ def scatter(request,id):
         'labels':['Seleccione Variable','Seleccione Variable'],
         'action':'/graph/scatterplot',
     }
+
+    description = u"Este gráfico permite ver rápidamente si dos variables están relacionadas entre si"
     return render(
         request,
         'graphic.html',
@@ -78,6 +87,7 @@ def scatter(request,id):
             'datasources':datasources,
             'options':options,
             'dataset':dataset,
+            'description':description,
         }
     )
 
@@ -134,6 +144,9 @@ def pieplot(request,id):
         'labels':['Seleccione Variable'],
         'action':'/graph/pieplot',
     }
+
+    description = u"Este grafico permite ver la distribución de una variable pero de manera porcentual"
+
     return render(
         request,
         'graphic.html',
@@ -141,6 +154,7 @@ def pieplot(request,id):
             'datasources':datasources,
             'options':options,
             'dataset':dataset,
+            'description':description,
         }
     )
 
@@ -155,12 +169,15 @@ def density(request,id):
         'labels':['Seleccione Variable'],
         'action':'/graph/densityplot',
     }
+    description = u"Este gráfico permite observar la densidad de una variable"
     return render(
         request,
         'graphic.html',
         {          
             'datasources':datasources,
             'options':options,
+            'dataset':dataset,
+            'description':description,
         }
     )
 
@@ -175,12 +192,17 @@ def barplot(request,id):
         'labels':['Seleccione Variable'],
         'action':'/graph/barplot',
     }
+
+    description = u"Este gráfico permite observar la cantidad de ocurrencias para cada valor de una variable"
+
     return render(
         request,
         'graphic.html',
         {          
             'datasources':datasources,
             'options':options,
+            'dataset':dataset,
+            'description':description,
         }
     )
 

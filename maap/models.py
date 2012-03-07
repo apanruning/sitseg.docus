@@ -31,7 +31,6 @@ class MaapManager(models.GeoManager):
 class MaapModel(models.Model):
     slug = models.SlugField(editable=False, null=True)
     name = models.CharField(max_length=100, null=True)
-    name_norm = models.CharField(max_length=100,null=True,editable=False)
     creator = models.ForeignKey('auth.User',related_name='created',editable=False, null=True) 
     created = models.DateTimeField(auto_now_add=True, editable = False)
     changed = models.DateTimeField(auto_now=True, editable = False)

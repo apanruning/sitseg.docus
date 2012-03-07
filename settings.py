@@ -108,6 +108,10 @@ CACHES = {
 DEFAULT_REGION = 'Cordoba, Argentina'
 GOOGLEMAPS_API_KEY = 'ABQIAAAAeGr4NJHO8ttjx6iI4vjNmhRfKkWTwDLdx6HKJFytTVRxpJiS7hQr6aj7gB7vpV7PuCq06Ft_5QfJUw'
 PAGINATION_DEFAULT_WINDOW = 2
+SHP_UPLOAD_DIR = os.path.join(BASE_DIR, 'media/shapes/')
+PATH_TO_PGSQL2SHP = '/usr/lib/postgresql/9.1/bin/'
+
+
 
 INSTALLED_APPS = (
     'django.contrib.admin',
@@ -124,6 +128,7 @@ INSTALLED_APPS = (
     'pagination',
     'datasources',
 #    'djcelery',
+    'shapes',
     'maap',
     'mptt',
     'rpy2',

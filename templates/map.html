@@ -1,8 +1,12 @@
 {% block page %}
+<div class="description">
+    {{ description }}
+</div>
 <form action='{{action|safe}}' method='post' target="_blank">
 {{form.as_p}}
 {% csrf_token %}
     <br />
     <input type='submit' value='graficar' />
 </form>
+
 {% endblock %}  

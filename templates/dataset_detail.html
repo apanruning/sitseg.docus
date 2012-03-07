@@ -8,6 +8,7 @@
     {% if user.is_staff %}
     <menu>
     <a href="#add-form" class="control">Importar Datos</a>
+    
     </menu>
     {%endif%}
 {% endblock %}
@@ -15,11 +16,20 @@
     {% if user.is_staff %}
     <form id="add-form" method="post" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
     Importar Datos 
-    {{ form.as_p }}
+    {{ form_import.as_p }}
     <a href="#add-form" class="control">cerrar</a>   
     <input type="submit" name="Guardar" value="Submit"/>
     </form>
-    {% endif %}    
+    {% endif %} 
+    {% if user.is_staff %}
+    <form id="add-form" method="post" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
+    Exportar 
+    {{ form_export.as_p }}
+    <a href="#add-form" class="control">cerrar</a>   
+    <input type="submit" name="Exportar" value="Submit"/>
+    </form>
+    {% endif %} 
+   
     
     <h1>Fuentes de Datos </h1>
     <article id="datasources">

@@ -21,6 +21,10 @@ class DataSourceForm(forms.ModelForm):
         model = DataSource    
         fields = ('attach','name','author','dataset')
         
+class ExportForm(forms.Form):
+    column_geo = forms.ChoiceField(label='Variable')
+    datasource = forms.CharField(widget=forms.HiddenInput)
+    name_file = forms.CharField(label='Nombre del Archivo')    
 
 class DataSetForm(forms.ModelForm):
     author = forms.ModelChoiceField(label='', queryset=User.objects.all(),widget=forms.HiddenInput)

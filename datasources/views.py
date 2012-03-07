@@ -15,7 +15,8 @@ from django.db.models import Count
 from django import forms
 from django.core.files.base import ContentFile
 from maap.models import MaapPoint
-from datasources.forms import MaapPointForm
+from datasources.forms import MaapPointForm, ExportForm
+from maps import generate_shp
 
 import simplejson
 
@@ -48,10 +49,10 @@ def dataset_detail(request,id):
         'author':request.user.id
     }
     form = DataSourceForm(initial=initial)
+
     if request.method == 'POST':
         form = DataSourceForm(request.POST, request.FILES, initial=initial)
         if form.is_valid():
-            #import pdb; pdb.set_trace()
             datasource = form.save()
             datasource.import_columns()
 
@@ -71,7 +72,21 @@ def datasource_detail(request, id):
 
     instance = get_object_or_404(DataSource, pk=id)
     plots = {}
-    columns_geo = Column.objects.filter(datasource=instance,has_geodata=True)
+
+    ####### Revisar
+    geo_columns = [(c.pk, c.name) for c in instance.column_set.filter(has_geodata=True, data_type="area")]
+    form_export = ExportForm({'datasource':id})
+    form_export.fields['column_geo'].choices = geo_columns
+
+    if request.method == 'POST':
+        if form_export.is_valid():
+            areas = Value.objects.filter(column__datasource=form_export.fields['datasource_id'],column=form_export.fields['column_geo']).values("area")   
+            response = HttpResponse(generate_shp(form_export.fields['name_file'], areas), mimetype='text/shp')
+            response['Content-Disposition'] = 'attachment; filename=%s.shp' % form_export.fields['name_file']
+            return response
+    #######                    
+
+    columns_geo = Column.objects.filter(datasource=instance,has_geodata=True)        
     
     if len(columns_geo) > 0:
         is_point = columns_geo.filter(data_type="point")
@@ -94,6 +109,7 @@ def datasource_detail(request, id):
         'Densidad':'/plots/'+id+'/density',
         'Dispersión':'/plots/'+id+'/scatter',
         'Matriz de Dispersión':'/plots/'+id+'/scattermatrix',  
+        'Gráfico de Puntos':'/plots/'+id+'/stripchart'
     })
     
     return render(
@@ -105,6 +121,7 @@ def datasource_detail(request, id):
             'column_form' : ColumnForm,
             'column_forms':[ColumnForm(instance=column) for column in instance.column_set.all()],
             'plots':plots,
+            'form_export':form_export,
             
         }
 
@@ -281,3 +298,7 @@ def download_attach_source(request, id):
 
     return response
 
+def export_to_shp(request, id):
+    ds = DataSource.objects.all()
+    
+    return 

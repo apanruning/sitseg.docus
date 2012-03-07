@@ -1,4 +1,6 @@
 import rpy2.robjects as robjects
+from rpy2.robjects.functions import SignatureTranslatedFunction
+from rpy2.robjects.packages import importr
 
 #statitics function
 minimo = robjects.r['min']
@@ -11,19 +13,23 @@ cuasi_varianza = robjects.r['var']
 desviacion = robjects.r('''function(r) sqrt(var(r)/length(r)) ''')
 
 
-#plots function
+#plots built-in function
 bar = robjects.r['barplot']
 hist = robjects.r['hist']
 boxplot = robjects.r['boxplot']
 densityplot = robjects.r['density']
-dotchart = robjects.r['dotchart']
-ecdfplot = robjects.r['plot.ecdf']
-#paretochart = robjects.r['pareto.chart'] 
+#dotchart = robjects.r['dotchart']
+#ecdfplot = robjects.r['plot.ecdf']
 piechart = robjects.r['pie']
 scatterplot = robjects.r['plot']
 scatterplotmatrix = robjects.r['pairs']
 strip = robjects.r['stripchart']
 
+#modules import
+RgoogleMaps = importr('RgoogleMaps')
+#rgdal = importr('rgdal')
+#sp = importr('sp')
+#maptools = importr('maptools')
 
 #device function
 x11 = robjects.r['x11']
@@ -33,3 +39,4 @@ off = robjects.r['dev.off']
 
 #others
 par = robjects.r['par']
+

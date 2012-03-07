@@ -184,7 +184,7 @@ fieldset {
     margin:0;
 
 }
-#add-form {
+#add-form,#export-form {
     display:none;
     width: 30em;
     overflow:hidden;
@@ -197,11 +197,11 @@ fieldset {
     box-shadow: 0 0 15px #999;
 
 }
-#add-form.errors {
+#add-form.errors,#export-form.errors {
     display:block;
 }
 
-#add-form input[type="submit"] {
+#add-form input[type="submit"],#export-form input[type="submit"] {
     float:right;
 }
 

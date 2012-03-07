@@ -63,13 +63,12 @@ $(function(){
         container = $(this).parents('div');
         data = $(container).find('.column_form').serializeArray();
         message = $('<li>').append($('<strong>').text('Los datos se están procesando'));
-        $('#messages').toggle().append(message);
+        $('#messages').append(message);
         $.post(
             target, 
             data,
             function(response, status){
                 $('#messages li').remove();
-                console.log(status);
                 $('#messages').append(response);
                 window.setTimeout(function(){
                     $('#messages .control').click()

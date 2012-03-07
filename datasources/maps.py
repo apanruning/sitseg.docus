@@ -8,6 +8,7 @@ from django import forms
 from maap.models import MaapArea, MaapPoint
 from maap.layers import Layer
 from django.db.models import Count
+import os
 
 class CommentFormTwo(forms.Form):
     column_geo = forms.ChoiceField(label='Variable')
@@ -17,7 +18,7 @@ class CommentFormTwo(forms.Form):
 class CommentForm(forms.Form):
     column_geo = forms.ChoiceField(label='Variable')
     datasource = forms.CharField(widget=forms.HiddenInput)
-    
+
 def density_by_area_form(request, id):
     datasource = DataSource.objects.get(pk=id)
     
@@ -25,6 +26,7 @@ def density_by_area_form(request, id):
     geo_columns = [(c.pk, c.name) for c in datasource.column_set.filter(has_geodata=True, data_type="area")]
     form = CommentForm({'datasource':id})
     form.fields['column_geo'].choices = geo_columns
+    description = u"Este gráfico permite ver los datos agrupados por área"
 
     return render(
         request,
@@ -33,43 +35,60 @@ def density_by_area_form(request, id):
             'datasource': datasource,
             'form':form,
             'action':'/graph/density_by_area_plot',
+            'description':description,
         }
     )
 
+def generate_shp(query, name_file):
+    
+    shp_cmd = settings.PATH_TO_PGSQL2SHP+"pgsql2shp -f " + settings.SHP_UPLOAD_DIR + name_file + ' -h localhost -u postgres ' + settings.DATABASES['default']['NAME']     
+    sql_query = "'select * from maap_maaparea where maapmodel_ptr_id in "
+    id_areas = []
+    for area in query:
+        if area['area']:
+            id_areas.append(area['area'])            
+    import pdb; pdb.set_trace()
+    os.system(shp_cmd + sql_query + str(tuple(id_areas))+"'")
+    shp_file = open(settings.SHP_UPLOAD_DIR+name_file, "rb").read()
+
+    return shp_file
+
+    
 def density_by_area_view(request):
     datasource_id = request.POST.get('datasource')
     column_geo = request.POST.get('column_geo')
     
     datasource = DataSource.objects.get(pk=datasource_id)
-    flag = Column.objects.get(pk=column_geo).data_type
 
     areas = Value.objects.filter(column__datasource=datasource_id,column=column_geo).values("area").annotate(Count('area')).order_by()
 
+    shp_name = str(int(datasource_id)+int(column_geo))+'.shp'    
+
     min_val = 0
     max_val = 1023
+    
+    polys = []
+                
+    suffix_dir = "media/graphics/"
+    ext_file = ".png"
 
-    layer = Layer()
-    for area in areas:
-        if flag == 'area':
+    main = "Grafico de Densidad Por Puntos de %s"
+    xlab = "Latitud"
+    ylab = "Longitud"
 
-            if area['area']:
-                maap_area = MaapArea.objects.get(pk=area['area'])
-                area['geo'] = maap_area.to_geo_element()
-                color = int((area['area__count']-min_val)*256/(max_val-min_val))-1
-                area['geo'].color = "#%x0000" % color
-                area['geo'].name = "%s (%d)" %(maap_area.name, area['area__count']) 
-                layer.elements.append(area['geo'])
 
-    return render(
-        request,
-        'map_area_point.html',
-        {
-            'objects': areas,
-            'datasource': datasource,
-            'json_layer': layer.json, 
-            'column_geo':Column.objects.get(pk=column_geo).name
-        }
-    )
+    #png(file=suffix_dir+name_file+ext_file)
+    #scatterplot(vector_var1,vector_var2,main=main,xlab=xlab,ylab=ylab)
+    vector = robjects.FloatVector([-31.409033152571638, -64.18144226074219])
+    #RgoogleMaps.PlotOnStaticMap(RgoogleMaps.GetMap(center=vector, zoom =12, destfile =suffix_dir+name_file+ext_file,maptype = "mobile"),axes = True)
+    RgoogleMaps.PlotPolysOnStaticMap(RgoogleMaps.GetMap(center=vector, zoom =12, destfile =suffix_dir+shp_name+ext_file,maptype = "mobile"), polys=generate_shp(areas,shp_name))
+
+    off()
+    out = Out()
+    out.img = str(name_file+ext_file)
+    out.save()
+
+    return redirect("/outqueue")
 
 def map_points_form(request, id):
     datasource = DataSource.objects.get(pk=id)
@@ -131,6 +150,7 @@ def dist_by_area_form(request,id):
     form = CommentFormTwo({'datasource':id})
     form.fields['column_value'].choices = columns
     form.fields['column_geo'].choices = geo_columns
+    description = u"Este gráfico permite ver cómo se distribuye una variable cuantitativa sobre las áreas"
     
     return render(
         request,
@@ -139,6 +159,7 @@ def dist_by_area_form(request,id):
             'datasource': datasource,
             'form':form,
             'action':'/graph/dist_by_area_plot',
+            'description':description,
         }
     )
 

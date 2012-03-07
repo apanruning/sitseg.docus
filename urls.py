@@ -44,7 +44,6 @@ urlpatterns += patterns('datasources.plots',
     (r'^plots/(?P<id>\w+)/stripchart$', 'stripchart', {}, 'stripchart'),
     (r'^plots/(?P<id>\w+)/density$', 'density', {}, 'density'),
     (r'^plots/(?P<id>\w+)/map_point_density$', 'map_point_density_form', {}, 'map_point_density_form'),
-
         
     #Funciones que grafican (se conectan directamente con R)
     (r'^graph/scatterplot$', 'scatterplot_view', {}, 'scatterplot_view'),
