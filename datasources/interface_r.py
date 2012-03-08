@@ -18,8 +18,6 @@ bar = robjects.r['barplot']
 hist = robjects.r['hist']
 boxplot = robjects.r['boxplot']
 densityplot = robjects.r['density']
-#dotchart = robjects.r['dotchart']
-#ecdfplot = robjects.r['plot.ecdf']
 piechart = robjects.r['pie']
 scatterplot = robjects.r['plot']
 scatterplotmatrix = robjects.r['pairs']
@@ -27,8 +25,6 @@ strip = robjects.r['stripchart']
 
 #modules import
 RgoogleMaps = importr('RgoogleMaps')
-#rgdal = importr('rgdal')
-#sp = importr('sp')
 maptools = importr('maptools')
 pbsmapping = importr('PBSmapping')
 

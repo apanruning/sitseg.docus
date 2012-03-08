@@ -63,14 +63,12 @@ urlpatterns += patterns('datasources.plots',
 )
 
 urlpatterns += patterns('datasources.maps',
-    #(r'^plots/(?P<id>\w+)/map$', 'map_form', {}, 'map_form'),
     (r'^plots/(?P<id>\w+)/map_density_area$', 'density_by_area_form', {}, 'density_by_area_form'),
     (r'^graph/density_by_area_plot$', 'density_by_area_view', {}, 'density_by_area_view'),
     (r'^plots/(?P<id>\w+)/map_points','map_points_form',{}, 'map_points_form'),
     (r'^graph/map_points_plot$', 'map_points_view', {}, 'map_points_view'),
     (r'^plots/(?P<id>\w+)/dist_by_area','dist_by_area_form',{}, 'dist_by_area_form'),
     (r'^graph/dist_by_area_plot$', 'dist_by_area_view', {}, 'dist_by_area_view'),
-    #(r'^graph/mapplot$', 'mapplot_view', {}, 'mapplot_view'),
 )
     
 

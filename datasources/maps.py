@@ -77,10 +77,6 @@ def density_by_area_view(request):
 
 
     png(file=suffix_dir+shp_name+ext_file)
-    #scatterplot(vector_var1,vector_var2,main=main,xlab=xlab,ylab=ylab)
-    #vector = robjects.FloatVector([-31.409033152571638, -64.18144226074219])
-    #RgoogleMaps.PlotOnStaticMap(RgoogleMaps.GetMap(center=vector, zoom =12, destfile =suffix_dir+name_file+ext_file,maptype = "mobile"),axes = True)
-    #RgoogleMaps.PlotPolysOnStaticMap(RgoogleMaps.GetMap(center=vector, zoom =12, destfile =suffix_dir+shp_name+ext_file,maptype = "mobile"), polys=generate_shp(areas,shp_name))
     generate_shp(areas,shp_name+'.shp')
     shp_file = pbsmapping.importShapefile(settings.SHP_UPLOAD_DIR+shp_name)
     pbsmapping.plotPolys(shp_file)

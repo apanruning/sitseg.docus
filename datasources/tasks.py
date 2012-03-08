@@ -67,10 +67,7 @@ def generate_documents(datasource, columns=None):
 
                         results = gmaps.local_search('%s, cordoba, argentina' %value.value )['responseData']['results']
                         for result in results:
-                            #try:
-
                             latlng = [float(result.get('lng')), float(result.get('lat'))]
-                            #import pdb; pdb.set_trace()
 
                             point =  MaapPoint(
                                 geom=Point(latlng).wkt,
@@ -79,28 +76,17 @@ def generate_documents(datasource, columns=None):
                             
                             point.static_url = result.get('staticMapUrl', None)
                             point.save()
-
                             value.point = point
-
                             value.map_url = point.static_url
                             value.save()
-                                    
-                            #except Exception, e:
-                            #    errors.append(e)
-
                                         
             if column.data_type == 'area':
                 datasource.geopositionated = True
-                #try:
                 barrio = MaapArea.objects.filter(slug=search_term) 
-                print barrio     
+
                 if len(barrio) == 1:
                     value.area = barrio[0]
                     value.save()
-                    
-                #except Exception, e:
-                #    errors.append(e)
-                
             
     if len(errors) == 0:
         datasource.is_dirty = False 

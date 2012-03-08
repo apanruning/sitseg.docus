@@ -1,6 +1,4 @@
-
 # -*- coding: utf-8 -*-
-
 
 from csv import reader
 from django.db import models
@@ -11,7 +9,6 @@ from dateutil.parser import parse as date_parser
 from django.template.defaultfilters import slugify
 from django import forms
 from datetime import datetime
-
 
 class Annotation(models.Model):
     text = models.TextField()
@@ -27,10 +24,8 @@ class Column(models.Model):
     csv_index = models.IntegerField(editable=False)
     data_type = models.CharField(max_length=50, default='str')
     has_geodata = models.BooleanField(default=False)
-    
 
     def __unicode__(self):
-
         return self.name
         
     class Meta:
@@ -99,7 +94,6 @@ class DataSource(models.Model):
         return super(DataSource, self).save()
 
     def import_columns(self):
-        #FIXME Usar una cola de tareas
         """ assume that the first column has the headers title.
             WARNING: It removes previous columns. Use with care.
         """
@@ -108,8 +102,6 @@ class DataSource(models.Model):
         csv_attach = reader(f)
         first_column = csv_attach.next()
 
-        # Check: Is deleting the previous fields?
-        #self.columns = []
         for i, column in enumerate(first_column):
             new_column = Column(name=column,)
             new_column.created = datetime.now()
@@ -125,7 +117,6 @@ class Row(models.Model):
 
 
 class ValueManager(models.Manager):
-
     def get_query_set(self):
         return super(ValueManager, self).get_query_set().annotate(
             points=models.Count('point')

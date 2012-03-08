@@ -11,12 +11,10 @@ class CommentForm(forms.Form):
     datasource = forms.CharField(widget=forms.HiddenInput)
 
 def histplot(request,id):
-    #This function populate manager's graphic for produce Histogram 
-    #id is a parameter that represent the dataset id
-   
     datasource = DataSource.objects.get(pk=id)
     dataset = datasource.dataset
     datasources = []
+
     for ds in dataset.datasource_set.all():
         datasources.append(ds)
    
@@ -39,9 +37,6 @@ def histplot(request,id):
     )
 
 def box(request,id):
-    #This function populate manager's graphic for produce Histogram 
-    #id is a parameter that represent the dataset id
-   
     datasource = DataSource.objects.get(pk=id)
     dataset = datasource.dataset
     datasources = []
@@ -209,7 +204,6 @@ def barplot(request,id):
 def map_point_density_form(request,id):
     datasource = DataSource.objects.get(pk=id)
     
-    
     # Create form on the fly. Problem? 
     geo_columns = [(c.pk, c.name) for c in datasource.column_set.filter(has_geodata=True,data_type="point")]
     form = CommentForm({'datasource':id})
@@ -362,9 +356,6 @@ def stripchart_view(request):
         jitter=0.1 
         offset=1/3
         vertical=True
-        #group.names
-        #xlim=NULL 
-        #ylim=NULL
         main="Grafico de Puntos para %s" %(Column.objects.get(pk=var).name)
         ylab=""
         xlab="Valores"

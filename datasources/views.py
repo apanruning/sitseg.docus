@@ -5,12 +5,10 @@ from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponse
 from django.conf import settings
 from django.contrib import messages
-#from bson.objectid import ObjectId
 from datasources.models import DataSource, Column, Value, Row, DataSet
 from datasources.forms import DataSourceForm, ColumnFormSet, ColumnForm, \
                                 ValueForm, DataSetForm
 from datasources.tasks import generate_documents 
-#from datasources.utils import *
 from django.db.models import Count
 from django import forms
 from django.core.files.base import ContentFile
@@ -121,9 +119,7 @@ def datasource_detail(request, id):
             'column_forms':[ColumnForm(instance=column) for column in instance.column_set.all()],
             'plots':plots,
             'form_export':form_export,
-            
         }
-
     )
 
 def column_detail(request, id):
@@ -292,12 +288,8 @@ def download_attach_source(request, id):
     attach = value_string
     value_string = ''
             
-    response = HttpResponse(attach, mimetype='application/force-download')
+    response = HttpResponse(attach, mimetype='text/csv')
     response['Content-Disposition'] = 'attachment; filename=%s.csv' % datasource.name.lower()
 
     return response
 
-def export_to_shp(request, id):
-    ds = DataSource.objects.all()
-    
-    return 

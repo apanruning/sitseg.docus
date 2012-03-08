@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-#import djcelery
-
 
 POSTGIS_SQL_PATH = '/usr/share/postgresql/8.4/contrib'
 TEST_RUNNER='django.contrib.gis.tests.run_tests'
@@ -127,7 +125,6 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'pagination',
     'datasources',
-#    'djcelery',
     'shapes',
     'maap',
     'mptt',
@@ -144,18 +141,6 @@ DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
 }
 
-#CELERY_RESULT_BACKEND = "postgres"
-#CELERY_MONGODB_BACKEND_SETTINGS = {
-#    "host": "localhost",
-#    "port": 5432,
-#    "database": "queue",
-#    "taskmeta_collection": "tasks",
-#}
-
-#BROKER_TRANSPORT = "postgres"
-#BROKER_HOST = "localhost"
-#BROKER_PORT = 5432
-
 # OSM absolute path to csv sources
 OSM_CSV_ROOT = os.path.join(os.path.dirname(__file__), 'csv')
 
@@ -163,5 +148,3 @@ try:
     from local_settings import *
 except ImportError:
     pass
-    
-#djcelery.setup_loader()

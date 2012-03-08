@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
 
-
 from models import DataSource, Column, Annotation, Value, Row, DataSet
 from django.contrib import admin
-
-#class DataSourceAdmin(admin.ModelAdmin):
-#    group = 'Data Sources'
-#    list_items = ('name', 'created', 'author')
 
 class ColumnAdmin(admin.ModelAdmin):
     model = 'Column'
