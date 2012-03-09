@@ -70,11 +70,6 @@ entorno:
         }
         INTERNAL_IP="127.0.0.1"
     
-Ahora podemos sincronizar y correr el servidor de desarrollo:
-
-        $ ./manage.py syncdb
-        $ ./manage.py runserver
-
 Instalacion de R
 
 Editar el archivo de configuracion (/etc/apt/sources.list) 
@@ -100,4 +95,14 @@ Hacen falta instalar algunos paquetes extra para R. Para ello, es necesario entr
         $ sudo R
         $ install.packages('PBSmapping');        
     
+Ahora podemos sincronizar y correr el servidor de desarrollo:
+
+        $ ./manage.py syncdb
+        $ ./manage.py runserver
+
+Abrir google-chrome con la direccion para entrar en la aplicacion
+
+        http://localhost:8000
+
+
 
