@@ -11,7 +11,7 @@
     };
 </script>
 
-<form action="{{options.action|safe}}" method="post" class="graphic_form" >
+<form action="{{options.action|safe}}" method="post" class="graphic_form" target='_blank'>
 <span> Elija una variable para realizar el gráfico </span>
     {% for o in options.labels %}
         <input type="text" id='var-{{forloop.counter0}}' name="var-{{forloop.counter0}}" value="ingrese valor numérico"/> 

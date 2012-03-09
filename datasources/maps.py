@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 from datasources.models import Column, Value, DataSource, Out
@@ -19,7 +18,7 @@ class CommentForm(forms.Form):
     column_geo = forms.ChoiceField(label='Variable')
     datasource = forms.CharField(widget=forms.HiddenInput)
 
-def density_by_area_form(request, id):
+def map_area_r_form(request, id):
     datasource = DataSource.objects.get(pk=id)
     
     # Create form on the fly. Problem? 
@@ -34,8 +33,26 @@ def density_by_area_form(request, id):
         {
             'datasource': datasource,
             'form':form,
-            'action':'/graph/density_by_area_plot',
+            'action':'/graph/map_area_r_plot',
             'description':description,
+        }
+    )
+
+def density_by_area_form(request, id):
+    datasource = DataSource.objects.get(pk=id)
+    
+    # Create form on the fly. Problem? 
+    geo_columns = [(c.pk, c.name) for c in datasource.column_set.filter(has_geodata=True, data_type="area")]
+    form = CommentForm({'datasource':id})
+    form.fields['column_geo'].choices = geo_columns
+
+    return render(
+        request,
+        'map.html', 
+        {
+            'datasource': datasource,
+            'form':form,
+            'action':'/graph/density_by_area_plot',
         }
     )
 
@@ -47,13 +64,14 @@ def generate_shp(query, name_file):
     for area in query:
         if area['area']:
             id_areas.append(area['area'])            
-    os.system(shp_cmd + "'" + sql_query + str(tuple(id_areas))+"'")
+    import pdb;pdb.set_trace()
+    os.system(shp_cmd + " '" + sql_query + str(tuple(id_areas))+"'")
     shp_file = open(settings.SHP_UPLOAD_DIR+name_file, "rb").read()
 
     return shp_file
 
     
-def density_by_area_view(request):
+def map_area_r_view(request):
     datasource_id = request.POST.get('datasource')
     column_geo = request.POST.get('column_geo')
     
@@ -75,7 +93,6 @@ def density_by_area_view(request):
     xlab = "Latitud"
     ylab = "Longitud"
 
-
     png(file=suffix_dir+shp_name+ext_file)
     generate_shp(areas,shp_name+'.shp')
     shp_file = pbsmapping.importShapefile(settings.SHP_UPLOAD_DIR+shp_name)
@@ -86,6 +103,41 @@ def density_by_area_view(request):
     out.save()
 
     return redirect("/outqueue")
+
+def density_by_area_view(request):
+    datasource_id = request.POST.get('datasource')
+    column_geo = request.POST.get('column_geo')
+    
+    datasource = DataSource.objects.get(pk=datasource_id)
+    flag = Column.objects.get(pk=column_geo).data_type
+
+    areas = Value.objects.filter(column__datasource=datasource_id,column=column_geo).values("area").annotate(Count('area')).order_by()
+
+    min_val = min(float(r['area_count']) for r in areas)
+    max_val = max(float(r['area_count']) for r in areas)
+
+    layer = Layer()
+    for area in areas:
+        if flag == 'area':
+
+            if area['area']:
+                maap_area = MaapArea.objects.get(pk=area['area'])
+                area['geo'] = maap_area.to_geo_element()
+                color = int((area['area__count']-min_val)*256/(max_val-min_val))-1
+                area['geo'].color = "#%x0000" % color
+                area['geo'].name = "%s (%d)" %(maap_area.name, area['area__count']) 
+                layer.elements.append(area['geo'])
+
+    return render(
+        request,
+        'map_area_point.html',
+        {
+            'objects': areas,
+            'datasource': datasource,
+            'json_layer': layer.json, 
+            'column_geo':Column.objects.get(pk=column_geo).name
+        }
+    )
 
 def map_points_form(request, id):
     datasource = DataSource.objects.get(pk=id)

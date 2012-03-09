@@ -228,8 +228,9 @@ def map_point_density_view(request):
         ext_file = ".png"
         
         values_var1 = Value.objects.filter(column=var1)
-        point_values_lat = [p.point.geom.x for p in values_var1]
-        point_values_lng = [p.point.geom.y for p in values_var1]
+
+        point_values_lat = [p.point.geom.x for p in values_var1 if p.point]
+        point_values_lng = [p.point.geom.y for p in values_var1 if p.point]
         
         errors=""
         #configuracion para el grafico     
@@ -271,10 +272,8 @@ def histogram_view(request):
         list_values = [v.cast_value() for v in values]
         
         #creacion de vector R con los valores correspondientes (R)     
-        try:
-            vector = robjects.FloatVector(list_values)
-        except ValueError:
-            errors += 'El valor debe ser numérico'
+        vector = robjects.FloatVector(list_values)
+        
 
         #parametros del grafico
         freq = False
@@ -353,17 +352,17 @@ def stripchart_view(request):
         vector = robjects.FloatVector(list_values)
 
         #parametros del grafico
-        jitter=0.1 
+        jitter=0.2 
         offset=1/3
-        vertical=True
+        vertical=False
         main="Grafico de Puntos para %s" %(Column.objects.get(pk=var).name)
-        ylab=""
-        xlab="Valores"
+        ylab="Valores"
+        xlab=""
         pch=1
         col=par("fg")
         cex=par("cex")
 
-        strip(vector,method="overplot",jitter=jitter,offset=offset,vertical=vertical,main=main,xlab=xlab,pch=pch,col=col,cex=cex)
+        strip(vector,method="jitter",jitter=jitter,offset=offset,vertical=vertical,main=main,xlab=xlab,pch=pch,col=col,cex=cex)
         off()
      
         #Guardo el resultado y lo muestro en la cola de salida
@@ -460,7 +459,7 @@ def densityplot_view(request):
         errors=""
 
         #configuracion para el grafico     
-        vector = robjects.IntVector(list_values_var1)
+        vector = robjects.FloatVector(list_values_var1)
         
         main="Grafico de Densidad para"+Column.objects.get(pk=var1).name
         xlab="Valores"

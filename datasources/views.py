@@ -7,13 +7,12 @@ from django.conf import settings
 from django.contrib import messages
 from datasources.models import DataSource, Column, Value, Row, DataSet
 from datasources.forms import DataSourceForm, ColumnFormSet, ColumnForm, \
-                                ValueForm, DataSetForm
+                                ValueForm, DataSetForm, MaapPointForm, ExportForm
 from datasources.tasks import generate_documents 
 from django.db.models import Count
 from django import forms
 from django.core.files.base import ContentFile
 from maap.models import MaapPoint
-from datasources.forms import MaapPointForm, ExportForm
 from maps import generate_shp
 
 import simplejson
@@ -62,7 +61,7 @@ def dataset_detail(request,id):
         {
             'datasources_list': DataSource.objects.filter(dataset=obj),
             'dataset': obj,
-            'form': form,
+            'form_import': form,
         }
     )
 
@@ -79,9 +78,7 @@ def datasource_detail(request, id):
     if request.method == 'POST':
         if form_export.is_valid():
             areas = Value.objects.filter(column__datasource=form_export.fields['datasource_id'],column=form_export.fields['column_geo']).values("area")   
-            response = HttpResponse(generate_shp(form_export.fields['name_file'], areas), mimetype='text/shp')
-            response['Content-Disposition'] = 'attachment; filename=%s.shp' % form_export.fields['name_file']
-            return response
+            generate_shp(form_export.fields['name_file'], areas)
     #######                    
 
     columns_geo = Column.objects.filter(datasource=instance,has_geodata=True)        
@@ -95,17 +92,18 @@ def datasource_detail(request, id):
             plots['Grafico de Densidad de Puntos'] = '/plots/'+id+'/map_point_density'
 
         if is_area:
+            plots['Mapa (desde R)'] = '/plots/'+id+'/map_area_r'
             plots['Mapa de Densidad por Area'] = '/plots/'+id+'/map_density_area'
             plots['Mapa de Distribucion de una variable por area'] = '/plots/'+id+'/dist_by_area'
 
 
     plots.update({
-        'Cajas':'/plots/'+id+'/box',
-        'Barras':'/plots/'+id+'/bar',
-        'Torta':'/plots/'+id+'/pie',
+        'Gráfico de Cajas':'/plots/'+id+'/box',
+        'Gráfico de Barras':'/plots/'+id+'/bar',
+        'Gráfico de Torta':'/plots/'+id+'/pie',
         'Histograma':'/plots/'+id+'/hist',
-        'Densidad':'/plots/'+id+'/density',
-        'Dispersión':'/plots/'+id+'/scatter',
+        'Gráfico de Densidad':'/plots/'+id+'/density',
+        'Gráfico de Dispersión':'/plots/'+id+'/scatter',
         'Matriz de Dispersión':'/plots/'+id+'/scattermatrix',  
         'Gráfico de Puntos':'/plots/'+id+'/stripchart'
     })

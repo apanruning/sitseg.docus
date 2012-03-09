@@ -3,15 +3,15 @@ Requerimientos:
 
 * django
 * postgreSQL - postgis
-* mongodb
-* celery
+* R
 
-Instalación en Ubuntu:
+
+Instalación en Ubuntu Oneiric Ocelot:
 ====================
 
 Instalar dependencias de los repositorios de ubuntu:
 
-        $ sudo apt-get install gdal-bin postgresql-8.4-postgis
+        $ sudo apt-get install gdal-bin postgresql-9.1-postgis
 
 Postgis 
 --------------------
@@ -75,15 +75,29 @@ Ahora podemos sincronizar y correr el servidor de desarrollo:
         $ ./manage.py syncdb
         $ ./manage.py runserver
 
-Opcional: Configurar celery y mongodb
-=======================
+Instalacion de R
 
-Instalar mongodb y correrlo con una base de datos aislada
+Editar el archivo de configuracion (/etc/apt/sources.list) 
 
-        $ sudo apt-get install mongodb
-        $ mkdir db
-        $ mongod --dbpath=./db
+        $ sudo gedit /etc/apt/sources.list
 
-Ejecutar celeryd
-        $ ./manage.py celeryd
+Agregar la siguiente linea al mismo
+
+        deb http://cran.cnr.berkeley.edu/bin/linux/ubuntu oneiric/
+
+Damos clic en “Guardar” y cerramos el archivo. En la terminal ejecutamos lo siguiente:
+
+        $ gpg --keyserver keyserver.ubuntu.com --recv-key E084DAB9
+        $ gpg -a --export E084DAB9 | sudo apt-key add -
+
+Actualizamos los paquetes de Ubuntu para poder instalar R. En la terminal ejecutamos:
+        
+        $ sudo apt-get update
+        $ sudo apt-get install r-base
+
+Hacen falta instalar algunos paquetes extra para R. Para ello, es necesario entrar en la terminal de R como superusuario
+
+        $ sudo R
+        $ install.packages('PBSmapping');        
+    
 

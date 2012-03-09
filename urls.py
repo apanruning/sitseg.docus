@@ -21,7 +21,6 @@ urlpatterns = patterns('datasources.views',
     (r'^datasource/(?P<id>\w+)/import_data$', 'import_data', {}, 'import_data'),
     (r'^datasource/(?P<id>\w+)/show_data', 'show_data', {}, 'show_data'),
     (r'^column/(?P<id>\w+)$', 'column_detail', {}, 'column'),
-   
 )
 
 urlpatterns += patterns('django.contrib.auth.views',
@@ -57,9 +56,6 @@ urlpatterns += patterns('datasources.plots',
     (r'^graph/map_point_density$', 'map_point_density_view', {}, 'map_point_density_view'),
 
     (r'^outqueue$', 'outqueue', {}, 'outqueue'),
-
-
-
 )
 
 urlpatterns += patterns('datasources.maps',
@@ -69,9 +65,9 @@ urlpatterns += patterns('datasources.maps',
     (r'^graph/map_points_plot$', 'map_points_view', {}, 'map_points_view'),
     (r'^plots/(?P<id>\w+)/dist_by_area','dist_by_area_form',{}, 'dist_by_area_form'),
     (r'^graph/dist_by_area_plot$', 'dist_by_area_view', {}, 'dist_by_area_view'),
+    (r'^plots/(?P<id>\w+)/map_area_r$', 'map_area_r_form', {}, 'map_area_r_form'),
+    (r'^graph/map_area_r_plot$', 'map_area_r_view', {}, 'map_area_r_view'),
 )
-    
-
 
 if settings.DEBUG:
     urlpatterns += patterns('',
