@@ -64,7 +64,7 @@ def generate_shp(query, name_file):
     for area in query:
         if area['area']:
             id_areas.append(area['area'])            
-    import pdb;pdb.set_trace()
+    
     os.system(shp_cmd + " '" + sql_query + str(tuple(id_areas))+"'")
     shp_file = open(settings.SHP_UPLOAD_DIR+name_file, "rb").read()
 
