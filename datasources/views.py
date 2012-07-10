@@ -8,7 +8,6 @@ from django.contrib import messages
 from datasources.models import DataSource, Column, Value, Row, DataSet
 from datasources.forms import DataSourceForm, ColumnFormSet, ColumnForm, \
                                 ValueForm, DataSetForm, MaapPointForm, ExportForm
-from datasources.tasks import generate_documents 
 from django.db.models import Count
 from django import forms
 from django.core.files.base import ContentFile
@@ -150,38 +149,40 @@ def column_detail(request, id):
     )
 
 def import_data(request, id):
-    generate_documents(
-        datasource=id,
+    datasource = DataSource.objects.get(pk=id)
+    datasource.xls_to_orm(
         columns=request.POST.getlist('object_id')
     )
-    messages.info(request, u'Se procesaron exitosamente los datos')
-
-    if request.is_ajax:
-        return render(
-            request,
-            'response.html',
-        )
+    
     return redirect("datasource_detail", id)
 
 def show_data(request, id):
-    rows = Row.objects.annotate(points=Count('value__point'))
-    qs = rows.filter(datasource=id, value__isnull=False)
-        
-    sort_by = request.GET.get('sort_by')
-    if sort_by == 'right':
-        qs = rows.filter(datasource=id, value__point__isnull=True, value__isnull=False)
-    if sort_by == 'multiple':
-        qs = rows.filter(datasource=id, value__multiple=True, value__isnull=False)
-    if sort_by == 'empty':
-        qs = rows.filter(datasource=id, value__map_url__isnull=True, value__isnull=False)
-        
+    datasource = DataSource.objects.get(pk=id)
 
+    if datasource.geopositionated:
+        rows = Row.objects.annotate(points=Count('value__point'))
+        qs = rows.filter(datasource=id, value__isnull=False)
+            
+        sort_by = request.GET.get('sort_by')
+        if sort_by == 'right':
+            qs = rows.filter(datasource=id, value__point__isnull=True, value__isnull=False)
+        if sort_by == 'multiple':
+            qs = rows.filter(datasource=id, value__multiple=True, value__isnull=False)
+        if sort_by == 'empty':
+            qs = rows.filter(datasource=id, value__map_url__isnull=True, value__isnull=False)
+    else:
+        sh = datasource.open_source()
+        data = []
+
+        for rownum in range(1,sh.nrows):
+            data.append(sh.row_values(rownum))
+    
     return render(
         request,
         'show_data.html',
         {
             'datasource': DataSource.objects.get(pk=id),
-            'rows':qs,
+            'data':data,
         }
     )
 

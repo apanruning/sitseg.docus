@@ -48,7 +48,7 @@
     {% endif %}
     
     </menu>
-    <form id="export-form" method="post" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
+    <form id="export-form" method="POST" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
     Exportar 
     {{ form_export.as_p }}
     <a href="#export-form" class="control">cerrar</a>   

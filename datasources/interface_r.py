@@ -1,7 +1,7 @@
 import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr
 
-    #statitics function
+#statitics function
 minimo = robjects.r['min']
 maximo = robjects.r['max']
 rango = robjects.r['range']                
@@ -23,6 +23,7 @@ scatterplotmatrix = robjects.r['pairs']
 strip = robjects.r['stripchart']
 
 #modules import
+
 #RgoogleMaps = importr('RgoogleMaps')
 #maptools = importr('maptools')
 pbsmapping = importr('PBSmapping')

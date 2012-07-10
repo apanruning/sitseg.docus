@@ -23,7 +23,7 @@ def histplot(request,id):
                 'action':'/graph/histogram',
     }
 
-    description = u"Este gráfico permite construir histogramas a partir de una variable. Permite ver rapidamente la densidad de una variable"
+    description = u"Este gráfico permite construir histogramas a partir de una variable. Permite ver rapidamente la densidad de la misma"
 
     return render(
         request,
@@ -233,13 +233,9 @@ def map_point_density_view(request):
         point_values_lng = [p.point.geom.y for p in values_var1 if p.point]
         
         errors=""
-        #configuracion para el grafico     
-        try:
-            vector_var1 = robjects.FloatVector(point_values_lat)
-            vector_var2 = robjects.FloatVector(point_values_lng)
-        except ValueError,e:
-            pass
-
+        vector_var1 = robjects.FloatVector(point_values_lat)
+        vector_var2 = robjects.FloatVector(point_values_lng)
+      
         main = "Grafico de Densidad Por Puntos de %s" %(Column.objects.get(pk=int(var1)).name)
         xlab = "Latitud"
         ylab = "Longitud"
@@ -388,12 +384,9 @@ def scatterplot_view(request):
         errors=""
 
         #configuracion para el grafico     
-        try:
-            vector_var1 = robjects.FloatVector(list_values_var1)
-            vector_var2 = robjects.FloatVector(list_values_var2)
-        except e:
-            errors = e
-
+        vector_var1 = robjects.FloatVector(list_values_var1)
+        vector_var2 = robjects.FloatVector(list_values_var2)
+      
         name_file = "scatter"+var1+var2
         png(file=suffix_dir+name_file+ext_file)
         scatterplot(vector_var1, vector_var2)
@@ -419,14 +412,9 @@ def scatterplotmatrix_view(request):
         list_values_var2 = [v.cast_value() for v in values_var2]
         errors=""
 
-        #configuracion para el grafico     
-        try:
-            vector_var1 = robjects.FloatVector(list_values_var1)
-            vector_var2 = robjects.FloatVector(list_values_var2)
-        except e:
-            errors = e
-
-
+        vector_var1 = robjects.FloatVector(list_values_var1)
+        vector_var2 = robjects.FloatVector(list_values_var2)
+     
         main="Grafico de Dispersion para %s" %(Column.objects.get(pk=var1).name+'-'+Column.objects.get(pk=var2).name)
         ylab=""
         xlab="Valores"
@@ -515,12 +503,8 @@ def pieplot_view(request):
         
         errors=""
         #configuracion para el grafico     
-        try:
-            vector_var1 = robjects.FloatVector(list_values_var1)
-        
-        except e:
-            errors = e
-
+        vector_var1 = robjects.FloatVector(list_values_var1)
+       
         name_file = "torta"+var1
         png(file=suffix_dir+name_file+ext_file)
         piechart(vector_var1)
