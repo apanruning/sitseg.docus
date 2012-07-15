@@ -258,44 +258,47 @@ class Row(models.Model):
     datasource = models.ForeignKey(DataSource)    
     csv_index = models.IntegerField()
 
+def search(search_list, i, field, value, res):
+    if i < len(search_list):
+        if search_list[i][field] == value:    
+            search(search_list, i+1, field, value, res.append(search_list[i][field]))        
+        else:
+            search(search_list, i+1, field, value, res)                    
+    else:
+        return res
+
+def get_all_values():
+    valueint = list(ValueInt.objects.values())
+    valuetext = list(ValueText.objects.values())
+    valuedate = list(ValueDate.objects.values())
+    valuefloat = list(ValueFloat.objects.values())
+    valuebool = list(ValueBool.objects.values())
+    valuepoint = list(ValuePoint.objects.values())
+    valuearea = list(ValueArea.objects.values())
+    result = valueint+valuetext+valuedate+valuefloat+valuebool+valuepoint+valuearea
+    return result
+
 class Value(models.Model):
     column = models.ForeignKey(Column)
-    data_type = models.CharField(max_length=100)
+    data_type = models.IntegerField()
     row = models.ForeignKey(Row)
-    value = object()
-
+    
     def get_value(self):
         return self.value
         
 class ValueInt(Value):
     value = models.IntegerField()    
 
-    def save(self):
-        return super(Value, self).save()
-
 class ValueText(Value):
     value = models.TextField()
     area = models.ForeignKey(MaapArea, null=True, blank=True)
     point = models.ForeignKey(MaapPoint, null=True, blank=True)
 
-    def save(self):
-        return super(Value, self).save()
-
 class ValueFloat(Value):
     value = models.FloatField()
 
-    def save(self):
-        super.value = self.value
-        return super(Value, self).save()
-
-
 class ValueBool(Value):
     value = models.BooleanField()
-
-    def save(self):
-        
-        return super(Value, self).save()
-
 
 class ValueDate(Value):
     value = models.DateField()
@@ -305,18 +308,10 @@ class ValuePoint(Value):
     point = models.ForeignKey(MaapPoint, null=True, blank=True)
     map_url = models.URLField(null=True, blank=True)
 
-    def save(self):
-        super(Value, self).save()
-
-
 class ValueArea(Value):
     value = models.TextField()
     area = models.ForeignKey(MaapArea, null=True, blank=True)
     map_url = models.URLField(null=True, blank=True)
-
-    def save(self):
-        return super(Value, self).save()
-
 
 class Out(models.Model):
     text = models.TextField(blank=True)
@@ -324,7 +319,4 @@ class Out(models.Model):
     img = models.CharField(max_length=50)
     errors = models.TextField(blank=True)
 
-
-    
-    
 __all__ = ['DataSource', 'Column', 'Annotation','DataSet','ValueInt','ValueFloat','ValueText','ValueBool']
