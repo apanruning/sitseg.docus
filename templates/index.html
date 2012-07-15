@@ -37,7 +37,9 @@
         {% endblock %}
         {% if user.is_staff %}
         <menu id="controls">
-            {% block controls %}{% endblock %}
+            {% block controls %}
+            <a href="#add-form" class="control">Nuevo conjunto de datos</a>
+            {% endblock %}
         </menu>
         {%endif%}
 
