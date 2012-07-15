@@ -1,9 +1,16 @@
-
 /*base*/
+* {
+    position:relative;
+}
+html, body {
+    height: 100%;
+}
 body {
     font: 100% "Droid Sans", "Lucida Grande", Verdana, sans-serif;
     margin:0;
     padding:0;
+    background: url(../img/background.png);
+    overflow: hidden;
 }
 h1, h2, h3 {
     margin:0;
@@ -19,7 +26,32 @@ ul {
     list-style:none;
     padding:0;
 }
+menu {
+    float:right;
+    margin:0;
+}
 /*layout*/
+#wrapper {
+    width: 65em;
+    padding:0;
+    box-shadow: 0 0 5px #000, inset 0 0 3px #999;
+    border: 1px solid #999;
+    border-color: transparent #999;
+    border-width: 0 1px;
+    margin:0 auto -3em;
+    position:relative;
+    background: #FFF;
+    height: 100%;
+
+}
+.wrapper {
+    width: 65em;
+    padding:0;
+    margin: 0 auto;
+    position: relative;
+
+}
+
 .clear {
     display: block;
     clear: both;
@@ -27,29 +59,44 @@ ul {
 header, section, footer, article, menu, nav{ 
     display:block;
 }
-header, section {
-    margin:1em;
+header {
+    padding:0;
+    background:#EEE;
+    box-shadow: 0 0 15px #999;
+    overflow: hidden;
+    z-index:99999;
+    border-radius: 0 0 3px 3px;
+}
+header h1 {
+    float: left;
+}
+header .wrapper {
+    padding: 1em;
+}
+#controls {
+    margin: 1em 1em -1em;
 }
 section {
-    margin-bottom:3em;
+    margin:0 0 3em;
+    padding:1em;
+}
+section h1 {
+    font-size: 200%;
+    font-weight:normal;
+    color: #AAA;
+    text-shadow: 0 1px 1px #333;
 }
 aside {
     float:right;
     width: 30%;
     padding: 1em;
 }
-
-menu {
-    float:right;
-    margin:0;
-}
 footer {
-    position:fixed;
+    position:absolute;
     bottom:0;
     width: 100%;
     text-align:right;
     padding:0.5em 0;
-    margin-top
 }
 
 footer a {
@@ -87,6 +134,7 @@ footer p {
     float: none;
     position: absolute;
     top: 0;
+    margin: 0;
     right: 1em;
     border-radius: 0 0 5px 5px;
     box-shadow: 0 0px 4px #CCC;
@@ -104,27 +152,18 @@ footer p {
     padding: 1em;
 }
 #messages {
-    display:none;
-    position: absolute;
-    left:0;
-    top:0;
-    height:100%;
-    width:100%;
+    float: left;
     font-size: 80%;
     list-style: none outside none;
-    background:rgba(0,0,0,0.5);
     margin: 0;
-    padding: 0;
+    padding: 0 2em;
     text-align: left;
-
+    width: 70%;
 }
 #messages li {
     border-radius: 0 0 5px 5px;
-    position: absolute;
-    width: 500px;
-    margin: 0 -250px;
-    top:50%;
-    left:50%;
+    position: relative;
+    width: 1em;
 }
 #messages .control {
     float: right;
@@ -148,6 +187,10 @@ footer p {
     border-radius: 0.5em;
     box-shadow: -0px -0px 4px #000;
     padding: 1em 1em 3em 3em;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40em;
     z-index: 10;
     white-space:pre-wrap;
     margin: 0 0 -2.5em -1.5em;
@@ -166,12 +209,51 @@ fieldset p {
     float:left;
     margin-right: 1em;
 }
+fieldset {
+    clear: both;
+}
+
+input[type="text"],
+input[type="password"],
+textarea{
+    font: 22px 'Inconsolata', 'Monaco', 'Consolas', monospace;
+    border: 1px solid #40B086;
+    border-radius: 3px;
+}
+input:focus,
+text-area:focus {
+    outline:0;
+}
+input[type="text"]:focus,
+input[type="password"]:focus,
+textarea:focus {
+    border: 1px solid #61851B;
+    border-radius: 3px;
+    box-shadow: 0 0 5px #06C;
+}
+.submit {
+    text-align:right;
+}
+input[type="submit"], 
+a.call {
+    box-shadow:0 0 2px #039;
+    border:0;
+    border-radius: 5px;
+    background: #06C;
+    padding: 5px;
+    margin:0 -5px;
+    color: #FFF;
+    text-shadow: 0 1px 0 #333
+}
+input[type="submit"]:hover, 
+a.call:hover {
+    cursor:pointer;
+    box-shadow:0 0 2px #039, 1px 1px 5px #333;
+}
+
 form.inline{
     float:none;
     display:inline;
-}
-fieldset {
-    clear: both;
 }
 .column_form  h3{
     float:left;
@@ -184,24 +266,29 @@ fieldset {
     margin:0;
 
 }
-#add-form,#export-form {
+#login {
+    margin: 20% auto;
+    width: 23.5em;
+}
+#add-form {
     display:none;
     width: 30em;
     overflow:hidden;
     position:absolute;
     right:0;
-    top: 3em;
+    top: 0;
     background:#EEE;
     padding:1em;
     border-radius: 3px;
     box-shadow: 0 0 15px #999;
 
 }
-#add-form.errors,#export-form.errors {
+#add-form.errors {
     display:block;
 }
 
-#add-form input[type="submit"],#export-form input[type="submit"] {
+#add-form input[type="submit"],
+#login input[type="submit"] {
     float:right;
 }
 
@@ -301,6 +388,8 @@ fieldset {
 }
 .active {
     background: -webkit-linear-gradient(top, #FFF, #F6FAFF);
+    padding: 0.25em;
+    border-radius: 0 0 3px 3px;
 }
 .details-wrapper {
     display:none;

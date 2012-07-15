@@ -24,7 +24,7 @@ urlpatterns = patterns('datasources.views',
 )
 
 urlpatterns += patterns('django.contrib.auth.views',
-    (r'login$', 'login', {'template_name':'login.html'}),
+    (r'login$', 'login', {'template_name':'login.html'}, 'login'),
     (r'logout$', 'logout'),
 )
 

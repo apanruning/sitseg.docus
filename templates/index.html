@@ -14,13 +14,15 @@
         {% endblock %}
     </head>
     <body>
-    <ul id="messages">
-      {% for message in messages %}
-      <li class="{{message.tags}}">
-        <a href="#message-{{forloop.counter}}" class="control">!</a><strong id="message-{{forloop.counter}}">{{message}}</strong></li>
-      {% endfor %}
-    </ul>
-      <menu id="session">
+    <header>
+        <div class="wrapper">
+        <ul id="messages">
+        {% for message in messages %}
+            <li class="{{message.tags}}">
+              <a href="#message-{{forloop.counter}}" class="control">!</a><strong id="message-{{forloop.counter}}">{{message}}</strong></li>
+        {% endfor %}
+        </ul>
+        <menu id="session">
         {% if user.is_authenticated %}
           {% if user.is_staff %}
           <a href="/admin">Administración </a>
@@ -29,54 +31,61 @@
         {%else%}
             <a href="/login?next={{request.path}}">Iniciar sesión</a>
         {% endif %}
-      </menu>
-    <header>
-    {% block head %}
-      <h1><a href="/">Indice</a>/</h1>
-    {% endblock %}
-    </header>
-    <section>
-    {% block page %}
-      {% if user.is_staff %}
-      <menu>
-        <a href="#add-form" class="control">Crear conjunto de datos vacio</a>
-      </menu>
-      <form id="add-form" method="post" action="." 
-            class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
-          <input type="hidden" name="author" value="{{user.id}}"/>
-          <legend>Nuevo Conjunto de Datos</legend>
-            {{ form.as_p }}
-          <a href="#add-form" class="control">cerrar</a>   
-          <input type="submit" name="Guardar" value="Crear"/>
-      </form>
-      {% endif %}    
-       <h1>Bienvenido</h1>
+        </menu>
+        {% block head %}
+          <h1><a href="/">Indice</a>/</h1>
+        {% endblock %}
+        {% if user.is_staff %}
+        <menu id="controls">
+            {% block controls %}{% endblock %}
+        </menu>
+        {%endif%}
 
-        <p>Un espacio de trabajo consiste en un repositorio donde se pueden alojar
-        diferentes <strong>Fuentes de Datos</strong>.</p> 
-        
-        <p>Para comenzar a trabajar elija un espacio de trabajo de la lista o
-        agregue un <strong>Conjunto de Datos</strong> nuevo.</p>
-        
-       <h1>Conjuntos de Datos</h1>
-        {% autopaginate dataset_list 10 %}
-        <ul>
-        {% for dataset in dataset_list %}
-            <li>
-                <h2><a href="{{dataset.get_absolute_url}}">#{{dataset.pk}}-{{dataset.name}}</a></h2> 
-            </li>
-        {% empty %}
-            <li>No hay registros</li>
-        {% endfor %}        
-        </ul>
-        {% paginate %}
-        
-    {% endblock %}
-    </section>
+        </div>
+    </header>
+    <div id="wrapper">
+        <section>
+        {% block page %}
+          {% if user.is_staff %}
+          <form id="add-form" method="post" action="." 
+                class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
+              <input type="hidden" name="author" value="{{user.id}}"/>
+              <legend>Nuevo Conjunto de Datos</legend>
+                {{ form.as_p }}
+              <a href="#add-form" class="control">cerrar</a>   
+              <input type="submit" name="Guardar" value="Crear"/>
+          </form>
+          {% endif %}    
+           <h1>Bienvenido</h1>
+
+            <p>Un espacio de trabajo consiste en un repositorio donde se pueden alojar
+            diferentes <strong>Fuentes de Datos</strong>.</p> 
+            
+            <p>Para comenzar a trabajar <a href="{% url login %}">inicie sesión</a> y podrá elegir
+             un espacio de trabajo de la lista o agregar un <strong>Conjunto de Datos</strong> nuevo.</p>
+            
+           <h1>Conjuntos de Datos</h1>
+            {% autopaginate dataset_list 10 %}
+            <ul>
+            {% for dataset in dataset_list %}
+                <li>
+                    <h2><a href="{{dataset.get_absolute_url}}">#{{dataset.pk}}-{{dataset.name}}</a></h2> 
+                </li>
+            {% empty %}
+                <li>No hay registros</li>
+            {% endfor %}        
+            </ul>
+            {% paginate %}
+            
+        {% endblock %}
+        </section>
+    </div>
     <footer>
+    <div class="wrapper">
     {% block footer %}
         
     {% endblock %}
+    </div>
     </footer>
     </body>
 </html>

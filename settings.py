@@ -65,7 +65,6 @@ STATIC_URL = '/static/'
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 STATICFILES_DIRS = (
-    MEDIA_ROOT,
 )
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -123,9 +122,9 @@ INSTALLED_APPS = (
     'django.contrib.markup',
     'django.contrib.gis',
     'debug_toolbar',
+    'docus',
     'pagination',
     'datasources',
-    'shapes',
     'maap',
     'mptt',
     'rpy2',
@@ -143,6 +142,8 @@ DEBUG_TOOLBAR_CONFIG = {
 
 # OSM absolute path to csv sources
 OSM_CSV_ROOT = os.path.join(os.path.dirname(__file__), 'csv')
+
+LOGIN_REDIRECT_URL = '/'
 
 try:
     from local_settings import *
