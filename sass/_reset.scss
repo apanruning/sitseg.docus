@@ -1,7 +1,12 @@
 /*base*/
-* {
-    position:relative;
+$fg_color:#06c;
+$br_color:#039;
+@mixin transition ($time) {
+    -moz-transition: all $time;
+    -webkit-transition: all $time;
+    transition: all $time;
 }
+/*base*/
 html, body {
     height: 100%;
 }
@@ -12,22 +17,31 @@ body {
     background: url(../img/background.png);
     overflow: hidden;
 }
+header, section, footer, article, menu, nav{ 
+    display:block;
+}
 h1, h2, h3 {
-    margin:0;
+  margin:0;
+}
+ul {
+  list-style:none;
+  padding:0;
+  margin:0
 }
 a {
-    color:#06C;
+    color:$fg_color;
     text-decoration:none;
 }
 a:hover {
     text-shadow: 1px 1px 1px #999;
 }
-ul {
-    list-style:none;
-    padding:0;
-}
 menu {
     float:right;
     margin:0;
+}
+
+.clear {
+    display: block;
+    clear: both;
 }
 

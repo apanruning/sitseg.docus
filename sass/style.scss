@@ -1,5 +1,13 @@
 @import "reset";
+@mixin gradient($dir, $start, $end) {
+   background-image: -webkit-linear-gradient($dir, $start, $end); 
+   background-image: -moz-linear-gradient($dir, $start, $end);
+   background-image: -ms-linear-gradient($dir, $start, $end);
+   background-image: -o-linear-gradient($dir, $start, $end);
+}
+
 /*layout*/
+
 #wrapper {
     width: 65em;
     padding:0;
@@ -14,46 +22,44 @@
 
 }
 .wrapper {
-    width: 65em;
     padding:0;
     margin: 0 auto;
     position: relative;
+    width: 64em;
+    @include gradient(top, #FFF, #EEE);
+    box-shadow: 0 0 2px #999;
+    border-radius: 0 0 3px 3px;
+    overflow:hidden;
 
 }
-
 .clear {
     display: block;
     clear: both;
 }
-header, section, footer, article, menu, nav{ 
-    display:block;
-}
 header {
     padding:0;
-    background:#EEE;
-    box-shadow: 0 0 15px #999;
-    overflow: hidden;
-    z-index:99999;
-    border-radius: 0 0 3px 3px;
-}
-header h1 {
-    float: left;
-}
-header .wrapper {
-    padding: 1em;
+
+    .wrapper {
+        z-index:99999;
+        padding: 1em;
+    }
+    h1 {
+        float: left;
+    }
+
 }
 #controls {
-    margin: 1em 1em -1em;
+    margin: 2em 1em -1em;
 }
 section {
     margin:0 0 3em;
     padding:1em;
-}
-section h1 {
+    h1 {
     font-size: 200%;
     font-weight:normal;
     color: #AAA;
     text-shadow: 0 1px 1px #333;
+    }
 }
 aside {
     float:right;
@@ -65,14 +71,17 @@ footer {
     bottom:0;
     width: 100%;
     text-align:right;
-    padding:0.5em 0;
-}
-
-footer a {
-    margin: 0.5em 1em;
-}
-footer p {
-    margin: 0 0.5em;
+   .wrapper {
+        @include gradient(bottom, #FFF, #EEE);
+        padding:5px 1em 2px;
+        border-radius: 3px 3px 0 0;
+    }
+    a {
+       margin: 0.5em 1em;
+    }
+    p {
+       margin: 0 0.5em;
+    }
 }
 
 /*ui*/
@@ -112,13 +121,13 @@ footer p {
 #list {
     clear:both;
 
-}
-#list li {
-    border: 2px solid #FFF;
-    border-radius: 5px;
-    box-shadow: 0 1px 2px #333;
-    margin:1em 0 ;
-    padding: 1em;
+    li {
+        border: 2px solid #FFF;
+        border-radius: 5px;
+        box-shadow: 0 1px 2px #333;
+        margin:1em 0 ;
+        padding: 1em;
+    }
 }
 #messages {
     float: left;
@@ -128,11 +137,11 @@ footer p {
     padding: 0 2em;
     text-align: left;
     width: 70%;
-}
-#messages li {
-    border-radius: 0 0 5px 5px;
-    position: relative;
-    width: 1em;
+    li {
+        border-radius: 0 0 5px 5px;
+        position: relative;
+        width: 1em;
+    }
 }
 #messages .control {
     float: right;
@@ -167,6 +176,7 @@ footer p {
 
 
 /*Forms*/
+
 label {
     float:left;
     margin-right: 1em;
@@ -189,6 +199,9 @@ textarea{
     border: 1px solid #40B086;
     border-radius: 3px;
 }
+input[type="file"] {
+    width:20em;
+}
 input:focus,
 text-area:focus {
     outline:0;
@@ -198,17 +211,21 @@ input[type="password"]:focus,
 textarea:focus {
     border: 1px solid #61851B;
     border-radius: 3px;
-    box-shadow: 0 0 5px #06C;
+    box-shadow: 0 0 5px $fg_color;
 }
 .submit {
     text-align:right;
 }
+input[type="submit"]{
+    float:right;
+}
+
 input[type="submit"], 
 a.call {
-    box-shadow:0 0 2px #039;
+    box-shadow:0 0 2px $br_color;
     border:0;
     border-radius: 5px;
-    background: #06C;
+    background: $fg_color;
     padding: 5px;
     margin:0 -5px;
     color: #FFF;
@@ -217,7 +234,8 @@ a.call {
 input[type="submit"]:hover, 
 a.call:hover {
     cursor:pointer;
-    box-shadow:0 0 2px #039, 1px 1px 5px #333;
+    box-shadow:0 0 2px $br_color, 1px 1px 5px #333;
+    margin: -1px 1px 1px -1px;
 }
 
 form.inline{
@@ -244,21 +262,16 @@ form.inline{
     width: 30em;
     overflow:hidden;
     position:absolute;
-    right:0;
+    right:1.5em;
+    z-index:9999;
     top: 0;
     background:#EEE;
-    padding:1em;
-    border-radius: 3px;
+    padding:0.5em 1em 1em;
+    border-radius: 0 0 3px 3px;
     box-shadow: 0 0 15px #999;
-
-}
-#add-form.errors {
-    display:block;
-}
-
-#add-form input[type="submit"],
-#login input[type="submit"] {
-    float:right;
+   .errors {
+        display:block;
+    }
 }
 
 #chart {
@@ -356,16 +369,19 @@ form.inline{
     margin-bottom:-2px;
 }
 .active {
-    background: -webkit-linear-gradient(top, #FFF, #F6FAFF);
+    @include gradient(bottom, #555, #888);
     padding: 0.25em;
-    border-radius: 0 0 3px 3px;
+    border-radius: 3px 3px 0 0 ;
+    color:#FFF;
+    text-shadow:0 1px 0 #000;
 }
 .details-wrapper {
     display:none;
-    background: -webkit-linear-gradient(top, #F6FAFF, #E3E8EF);
+    @include gradient(top, #F6FAFF, #E3E8EF);
     box-shadow: 0 2px 3px #CCC; 
     border-radius: 0 0 3px 3px;
     margin-bottom:0.5em;
+    padding-top: 1em;
 }
 .details-wrapper menu {
     padding: 0.5em 1em;
@@ -406,7 +422,8 @@ form.inline{
     border-color: #CCC #F0F0F0;
     border-width:1px 0;
     background: #FFF;
-    padding:0 1em;
+    padding:0 1em 1em;
+    overflow:hidden;
 }
 
 .ui-tabs-hide {

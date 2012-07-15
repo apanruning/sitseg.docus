@@ -1,12 +1,10 @@
-{% block controls%}
-<a href="#export-form" class="control">Exportar a SHP</a>
-{% endblock %}
 {% block page %}
     <div class="tabs">
         <ul>
             <li><h3><a href="#{{datasource}}-columns">Columnas</a></h3></li>
             <li><h3><a href="#{{datasource}}-data">Datos</a></h3></li>
             <li><h3><a href="#{{datasource}}-graphs">Graficos</a></h3></li>
+            <li><h3><a href="#{{datasource}}-export">Exportar</a></h3></li>
         </ul>
         <div id="{{datasource}}-columns">
             <ul>
@@ -15,7 +13,7 @@
             {% endfor %}
             </ul>
             <form action="/datasource/{{datasource.id}}/import_data" class="import_form" method="post">{% csrf_token %}
-            <p class="clear"><input type="submit" value="Importar columnas seleccionadas" /></p>
+            <p ><input type="submit" value="Importar columnas seleccionadas" /></p>
             </form>        
         </div>
         <div id="{{datasource}}-data" >
@@ -29,14 +27,21 @@
             <ul class="graph-select">
             {% for k, v in plots.iteritems %}
                 <li>
-                     <a href="{{v}}" class="pjax" rel="#{{datasource}}-plots-container" > {{ k }}</a>
+                     <a href="{{v}}" class="pjax" rel="#{{datasource}}-plots-container" >{{ k }}</a>
                 </li>
             {% endfor %}
             </ul>
             <div id="{{datasource}}-plots-container" class="plots-container"></div>
             <div class="graph"></div>
         </div>
-    </div>
+        </div>
+        <div id="{{datasource}}-export" class="ui-tabs-hide">
+            <form method="POST" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
+                {{ form_export.as_p }}
+                <input type="submit" name="export" value="Exportar"/>
+            </form>
+        </div>
+
     <menu class="details">
     {% if user.is_staff %}
     <a href="/datasource/{{datasource.id}}/download_attach_source" title="Descargar el archivo original">Descargar {{datasource.name}} original</a>
@@ -47,15 +52,6 @@
     {% endif %}
     
     </menu>
-    <form id="export-form" method="POST" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
-    Exportar 
-    {{ form_export.as_p }}
-    <a href="#export-form" class="control">cerrar</a>   
-    <input type="submit" name="export" value="Exportar"/>
-    </form>
 
-
-    {% if user.is_staff %}
-    {% endif %} 
 
 {% endblock %}
