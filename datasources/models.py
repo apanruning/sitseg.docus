@@ -260,10 +260,11 @@ class Row(models.Model):
 
 def search(search_list, i, field, value, res):
     if i < len(search_list):
-        if search_list[i][unicode(field)] == value:    
-            search(search_list, i+1, field, value, res.append(search_list[i][field]))        
+        if search_list[i][field] == value:    
+            res.append(search_list[i])
+            return search(search_list, i+1, field, value, res)        
         else:
-            search(search_list, i+1, field, value, res)                    
+            return search(search_list, i+1, field, value, res)                    
     else:
         return res
 
