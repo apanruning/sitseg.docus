@@ -244,8 +244,23 @@ class DataSource(models.Model):
     def delete_old_values(self):
         #se borran los valores viejos que correspondan a ese datasource     
         Value.objects.filter(column__datasource=self.id).delete()
-        #se borran las filas viejos que correspondan a ese datasource
+        Value.objects.filter(row__datasource=self.id).delete()
+        ValueInt.objects.filter(column__datasource=self.id).delete()
+        ValueInt.objects.filter(row__datasource=self.id).delete()
+        ValueFloat.objects.filter(column__datasource=self.id).delete()
+        ValueFloat.objects.filter(row__datasource=self.id).delete()
+        ValueText.objects.filter(column__datasource=self.id).delete()
+        ValueText.objects.filter(row__datasource=self.id).delete()
+        ValueDate.objects.filter(column__datasource=self.id).delete()
+        ValueDate.objects.filter(row__datasource=self.id).delete()
+        ValuePoint.objects.filter(column__datasource=self.id).delete()
+        ValuePoint.objects.filter(row__datasource=self.id).delete()
+        ValueArea.objects.filter(column__datasource=self.id).delete()
+        ValueArea.objects.filter(row__datasource=self.id).delete()
+
+        #se borran las filas que correspondan a ese datasource
         Row.objects.filter(datasource=self).delete()
+        
 
     def open_source(self):
         #se abre la planilla
@@ -260,10 +275,11 @@ class Row(models.Model):
 
 def search(search_list, i, field, value, res):
     if i < len(search_list):
-        if search_list[i][unicode(field)] == value:    
-            search(search_list, i+1, field, value, res.append(search_list[i][field]))        
+        if search_list[i][field] == value:    
+            res.append(search_list[i])
+            return search(search_list, i+1, field, value, res)        
         else:
-            search(search_list, i+1, field, value, res)                    
+            return search(search_list, i+1, field, value, res)                    
     else:
         return res
 

@@ -13,30 +13,55 @@ from django import forms
 from django.core.files.base import ContentFile
 from maap.models import MaapPoint
 from maps import generate_shp
+from django.contrib.auth import get_user
 
 import simplejson
 
 def index(request):
-    initial={
-        'author':request.user.id
-    }
-    form = DataSetForm(initial=initial)
-    
-    if request.method == 'POST':
+    comments = u""
+    dataset_list = {}
 
-       form = DataSetForm(request.POST, initial=initial)
-       if form.is_valid():
-            dataset = form.save()
-            return redirect(dataset.get_absolute_url())
-
-    return render(
-        request,
-        'index.html',
-        {
-            'dataset_list': DataSet.objects.all(),
-            'form': form,
+    if not request.user.is_authenticated():
+        comments = u"<h1>Bienvenido</h1><p>Para comenzar a trabajar inicie sesión</a> y podrá elegir un espacio de trabajo de la lista o agregar un <strong>Conjunto de Datos</strong> nuevo.</p>"
+        return render(
+            request,
+            'index.html',
+            {
+                'dataset_list': [],
+                'form':{},
+                'comments':unicode(comments),
+            }
+        )
+    else:
+        #Se filtran los dataset por Autor
+        initial={
+            'author':request.user.id
         }
-    )
+        
+        form = DataSetForm(initial=initial)
+        
+        if request.method == 'POST':
+           #Formulario para cargar un nuevo DataSet
+           form = DataSetForm(request.POST, initial=initial)
+           if form.is_valid():
+                dataset = form.save()
+                return render(
+                    request,
+                    'dataset_detail.html',
+                    {
+                        'id': dataset.pk,
+                    }
+                )
+        comments = u"<p>Un espacio de trabajo consiste en un repositorio donde se pueden alojar diferentes <strong>Fuentes de Datos</strong>.</p> "
+        return render(
+            request,
+            'index.html',
+            {
+                'dataset_list': DataSet.objects.all(),
+                'form': form,
+                'comments':unicode(comments),
+            }
+        )
 
 def dataset_detail(request,id):
     obj = DataSet.objects.get(pk=id)
@@ -115,6 +140,7 @@ def datasource_detail(request, id):
             'rows':Row.objects.filter(datasource=id),
             'column_forms':[ColumnForm(instance=column) for column in instance.column_set.all()],
             'plots':plots,
+            'data':xls_to_list_of_list(),
             'form_export':form_export,
         }
     )
@@ -156,10 +182,21 @@ def import_data(request, id):
     
     return redirect("datasource_detail", id)
 
+def xls_to_list_of_list(id):
+    datasource = DataSource.objects.get(pk=id)
+    sh = datasource.open_source()
+        data = []
+
+        for rownum in range(1,sh.nrows):
+            data.append(sh.row_values(rownum))
+    return data
+
+
 def show_data(request, id):
     datasource = DataSource.objects.get(pk=id)
 
     if datasource.geopositionated:
+        #Revisar
         rows = Row.objects.annotate(points=Count('value__point'))
         qs = rows.filter(datasource=id, value__isnull=False)
             
@@ -171,12 +208,10 @@ def show_data(request, id):
         if sort_by == 'empty':
             qs = rows.filter(datasource=id, value__map_url__isnull=True, value__isnull=False)
     else:
-        sh = datasource.open_source()
-        data = []
 
-        for rownum in range(1,sh.nrows):
-            data.append(sh.row_values(rownum))
-    
+        data = xls_to_list_of_list(id)
+
+
     return render(
         request,
         'show_data.html',
@@ -195,7 +230,7 @@ def delete(request, id, model=None):
 
 def download_attach_geom(request, id):
     datasource = DataSource.objects.get(id=id)
-    rows = Row.objects.filter(datasource=datasource).order_by('-csv_index')
+    rows = Row.objects.filter(datasource=datasource).order_by('-csv_|')
     value_string = ""
     separator = ';'
 

@@ -9,13 +9,10 @@ admin.autodiscover()
 
 urlpatterns = patterns('datasources.views',
     (r'^$', 'index', {}, 'index'),
-
     (r'^dataset/(?P<id>\w+)/$', 'dataset_detail', {}, 'dataset_detail'),
     (r'^dataset/(?P<id>\w+)/delete', 'delete', {'model':models.DataSet}),
-
     (r'^datasource/(?P<id>\w+)/$', 'datasource_detail', {}, 'datasource_detail'),
     (r'^datasource/(?P<id>\w+)/delete$', 'delete', {'model':models.DataSource}),
-
     (r'^datasource/(?P<id>\w+)/download_attach_source$', 'download_attach_source', {}, 'download_attach_source'),
     (r'^datasource/(?P<id>\w+)/download_attach_geom$', 'download_attach_geom', {}, 'download_attach_geom'),
     (r'^datasource/(?P<id>\w+)/import_data$', 'import_data', {}, 'import_data'),
@@ -54,7 +51,6 @@ urlpatterns += patterns('datasources.plots',
     (r'^graph/densityplot$', 'densityplot_view', {}, 'densityplot_view'),
     (r'^graph/barplot$', 'barplot_view', {}, 'barplot_view'),
     (r'^graph/map_point_density$', 'map_point_density_view', {}, 'map_point_density_view'),
-
     (r'^outqueue$', 'outqueue', {}, 'outqueue'),
 )
 

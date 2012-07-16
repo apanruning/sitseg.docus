@@ -10,7 +10,7 @@
     {% for row in data %}
     <tr>
         <td>
-            {{forloop.index}}
+            {{forloop.counter}}
         </td>
         {% for value in row %}
         <td class="{{value.data_type}}">
