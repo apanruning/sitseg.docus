@@ -244,8 +244,23 @@ class DataSource(models.Model):
     def delete_old_values(self):
         #se borran los valores viejos que correspondan a ese datasource     
         Value.objects.filter(column__datasource=self.id).delete()
-        #se borran las filas viejos que correspondan a ese datasource
+        Value.objects.filter(row__datasource=self.id).delete()
+        ValueInt.objects.filter(column__datasource=self.id).delete()
+        ValueInt.objects.filter(row__datasource=self.id).delete()
+        ValueFloat.objects.filter(column__datasource=self.id).delete()
+        ValueFloat.objects.filter(row__datasource=self.id).delete()
+        ValueText.objects.filter(column__datasource=self.id).delete()
+        ValueText.objects.filter(row__datasource=self.id).delete()
+        ValueDate.objects.filter(column__datasource=self.id).delete()
+        ValueDate.objects.filter(row__datasource=self.id).delete()
+        ValuePoint.objects.filter(column__datasource=self.id).delete()
+        ValuePoint.objects.filter(row__datasource=self.id).delete()
+        ValueArea.objects.filter(column__datasource=self.id).delete()
+        ValueArea.objects.filter(row__datasource=self.id).delete()
+
+        #se borran las filas que correspondan a ese datasource
         Row.objects.filter(datasource=self).delete()
+        
 
     def open_source(self):
         #se abre la planilla

@@ -140,6 +140,7 @@ def datasource_detail(request, id):
             'rows':Row.objects.filter(datasource=id),
             'column_forms':[ColumnForm(instance=column) for column in instance.column_set.all()],
             'plots':plots,
+            'data':xls_to_list_of_list(),
             'form_export':form_export,
         }
     )
@@ -181,10 +182,21 @@ def import_data(request, id):
     
     return redirect("datasource_detail", id)
 
+def xls_to_list_of_list(id):
+    datasource = DataSource.objects.get(pk=id)
+    sh = datasource.open_source()
+        data = []
+
+        for rownum in range(1,sh.nrows):
+            data.append(sh.row_values(rownum))
+    return data
+
+
 def show_data(request, id):
     datasource = DataSource.objects.get(pk=id)
 
     if datasource.geopositionated:
+        #Revisar
         rows = Row.objects.annotate(points=Count('value__point'))
         qs = rows.filter(datasource=id, value__isnull=False)
             
@@ -196,12 +208,10 @@ def show_data(request, id):
         if sort_by == 'empty':
             qs = rows.filter(datasource=id, value__map_url__isnull=True, value__isnull=False)
     else:
-        sh = datasource.open_source()
-        data = []
 
-        for rownum in range(1,sh.nrows):
-            data.append(sh.row_values(rownum))
-    
+        data = xls_to_list_of_list(id)
+
+
     return render(
         request,
         'show_data.html',

@@ -17,9 +17,7 @@
             </form>        
         </div>
         <div id="{{datasource}}-data" >
-            {% with datasource.row_set.all as row %}
             {% include 'show_data.html'%}
-            {% endwith %}
         </div>
         <div id="{{datasource}}-graphs" class="ui-tabs-hide">
         <p>Elija un grafico a realizar.</p>
