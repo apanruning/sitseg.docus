@@ -182,7 +182,6 @@ def import_data(request, id):
     
     return redirect("datasource_detail", id)
 
-
 def show_data(request, id):
     datasource = DataSource.objects.get(pk=id)
 
