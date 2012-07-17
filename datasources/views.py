@@ -185,10 +185,11 @@ def import_data(request, id):
 def xls_to_list_of_list(id):
     datasource = DataSource.objects.get(pk=id)
     sh = datasource.open_source()
-        data = []
+    data = []
 
-        for rownum in range(1,sh.nrows):
-            data.append(sh.row_values(rownum))
+    for rownum in range(1,sh.nrows):
+        data.append(sh.row_values(rownum))
+
     return data
 
 
