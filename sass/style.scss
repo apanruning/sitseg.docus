@@ -15,7 +15,7 @@
     border: 1px solid #999;
     border-color: transparent #999;
     border-width: 0 1px;
-    margin:0 auto -3em;
+    margin:4em auto -3em;
     position:relative;
     background: #FFF;
     height: 100%;
@@ -38,7 +38,9 @@
 }
 header {
     padding:0;
-
+    position:fixed;
+    top:0;
+    width:100%;
     .wrapper {
         z-index:99999;
         padding: 1em;
@@ -67,7 +69,7 @@ aside {
     padding: 1em;
 }
 footer {
-    position:absolute;
+    position:fixed;
     bottom:0;
     width: 100%;
     text-align:right;
@@ -86,7 +88,6 @@ footer {
 
 /*ui*/
 .data_column{
-    width:50%;
     padding:0.5em;
     border: 1px solid transparent;
     overflow: hidden;
@@ -446,10 +447,15 @@ form.inline{
 /* Tablas */
 
 table {
-    margin: 0 -1.1em;    
+    margin: 0 auto;
+    width: 100%;
 }
 th {
-    background: #EEE;
+    background: #999;
+    font-size: 120%;
+    font-weight:normal;
+    color: #333;
+    text-shadow: 0 1px 0 #FFF;
 }
 td {
     padding: 0 1em;

@@ -22,11 +22,3 @@
     {% endfor %}     
 </table>
 <div id="edit-value"></div>
-<p class="pagination">
-    {% if page_obj.has_previous %}
-        <a class="prev pjax" rel="rel="#{{datasource}}-data"" href="/datasource/{{datasource.id}}/show_data?page={{ page_obj.previous_page_number }}{{ getvars }}{{ hashtag }}">Prev</a>
-    {% endif %}
-    {% if page_obj.has_next %}
-        <a class="next pjax" rel="#{{datasource}}-data" href="/datasource/{{datasource.id}}/show_data?page={{ page_obj.next_page_number }}{{ getvars }}{{ hashtag }}">Next</a>
-    {% endif %}
-</p>
