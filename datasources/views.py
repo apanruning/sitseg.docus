@@ -140,7 +140,7 @@ def datasource_detail(request, id):
             'rows':Row.objects.filter(datasource=id),
             'column_forms':[ColumnForm(instance=column) for column in instance.column_set.all()],
             'plots':plots,
-            'data':xls_to_list_of_list(),
+            'data':xls_to_list_of_list(id),
             'form_export':form_export,
         }
     )
@@ -185,10 +185,10 @@ def import_data(request, id):
 def xls_to_list_of_list(id):
     datasource = DataSource.objects.get(pk=id)
     sh = datasource.open_source()
-        data = []
+    data = []
 
-        for rownum in range(1,sh.nrows):
-            data.append(sh.row_values(rownum))
+    for rownum in range(1,sh.nrows):
+        data.append(sh.row_values(rownum))
     return data
 
 
