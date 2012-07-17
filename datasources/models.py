@@ -267,6 +267,15 @@ class DataSource(models.Model):
         wb = xlrd.open_workbook(file_contents=self.attach.read()    )
         sh = wb.sheet_by_index(0)
         return sh
+
+    def xls_to_list_of_list(self):
+        sh = self.open_source()
+        data = []
+
+        for rownum in range(1,sh.nrows):
+            data.append(sh.row_values(rownum))
+        return data
+
     
 
 class Row(models.Model):

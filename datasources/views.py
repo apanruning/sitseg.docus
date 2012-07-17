@@ -140,7 +140,7 @@ def datasource_detail(request, id):
             'rows':Row.objects.filter(datasource=id),
             'column_forms':[ColumnForm(instance=column) for column in instance.column_set.all()],
             'plots':plots,
-            'data':xls_to_list_of_list(id),
+            'data':instance.xls_to_list_of_list(),
             'form_export':form_export,
         }
     )
@@ -182,15 +182,6 @@ def import_data(request, id):
     
     return redirect("datasource_detail", id)
 
-def xls_to_list_of_list(id):
-    datasource = DataSource.objects.get(pk=id)
-    sh = datasource.open_source()
-    data = []
-
-    for rownum in range(1,sh.nrows):
-        data.append(sh.row_values(rownum))
-    return data
-
 
 def show_data(request, id):
     datasource = DataSource.objects.get(pk=id)
@@ -209,14 +200,14 @@ def show_data(request, id):
             qs = rows.filter(datasource=id, value__map_url__isnull=True, value__isnull=False)
     else:
 
-        data = xls_to_list_of_list(id)
+        data = datasource.xls_to_list_of_list()
 
 
     return render(
         request,
         'show_data.html',
         {
-            'datasource': DataSource.objects.get(pk=id),
+            'datasource': datasource,
             'data':data,
         }
     )
