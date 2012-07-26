@@ -12,7 +12,9 @@
 
 {% block page %}
     {% if user.is_staff %}
+    
     <form id="add-form" method="post" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
+<p> El formato de origen de los datos debe ser una planilla de cálculo del programa EXCEL. El formato de la misma es el siguiente:</p> <img src="/media/exampleEXCEL.png"></img> 
     {{ form_import.as_p }}
     <a href="#add-form" class="control">cerrar</a>   
     <input type="submit" name="Guardar" value="importar"/>
