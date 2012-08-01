@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from csv import reader
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -10,19 +9,18 @@ from django.template.defaultfilters import slugify
 from django import forms
 from datetime import datetime
 from celery.task import task
-from django.conf import settings
 from django.forms.models import model_to_dict
 from StringIO import StringIO
 from csv import reader
 from googlemaps import GoogleMaps
 from django.contrib.gis.geos import Point
-from maap.models import MaapPoint, MaapArea
 from unicodedata import normalize
 from django.core.cache import cache
 from hashlib import sha1
 from django.template.defaultfilters import slugify
 from djangoosm.utils.words import normalize_street_name
 from re import match
+from interface_r import gooJSON
 import xlrd
 
 class Annotation(models.Model):
@@ -134,15 +132,16 @@ class DataSource(models.Model):
 
         errors = []
 
-        #se seleccionan las columnas segun la decision del usuario. En caso de no elegir al menos una en particular el sistema importa la totalidad de las columnas    
+        #se seleccionan las columnas segun la decision del usuario. En caso de no elegir al menos una el sistema importa la totalidad de las columnas    
         if columns:
             columns = self.column_set.filter(pk__in=columns)
         else:
             columns = self.column_set.all()
 
+        #Se borran los viejos elementos del datasource
         self.delete_old_values()
         src = self.open_source()
-
+        
         for column in columns:
             #Para cada columna que el usuario haya seleccionado para importar, se recorren todos sus valores creando objetos del tipo ValueX donde X es el tipo del valor que se esta recorriendo
             
@@ -162,19 +161,14 @@ class DataSource(models.Model):
                     value = ValueDate()
                 elif col_tp[i] == 4:
                     value = ValueBool()
-
+        
                 value.value = val
-                    
                 value.data_type = col_tp[i]
                 value.column = column
 
-                
-                try:
-                    row_obj = Row.objects.filter(datasource=self,csv_index=i+1).first()
-                except:
-                    #Se crea una nueva instancia de fila
-                    row_obj = Row(datasource=self,csv_index=i+1)
-                    row_obj.save()
+                #Se crea una nueva instancia de fila
+                row_obj = Row(datasource=self,csv_index=i+1)
+                row_obj.save()
 
                 value.row = row_obj
 
@@ -182,14 +176,17 @@ class DataSource(models.Model):
 
                 search_term = slugify(value.value)
                 self.geopositionated = False
-                    
+                import pdb;pdb.set_trace()
                 #SI LOS DATOS SON GEOPOSICIONADOS
                 if column.data_type == 'point':
-                    gmaps = GoogleMaps(settings.GOOGLEMAPS_API_KEY)
+                    #gmaps = GoogleMaps(settings.GOOGLEMAPS_API_KEY)
+                    import pdb;pdb.set_trace()
                     self.geopositionated = True
                         
                     #se debe hacer primero una consulta a la base local
                     results = MaapPoint.objects.filter(slug=search_term)
+
+                    
 
                     if len(results) >= 1:
                         #En este caso quiere decir que la consulta a la base local fue exitosa
@@ -202,20 +199,25 @@ class DataSource(models.Model):
                     if len(results) < 1: 
                         #Este caso quiere decir que la consulta a la base local no fue exitosa y por lo tanto se procede a buscarlo via web. Aca se debe controlar solo el caso que sea unico. Ahora esta asi porque hay muchos MaapPoint iguales
 
-                        results = gmaps.local_search('%s, cordoba, argentina' %value.value )['responseData']['results']
-                        for result in results:
-                            latlng = [float(result.get('lng')), float(result.get('lat'))]
+                        #results = gmaps.local_search('%s, cordoba, argentina' %value.value )['responseData']['results']
+                        #for result in results:
+                        #latlng = [float(result.get('lng')), float(result.get('lat'))]
 
-                            point =  MaapPoint(
-                                geom=Point(latlng).wkt,
-                                name=value.value,
-                            )
+                        #    point =  MaapPoint(
+                        #        geom=Point(latlng).wkt,
+                        #        name=value.value,
+                        #    )
                             
-                            point.static_url = result.get('staticMapUrl', None)
-                            point.save()
-                            value.point = point
-                            value.map_url = point.static_url
-                            value.save()
+                        #    point.static_url = result.get('staticMapUrl', None)
+                        #    point.save()
+                        #    value.point = point
+                        #    value.map_url = point.static_url
+                        #    value.save()
+                
+                        results = gooJSON.goomap(gooadd(address=[value.get_value(),'CORDOBA','AR']), settings.GOOGLEMAPS_API_KEY)
+                        
+                        print results
+
                 
                 #SI LOS DATOS SON GEOPOSICIONADOS                        
                 if column.data_type == 'area':
@@ -276,7 +278,13 @@ class DataSource(models.Model):
             data.append(sh.row_values(rownum))
         return data
 
-    
+    def xls_to_list_of_model_values(self):
+        rows = self.row_set.all().order_by('csv_index')        
+        results = []
+        for r in rows:
+            results.append(Value.objects.filter(row=r))
+
+        return results
 
 class Row(models.Model):
     datasource = models.ForeignKey(DataSource)    
@@ -292,15 +300,27 @@ def search(search_list, i, field, value, res):
     else:
         return res
 
-def get_all_values():
-    valueint = list(ValueInt.objects.values())
-    valuetext = list(ValueText.objects.values())
-    valuedate = list(ValueDate.objects.values())
-    valuefloat = list(ValueFloat.objects.values())
-    valuebool = list(ValueBool.objects.values())
-    valuepoint = list(ValuePoint.objects.values())
-    valuearea = list(ValueArea.objects.values())
-    result = valueint+valuetext+valuedate+valuefloat+valuebool+valuepoint+valuearea
+def get_all_values(datasource=None):
+    result = list()
+    if not datasource:
+        valueint = list(ValueInt.objects.values())
+        valuetext = list(ValueText.objects.values())
+        valuedate = list(ValueDate.objects.values())
+        valuefloat = list(ValueFloat.objects.values())
+        valuebool = list(ValueBool.objects.values())
+        valuepoint = list(ValuePoint.objects.values())
+        valuearea = list(ValueArea.objects.values())
+        result += valueint+valuetext+valuedate+valuefloat+valuebool+valuepoint+valuearea
+    else:
+        valueint = list(ValueInt.objects.filter(datasource=datasource).values())
+        valuetext = list(ValueText.objects.filter(datasource=datasource).values())
+        valuedate = list(ValueDate.objects.filter(datasource=datasource).values())
+        valuefloat = list(ValueFloat.objects.filter(datasource=datasource).values())
+        valuebool = list(ValueBool.objects.filter(datasource=datasource).values())
+        valuepoint = list(ValuePoint.objects.filter(datasource=datasource).values())
+        valuearea = list(ValueArea.objects.filter(datasource=datasource).values())
+        result += valueint+valuetext+valuedate+valuefloat+valuebool+valuepoint+valuearea
+
     return result
 
 class Value(models.Model):
@@ -309,8 +329,24 @@ class Value(models.Model):
     row = models.ForeignKey(Row)
     
     def get_value(self):
-        return self.value
+        if self.value_point:
+            return self.value_point
         
+        if self.value_area:
+            return self.value_area
+
+        if self.value_text:
+            return self.value_text
+
+        if self.value_int:
+            return self.value_int
+
+        if self.value_date:
+            return self.value_date
+
+        if self.value_bool:
+            return self.value_bool
+
 class ValueInt(Value):
     value = models.IntegerField()    
 

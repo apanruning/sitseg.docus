@@ -27,6 +27,7 @@ strip = robjects.r['stripchart']
 #RgoogleMaps = importr('RgoogleMaps')
 #maptools = importr('maptools')
 pbsmapping = importr('PBSmapping')
+gooJSON = importr('gooJSON')
 
 #device function
 x11 = robjects.r['x11']
@@ -36,4 +37,5 @@ off = robjects.r['dev.off']
 
 #others
 par = robjects.r['par']
+
 

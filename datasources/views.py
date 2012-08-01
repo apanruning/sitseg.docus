@@ -175,31 +175,21 @@ def column_detail(request, id):
     )
 
 def import_data(request, id):
+
     datasource = DataSource.objects.get(pk=id)
+    import pdb;pdb.set_trace()
     datasource.xls_to_orm(
-        columns=request.POST.getlist('object_id')
+        columns=request.POST.getlist('is_available')
     )
-    
-    return redirect("datasource_detail", id)
+    import pdb;pdb.set_trace()
+    return datasource_detail(request, id)
 
 def show_data(request, id):
     datasource = DataSource.objects.get(pk=id)
-
-    if datasource.geopositionated:
-        #Revisar
-        rows = Row.objects.annotate(points=Count('value__point'))
-        qs = rows.filter(datasource=id, value__isnull=False)
-            
-        sort_by = request.GET.get('sort_by')
-        if sort_by == 'right':
-            qs = rows.filter(datasource=id, value__point__isnull=True, value__isnull=False)
-        if sort_by == 'multiple':
-            qs = rows.filter(datasource=id, value__multiple=True, value__isnull=False)
-        if sort_by == 'empty':
-            qs = rows.filter(datasource=id, value__map_url__isnull=True, value__isnull=False)
-    else:
-
-        data = datasource.xls_to_list_of_list()
+    
+    #data = datasource.xls_to_list_of_list()
+    data = datasource.xls_to_list_of_model_values()
+    
 
 
     return render(
@@ -208,6 +198,7 @@ def show_data(request, id):
         {
             'datasource': datasource,
             'data':data,
+
         }
     )
 

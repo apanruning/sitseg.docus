@@ -14,8 +14,27 @@
         </td>
         {% for value in row %}
         <td class="{{value.data_type}}">
-            {{value}}
+            {{value}} 
+            
+            {% if value.data_type == 'point' %}
+                <a href="/admin/datasources/valuepoint/{{value.get_value.point.pk}}"></a>
+            {% elif value.data_type == 'area' %}
+                <a href="/admin/datasources/valuearea/{{value.get_value.area.pk}}"></a>
+            {% elif value.data_type == 'text' %}
+                <a href="/admin/datasources/valuetext/{{value.get_value.pk}}"></a>
+            {% elif value.data_type == 'int' %}
+                <a href="/admin/datasources/valueint/{{value.get_value.pk}}"></a>
+            {% elif value.data_type == 'bool' %}
+                <a href="/admin/datasources/valuebool/{{value.get_value.pk}}"></a>
+            {% elif value.data_type == 'date' %}
+                <a href="/admin/datasources/valuedate/{{value.get_value.pk}}"></a>
+            {% elif value.data_type == 'float' %}
+                <a href="/admin/datasources/valuefloat/{{value.get_value.pk}}"></a>
+            {% endif %}
+            
         </td>
+        
+        
         {% endfor %}
 
     </tr>

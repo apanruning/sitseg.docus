@@ -1,7 +1,7 @@
 <tr class="data_column {% if not column.instance.is_available %}disabled{% endif %}">
-    <form action="/column/{{column.instance.pk}}" method="post" class="column_form">{% csrf_token %}
+
     <td> 
-       {{column.is_available}}
+       <input type="checkbox" checked="checked" name="is_available" id="{{column.instance.pk}}" />
     </td>
     <td>
         {{column.instance.name}}        
@@ -34,5 +34,5 @@
     <td>
     <input type="hidden" name="next" value="{{request.path}}"/>
     </td>    
-    </form>
+
 </tr>

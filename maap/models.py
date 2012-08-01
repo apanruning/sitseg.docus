@@ -76,7 +76,6 @@ class MaapPoint(MaapModel):
         out['geom'] = self.geom
         return Point(**out)
 
-    
 class MaapArea(MaapModel):
     geom = models.PolygonField(srid=DEFAULT_SRID)
     objects = MaapManager()
@@ -87,7 +86,6 @@ class MaapArea(MaapModel):
         out['geom'] = self.geom
         return Area(**out)   
         
-
 class Icon(models.Model):
     name = models.CharField(max_length = 100)
     image = models.ImageField(upload_to = "icons")
