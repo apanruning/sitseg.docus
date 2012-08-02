@@ -6,9 +6,10 @@
         <title>{% block title %}Bienvenido{% endblock %} sitseg</title>
         <meta name="description" content="Sistema Tecnológico de Seguridad" />
         <link rel="stylesheet" href="/static/css/style.css" type="text/css" media="screen" />
-        <script type="text/javascript" src="/static/js/jquery.min.js"></script>
-        <script type="text/javascript" src="/static/js/jquery.ui.js"></script>
-        <script type="text/javascript" src="/static/js/scripts.js"></script>
+        <script src="/static/js/jquery.min.js"></script>
+        <script src="/static/js/ajax.js"></script>
+        <script src="/static/js/jquery.ui.js"></script>
+        <script src="/static/js/scripts.js"></script>
         {% block linkjs %}
         
         {% endblock %}
@@ -16,12 +17,6 @@
     <body>
     <header>
         <div class="wrapper">
-        <ul id="messages">
-        {% for message in messages %}
-            <li class="{{message.tags}}">
-              <a href="#message-{{forloop.counter}}" class="control">!</a><strong id="message-{{forloop.counter}}">{{message}}</strong></li>
-        {% endfor %}
-        </ul>
         <menu id="session">
         {% if user.is_authenticated %}
           {% if user.is_staff %}
@@ -77,6 +72,14 @@
     </div>
     <footer>
     <div class="wrapper">
+    <ul id="messages">
+    {% for message in messages %}
+        <li class="{{message.tags}}">
+          <a href="#message-{{forloop.counter}}" class="control">!</a>
+          <strong id="message-{{forloop.counter}}">{{message}}</strong>
+        </li>
+    {% endfor %}
+    </ul>
     {% block footer %}
         
     {% endblock %}
