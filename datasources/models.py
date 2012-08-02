@@ -176,11 +176,9 @@ class DataSource(models.Model):
 
                 search_term = slugify(value.value)
                 self.geopositionated = False
-                import pdb;pdb.set_trace()
                 #SI LOS DATOS SON GEOPOSICIONADOS
                 if column.data_type == 'point':
                     #gmaps = GoogleMaps(settings.GOOGLEMAPS_API_KEY)
-                    import pdb;pdb.set_trace()
                     self.geopositionated = True
                         
                     #se debe hacer primero una consulta a la base local

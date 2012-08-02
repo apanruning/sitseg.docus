@@ -23,7 +23,6 @@ class ClasifyPointsTest(TestCase):
     def test_point_from_latlng(self):
         gmaps = GoogleMaps(settings.GOOGLEMAPS_API_KEY)
         latlng = gmaps.address_to_latlng(u'Jose javier Diaz 440, cordoba, argentina', )
-        import ipdb; ipdb.set_trace()
         point=None
         try:
             point =  MaapPoint(geom=Point(latlng).wkt)
