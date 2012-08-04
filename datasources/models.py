@@ -327,13 +327,13 @@ class Value(models.Model):
 
     
     def get_value(self):
-        value = None
+        value = ''
         for i in ('value_point', 'value_area', 'value_text', 'value_int', 'value_date', 'value_bool'):
             try:
                 value = getattr(self, i)
             except AttributeError:
                 pass
-        return ''
+        return value
 
 class ValueInt(Value):
     value = models.IntegerField()    
