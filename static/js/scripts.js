@@ -1,5 +1,4 @@
 function pjax(){
-    event.preventDefault();
     container = $(this).attr('rel'),
     target = $(this).attr('href');
     $.get(

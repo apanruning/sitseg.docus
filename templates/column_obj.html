@@ -1,31 +1,21 @@
-<tr>
-    <form action="." class="column_form" method="post">{% csrf_token %}    
-    <td> 
-        
-           <input type="checkbox" checked="checked" name="is_available" value="{{column.instance.pk}}" />
-
-    </td>
-    <td>
-
-            {{ column.instance.name }}        
-
-    </td>
-    <td>
-
-            {{ column.data_type }}
-
-    </td>
-    <td>
-
-            {% if column.instance.has_geodata %}
-                 {{ column.geodata_type }}
-            {% endif %}
-
-    </td>
-    <td>
-
-            <input type="hidden" name="object_id"  value="{{column.instance.pk}}"/>
-
-    </td>    
-        </form> 
-</tr>
+<li class="data_column {% if not column.instance.is_available %}disabled{% endif %}">
+    <form action="/column/{{column.instance.pk}}" method="post" class="column_form">{% csrf_token %}
+    <h3>
+        {{column.is_available}}
+        {{column.instance.name}}
+    </h3>
+    <input type="hidden" name="object_id"  value="{{column.instance.pk}}"/>
+    <input type="hidden" name="name"  value="{{column.instance.name}}"/>
+    <input type="hidden" name="label"  value="{{column.instance.label}}"/>
+    <input type="hidden" name="datasource"  value="{{column.instance.datasource.id}}"/>
+    <input type="hidden" name="next" value="{{request.path}}"/>
+    {{ column.data_type }}
+            geografico<input type="checkbox" name="has_geodata" {% if column.instance.has_geodata %}checked{% endif %}/>
+    {% if column.instance.has_geodata %}
+        {{ column.geodata_type }}
+    {% endif %}
+    <p>
+        {{form.errors}}
+    </p>
+    </form>
+</li>

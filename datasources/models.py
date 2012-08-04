@@ -211,8 +211,7 @@ class DataSource(models.Model):
                         #    value.point = point
                         #    value.map_url = point.static_url
                         #    value.save()
-                
-                        results = gooJSON.goomap(gooadd(address=[value.get_value(),'CORDOBA','AR']), settings.GOOGLEMAPS_API_KEY)
+                        results = gooJSON.goomap(gooJSON.gooadd(address=[value.get_value(),'CORDOBA','AR']), settings.GOOGLEMAPS_API_KEY)
                         
                         print results
 
