@@ -324,25 +324,16 @@ class Value(models.Model):
     column = models.ForeignKey(Column)
     data_type = models.IntegerField()
     row = models.ForeignKey(Row)
+
     
     def get_value(self):
-        if self.value_point:
-            return self.value_point
-        
-        if self.value_area:
-            return self.value_area
-
-        if self.value_text:
-            return self.value_text
-
-        if self.value_int:
-            return self.value_int
-
-        if self.value_date:
-            return self.value_date
-
-        if self.value_bool:
-            return self.value_bool
+        value = None
+        for i in ('value_point', 'value_area', 'value_text', 'value_int', 'value_date', 'value_bool'):
+            try:
+                value = getattr(self, i)
+            except AttributeError:
+                pass
+        return ''
 
 class ValueInt(Value):
     value = models.IntegerField()    
