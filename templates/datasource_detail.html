@@ -7,8 +7,8 @@
             <li><h3><a href="#{{datasource}}-export">Exportar</a></h3></li>
         </ul>
         <div id="{{datasource}}-columns">
-            <form action="/datasource/{{datasource.id}}/import_data" class="import_form" method="post">
-            {% csrf_token %}
+            <form action="/datasource/{{datasource.id}}/import_data" class="import_form" method="post">{% csrf_token %}
+            
             <p>Elija que variable/s quiere importar dentro el sistema </p>
             
             <table>
@@ -19,17 +19,13 @@
                 <th>Tipo Geográfico de la Variable</th>
                 <th></th>
                 <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
             </tr>
             {% for column in column_forms  %}
                 {% include 'column_obj.html' %}
             {% endfor %}
             </table>
             
-                <input type="submit" value="Importar Columnas Seleccionadas" />
+            <input type="submit" value="Importar Columnas Seleccionadas" />
             </form>        
         </div>
         <div id="{{datasource}}-data" >

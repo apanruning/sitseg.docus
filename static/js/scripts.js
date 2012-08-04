@@ -22,19 +22,7 @@ function collapsable(){
     $(container).toggle('blind');
     return false;
 }
-function column_form_change(){
-    form = $(this).parents('form');
-    data = $(form).serializeArray();
-    target = $(form).attr('action');
-    $.post(
-        target, 
-        data, 
-        function(response){
-            data_column = $(form).parent('.data_column ');
-            data_column = $(data_column).replaceWith(response);
-        }
-    );
-}
+
 
 $(function(){
     $('body').on('ajaxComplete', function(){
@@ -42,7 +30,7 @@ $(function(){
     });
     $('.tabs').tabs();
 
-    $('body').on('change', '.column_form :input', column_form_change);
+    
     $('body').on('click', '.control',function(){
         target = $(this).attr('href');
         $(this).toggleClass('active');
@@ -51,6 +39,7 @@ $(function(){
         
     });
     $('form input[type="text"]:first').focus()
+   
     $('input[type="file"]').change(function(){
         value = $(this).val();
         value = value.split('\\').reverse()[0];
@@ -62,17 +51,18 @@ $(function(){
         target = $(this).attr('action');
         container = $(this).parents('div');
         data = $(container).find('.column_form').serializeArray();
-        message = $('<li>').append($('<strong>').text('Los datos se están procesando'));
-        $('#messages').append(message);
+        //message = $('<li>').append($('<strong>').text('Los datos se están procesando'));
+        //$('#messages').append(message);
         $.post(
             target, 
             data, 
             function(response){
-                $('#messages li').remove();
-                $('#messages').append(response);
-                window.setTimeout(function(){
-                    $('#messages .control').click()
-                }, 3000);
+                //$('#messages li').remove();
+                //$('#messages').append(response);
+                //window.setTimeout(function(){
+                //    $('#messages .control').click()
+                //}, 3000);
+                alert('Se procesaron exitosamente los datos');
             }
         );
 

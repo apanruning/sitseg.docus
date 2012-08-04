@@ -177,6 +177,7 @@ def column_detail(request, id):
 def import_data(request, id):
 
     datasource = DataSource.objects.get(pk=id)
+    import pdb; pdb.set_trace()
     datasource.xls_to_orm(
         columns=request.POST.getlist('is_available')
     )
@@ -188,8 +189,6 @@ def show_data(request, id):
     #data = datasource.xls_to_list_of_list()
     data = datasource.xls_to_list_of_model_values()
     
-
-
     return render(
         request,
         'show_data.html',

@@ -1,38 +1,31 @@
-<tr class="data_column {% if not column.instance.is_available %}disabled{% endif %}">
-
+<tr>
+    <form action="." class="column_form" method="post">{% csrf_token %}    
     <td> 
-       <input type="checkbox" checked="checked" name="is_available" id="{{column.instance.pk}}" />
+        
+           <input type="checkbox" checked="checked" name="is_available" value="{{column.instance.pk}}" />
+
     </td>
     <td>
-        {{column.instance.name}}        
-    </td>
 
-    <td>
-    {{ column.data_type }}
+            {{ column.instance.name }}        
+
     </td>
     <td>
-    {% if column.instance.has_geodata %}
-         {{ column.geodata_type }}
-    {% endif %}
+
+            {{ column.data_type }}
+
     </td>
     <td>
-    <input type="hidden" name="object_id"  value="{{column.instance.pk}}"/>
-    </td>    
 
+            {% if column.instance.has_geodata %}
+                 {{ column.geodata_type }}
+            {% endif %}
+
+    </td>
     <td>
-    <input type="hidden" name="name"  value="{{column.instance.name}}"/>
-    </td>    
 
-    <td>
-    <input type="hidden" name="label"  value="{{column.instance.label}}"/>
-    </td>    
+            <input type="hidden" name="object_id"  value="{{column.instance.pk}}"/>
 
-    <td>
-    <input type="hidden" name="datasource"  value="{{column.instance.datasource.id}}"/>
     </td>    
-
-    <td>
-    <input type="hidden" name="next" value="{{request.path}}"/>
-    </td>    
-
+        </form> 
 </tr>
