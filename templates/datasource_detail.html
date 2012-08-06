@@ -1,26 +1,38 @@
 {% block page %}
     <div class="tabs">
         <ul>
-            <li><h3><a href="#{{datasource}}-columns">Columnas</a></h3></li>
+            <li><h3><a href="#{{datasource}}-columns">Variables</a></h3></li>
             <li><h3><a href="#{{datasource}}-data">Datos</a></h3></li>
             <li><h3><a href="#{{datasource}}-graphs">Graficos</a></h3></li>
             <li><h3><a href="#{{datasource}}-export">Exportar</a></h3></li>
         </ul>
         <div id="{{datasource}}-columns">
-            <ul>
+            <form action="/datasource/{{datasource.id}}/import_data" class="import_form" method="post">{% csrf_token %}
+            
+            <p>Elija que variable/s quiere importar dentro el sistema </p>
+            
+            <table>
+
+            <tr>
+                <th>Seleccionada </th>
+                <th>Nombre de Variable</th>
+                <th>Tipo Geográfico de la Variable</th>
+                <th></th>
+                <th></th>
+            </tr>
             {% for column in column_forms  %}
                 {% include 'column_obj.html' %}
             {% endfor %}
-            </ul>
-            <form action="/datasource/{{datasource.id}}/import_data" class="import_form" method="post">{% csrf_token %}
-            <p ><input type="submit" value="Importar columnas seleccionadas" /></p>
+            </table>
+            
+            <input type="submit" value="Importar Columnas Seleccionadas" />
             </form>        
         </div>
         <div id="{{datasource}}-data" >
             {% include 'show_data.html'%}
         </div>
         <div id="{{datasource}}-graphs" class="ui-tabs-hide">
-        <p>Elija un grafico a realizar.</p>
+        <p>Elija un gráfico a realizar. Cada gráfico necesita de una o más variables (columnas) para realizarse. La/s variable/s necesarias así como también una breve descripcion de que hace el gráfico se proporciona al hacer click en algún gráfico </p>
         <div id="{{datasource}}-graphs-wrapper">
             <ul class="graph-select">
             {% for k, v in plots.iteritems %}
