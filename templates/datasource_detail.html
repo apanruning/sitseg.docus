@@ -7,7 +7,7 @@
             <li><h3><a href="#{{datasource}}-export">Exportar</a></h3></li>
         </ul>
         <div id="{{datasource}}-columns">
-            <form action="/datasource/{{datasource.id}}/import_data" class="import_form" method="post">{% csrf_token %}
+            
             
             <p>Elija que variable/s quiere importar dentro el sistema </p>
             
@@ -24,8 +24,8 @@
                 {% include 'column_obj.html' %}
             {% endfor %}
             </table>
-            
-            <input type="submit" value="Importar Columnas Seleccionadas" />
+            <form action="/datasource/{{datasource.id}}/import_data" class="import_form" method="post">{% csrf_token %}
+            <p><input type="submit" value="Importar Columnas Seleccionadas" /></p>
             </form>        
         </div>
         <div id="{{datasource}}-data" >
