@@ -14,11 +14,11 @@ from StringIO import StringIO
 from csv import reader
 from googlemaps import GoogleMaps
 from django.contrib.gis.geos import Point
+from django.contrib.gis.db import models as geo_models
 from unicodedata import normalize
 from django.core.cache import cache
 from hashlib import sha1
 from django.template.defaultfilters import slugify
-from djangoosm.utils.words import normalize_street_name
 from re import match
 from interface_r import gooJSON
 import xlrd
@@ -151,19 +151,25 @@ class DataSource(models.Model):
                 #Para cada valor asociado a la columna seleccionada (column) se crea una instancia del tipo Valor               
                 if col_tp[i] == 1 and column.data_type=='point':
                     value = ValuePoint()
+                    value.data_type = 5    
                 elif col_tp[i] == 1 and column.data_type=='area':
                     value = ValueArea()
+                    value.data_type = 6
                 elif col_tp[i] == 1 and column.data_type!='area' and column.data_type!='point':
                     value = ValueText()
+                    value.data_type = col_tp[i]
                 elif col_tp[i] == 2:
                     value = ValueFloat()
+                    value.data_type = col_tp[i]
                 elif col_tp[i] == 3:
                     value = ValueDate()
+                    value.data_type = col_tp[i]
                 elif col_tp[i] == 4:
+                    value.data_type = col_tp[i]
                     value = ValueBool()
         
                 value.value = val
-                value.data_type = col_tp[i]
+                
                 value.column = column
 
                 #Se crea una nueva instancia de fila
@@ -325,15 +331,21 @@ class Value(models.Model):
     data_type = models.IntegerField()
     row = models.ForeignKey(Row)
 
-    
     def get_value(self):
-        value = ''
-        for i in ('value_point', 'value_area', 'value_text', 'value_int', 'value_date', 'value_bool'):
-            try:
-                value = getattr(self, i)
-            except AttributeError:
-                pass
-        return value
+        if self.data_type == 0:
+            return self.valuetext.value
+        elif self.data_type == 1:
+            return self.valuetext.value
+        elif self.data_type == 2:
+            return self.valuefloat.value
+        elif self.data_type == 3:
+            return self.valuedate.value
+        elif self.data_type == 5:
+            return self.valuepoint.point
+        elif self.data_type == 6:
+            return self.valuearea.area
+        else:
+            pass
 
 class ValueInt(Value):
     value = models.IntegerField()    

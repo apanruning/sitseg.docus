@@ -12,7 +12,6 @@ from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
 from unicodedata import normalize
-from djangoosm.utils.words import normalize_street_name 
 from maap.layers import Point, Area, MultiLine, Layer
 
 class MaapQuerySet(GeoQuerySet):
