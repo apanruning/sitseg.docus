@@ -15,9 +15,9 @@
     
     <form id="add-form" method="post" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
 <a href="#add-form" class="control">cerrar</a>   
-<p> El formato de origen de los datos debe ser una planilla de cálculo del programa EXCEL. El formato de la misma es el siguiente:</p> <img src="/media/exampleEXCEL.png"></img> 
-<p> El tipo que tenga cada columna en la planilla de cálculo (xls) será interpretado por el sistema creande variables del tipo correspondiente. Por ejemplo, si una columna de la planilla de cálculo tiene valores que representan fechas, entonces esa columna debe estar configurada para valores de tipo FECHA</p>
-<p> Los tipos que soporta el sistema son: ENTEROS, FLOTANTES, TEXTO, FECHA, BOOLEANOS <p>
+<p> El formato de origen de los datos debe ser una planilla de cálculo del programa EXCEL.<p>
+<p> La primera fila de la misma debe ser los titulos de las columnas </p>
+<p> Los tipos que soporta el sistema son: ENTEROS, FLOTANTES, TEXTO, FECHA, BOOLEANOS, DIRECCIONES <p>
 
     {{ form_import.as_p }}
     

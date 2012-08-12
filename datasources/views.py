@@ -95,7 +95,7 @@ def datasource_detail(request, id):
     plots = {}
 
     ####### Revisar
-    geo_columns = [(c.pk, c.name) for c in instance.column_set.filter(has_geodata=True, data_type="area")]
+    geo_columns = [(c.pk, c.name) for c in instance.column_set.filter(has_geodata=True, data_type=6)]
     form_export = ExportForm({'datasource':id})
     form_export.fields['column_geo'].choices = geo_columns
 
@@ -177,7 +177,7 @@ def column_detail(request, id):
 def import_data(request, id):
 
     datasource = DataSource.objects.get(pk=id)
-    import pdb;pdb.set_trace()
+
     datasource.xls_to_orm(
         columns=request.POST.getlist('is_available')
     )

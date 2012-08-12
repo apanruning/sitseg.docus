@@ -10,13 +10,12 @@ class CommentForm(forms.Form):
     column_geo = forms.ChoiceField(label='Variable')
     datasource = forms.CharField(widget=forms.HiddenInput)
 
+def listDataSourcesDataset(datasource):
+    
+    return datasource.dataset.datasource_set.all()
+
 def histplot(request,id):
     datasource = DataSource.objects.get(pk=id)
-    dataset = datasource.dataset
-    datasources = []
-
-    for ds in dataset.datasource_set.all():
-        datasources.append(ds)
    
     options = {
                 'labels':['Seleccione Variable'],
@@ -29,9 +28,9 @@ def histplot(request,id):
         request,
         'graphic.html',
         {          
-            'datasources':datasources,
+            'datasources':listDataSourceDataset(datasource),
             'options':options,
-            'dataset':dataset,
+            'dataset':datasource.dataset,
             'description':description,
         }
     )
@@ -129,11 +128,8 @@ def stripchart(request,id):
     )
 
 def pieplot(request,id):
+
     datasource = DataSource.objects.get(pk=id)
-    dataset = datasource.dataset
-    datasources = []
-    for ds in dataset.datasource_set.all():
-        datasources.append(ds)
     
     options = {
         'labels':['Seleccione Variable'],
@@ -146,9 +142,9 @@ def pieplot(request,id):
         request,
         'graphic.html',
         {          
-            'datasources':datasources,
+            'datasources':listDataSourcesDataset(datasource),
             'options':options,
-            'dataset':dataset,
+            'dataset':datasource.dataset,
             'description':description,
         }
     )
@@ -497,13 +493,15 @@ def pieplot_view(request):
         suffix_dir = "media/graphics/"
         ext_file = ".png"
         
+        
         values_var1 = Value.objects.filter(column=var1)
 
-        list_values_var1 = [v.cast_value() for v in values_var1]
+        list_values_var1 = [v.get_value() for v in values_var1]
         
         errors=""
+
         #configuracion para el grafico     
-        vector_var1 = robjects.FloatVector(list_values_var1)
+        vector_var1 = robjects.StrVector(list_values_var1)
        
         name_file = "torta"+var1
         png(file=suffix_dir+name_file+ext_file)
@@ -513,7 +511,7 @@ def pieplot_view(request):
         out.img = str(name_file+ext_file)
         out.save()
 
-        return redirect("/outqueue")
+        return outqueue(request)
 
 def outqueue(request):
     return render(

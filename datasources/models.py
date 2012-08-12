@@ -35,7 +35,7 @@ class Column(models.Model):
     datasource = models.ForeignKey('DataSource', editable=False)
     is_available = models.BooleanField(default=True,)
     csv_index = models.IntegerField(editable=False)
-    data_type = models.CharField(max_length=50)
+    data_type = models.CharField(max_length=200)
     has_geodata = models.BooleanField(default=False)
 
     def __unicode__(self):
@@ -182,6 +182,7 @@ class DataSource(models.Model):
 
                 search_term = slugify(value.value)
                 self.geopositionated = False
+
                 #SI LOS DATOS SON GEOPOSICIONADOS
                 if column.data_type == 'point':
                     #gmaps = GoogleMaps(settings.GOOGLEMAPS_API_KEY)
@@ -189,8 +190,6 @@ class DataSource(models.Model):
                         
                     #se debe hacer primero una consulta a la base local
                     results = MaapPoint.objects.filter(slug=search_term)
-
-                    
 
                     if len(results) >= 1:
                         #En este caso quiere decir que la consulta a la base local fue exitosa
@@ -217,7 +216,7 @@ class DataSource(models.Model):
                         #    value.point = point
                         #    value.map_url = point.static_url
                         #    value.save()
-                        results = gooJSON.goomap(gooJSON.gooadd(address=[value.get_value(),'CORDOBA','AR']), settings.GOOGLEMAPS_API_KEY)
+                        results = gooJSON.goomap(gooJSON.gooadd(address=[value.get_value(),'CORDOBA','AR']),            settings.GOOGLEMAPS_API_KEY)
                         
                         print results
 
@@ -380,4 +379,4 @@ class Out(models.Model):
     img = models.CharField(max_length=50)
     errors = models.TextField(blank=True)
 
-__all__ = ['DataSource', 'Column', 'Annotation','DataSet','ValueInt','ValueFloat','ValueText','ValueBool']
+__all__ = ['DataSource', 'Column', 'Annotation','DataSet','ValueInt','ValueFloat','ValueText','ValueBool', 'ValuePoint', 'ValueArea']

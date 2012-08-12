@@ -1,8 +1,7 @@
 function pjax(){
-    container = $(this).attr('rel'),
+    container = $(this).attr('rel');
     target = $(this).attr('href');
-    $.get(
-        target,
+    $.get(target,
         function(data){
             $(container).empty();
             $(container).append(data);
@@ -12,9 +11,9 @@ function pjax(){
 }
 function collapsable(){
     $(this).off('click');
-    $('.expanded').toggle('blind').toggleClass('expanded')
+    $('.expanded').toggle('blind').toggleClass('expanded');
     $('.active').toggleClass('active');
-    container = $(this).attr('rel'),
+    container = $(this).attr('rel');
     target = $(this).attr('href');
     $(this).toggleClass('active');
     $(container).toggleClass('expanded');
@@ -78,13 +77,10 @@ $(function(){
 //        console.log(event, ui)
 //    })    
    
-    $('body').on('click.pjax', '.pjax', pjax)
+    $('body').on('click.pjax', '.pjax', pjax);
+    $('body').on('click.collapsable','.collapsable', collapsable);
     
-    $('body').on('click.collapsable','.collapsable', collapsable)
-    
-   
-
-     window.setTimeout(function(){
-        $('#messages .control').click()
+    window.setTimeout(function(){
+        $('#messages .control').click();
     }, 3000);
 });
