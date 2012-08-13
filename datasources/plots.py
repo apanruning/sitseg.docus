@@ -493,19 +493,19 @@ def pieplot_view(request):
         suffix_dir = "media/graphics/"
         ext_file = ".png"
         
-        
         values_var1 = Value.objects.filter(column=var1)
 
         list_values_var1 = [v.get_value() for v in values_var1]
+        names = robjects.StrVector([str(v.get_value()) for v in values_var1])
         
         errors=""
 
         #configuracion para el grafico     
-        vector_var1 = robjects.StrVector(list_values_var1)
-       
+        vector_var1 = robjects.IntVector(list_values_var1)
+        
         name_file = "torta"+var1
         png(file=suffix_dir+name_file+ext_file)
-        piechart(vector_var1)
+        piechart(vector_var1, labels=names, col=robjects.r['rainbow'](len(vector_var1)), radius=1.0)
         off()
         out = Out()
         out.img = str(name_file+ext_file)
