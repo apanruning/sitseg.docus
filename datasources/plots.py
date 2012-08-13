@@ -28,7 +28,7 @@ def histplot(request,id):
         request,
         'graphic.html',
         {          
-            'datasources':listDataSourceDataset(datasource),
+            'datasources':listDataSourcesDataset(datasource),
             'options':options,
             'dataset':datasource.dataset,
             'description':description,
@@ -37,12 +37,7 @@ def histplot(request,id):
 
 def box(request,id):
     datasource = DataSource.objects.get(pk=id)
-    dataset = datasource.dataset
-    datasources = []
 
-    for ds in dataset.datasource_set.all():
-        datasources.append(ds)
-   
     options = {
                 'labels':['Seleccione Variable'],
                 'action':'/graph/boxplot',
@@ -54,19 +49,15 @@ def box(request,id):
         request,
         'graphic.html',
         {          
-            'datasources':datasources,
+            'datasources':listDataSourcesDataset(datasource),
             'options':options,
-            'dataset':dataset,
+            'dataset':datasource.dataset,
             'description':description,
         }
     )
 
 def scatter(request,id):
     datasource = DataSource.objects.get(pk=id)
-    dataset = datasource.dataset
-    datasources = []
-    for ds in dataset.datasource_set.all():
-        datasources.append(ds)
     
     options = {
         'labels':['Seleccione Variable','Seleccione Variable'],
@@ -78,52 +69,47 @@ def scatter(request,id):
         request,
         'graphic.html',
         {          
-            'datasources':datasources,
+            'datasources':listDataSourcesDataset(datasource),
             'options':options,
-            'dataset':dataset,
+            'dataset':datasource.dataset,
             'description':description,
         }
     )
 
 def scattermatrix(request,id):
     datasource = DataSource.objects.get(pk=id)
-    dataset = datasource.dataset
-    datasources = []
-    for ds in dataset.datasource_set.all():
-        datasources.append(ds)
     
     options = {
         'labels':['Seleccione Variable','Seleccione Variable'],
         'action':'/graph/scatterplotmatrix',
     }
+    description = u"Este gráfico permite ver rápidamente si dos variables están relacionadas entre si"
     return render(
         request,
         'graphic.html',
         {          
-            'datasources':datasources,
+            'datasources':listDataSourcesDataset(datasource),
             'options':options,
-            'dataset':dataset,
+            'dataset':datasource.dataset,
+            'description':description,
         }
     )
 
 def stripchart(request,id):
     datasource = DataSource.objects.get(pk=id)
-    dataset = datasource.dataset
-    datasources = []
-    for ds in dataset.datasource_set.all():
-        datasources.append(ds)
-    
     options = {
         'labels':['Seleccione Variable'],
         'action':'/graph/stripchart',
     }
+    description = u"Este gráfico permite ver rápidamente si dos variables están relacionadas entre si"
     return render(
         request,
         'graphic.html',
         {          
-            'datasources':datasources,
+            'datasources':listDataSourcesDataset(datasource),
             'options':options,
-            'dataset':dataset,
+            'dataset':datasource.dataset,
+            'description':description,
         }
     )
 
@@ -151,10 +137,6 @@ def pieplot(request,id):
 
 def density(request,id):
     datasource = DataSource.objects.get(pk=id)
-    dataset = datasource.dataset
-    datasources = []
-    for ds in dataset.datasource_set.all():
-        datasources.append(ds)
     
     options = {
         'labels':['Seleccione Variable'],
@@ -165,19 +147,15 @@ def density(request,id):
         request,
         'graphic.html',
         {          
-            'datasources':datasources,
+            'datasources':listDataSourcesDataset(datasource),
             'options':options,
-            'dataset':dataset,
+            'dataset':datasource.dataset,
             'description':description,
         }
     )
 
 def barplot(request,id):
     datasource = DataSource.objects.get(pk=id)
-    dataset = datasource.dataset
-    datasources = []
-    for ds in dataset.datasource_set.all():
-        datasources.append(ds)
     
     options = {
         'labels':['Seleccione Variable'],
@@ -190,9 +168,9 @@ def barplot(request,id):
         request,
         'graphic.html',
         {          
-            'datasources':datasources,
+            'datasources':listDataSourcesDataset(datasource),
             'options':options,
-            'dataset':dataset,
+            'dataset':datasource.dataset,
             'description':description,
         }
     )
@@ -460,31 +438,39 @@ def densityplot_view(request):
 def barplot_view(request):
     if request.method == "POST":
         var1 = request.POST['var-0']
-        
+        title = request.POST['main-title']
+        subtitle = request.POST['sub-title']
         suffix_dir = "media/graphics/"
         ext_file = ".png"
+        name_file = "bar"+var1
         
         values_var1 = Value.objects.filter(column=var1)
 
-        list_values_var1 = [v.cast_value() for v in values_var1]
+        list_values_var1 = [v.get_value() for v in values_var1]
+        names = robjects.StrVector([unicode(v.get_value()) for v in values_var1])
         
         errors=""
         #configuracion para el grafico     
         try:
             vector_var1 = robjects.FloatVector(list_values_var1)
-        
-        except e:
-            errors = e
+            png(file=suffix_dir+name_file+ext_file)
+            bar(vector_var1)
 
-        name_file = "bar"+var1
-        png(file=suffix_dir+name_file+ext_file)
-        bar(vector_var1)
-        off()
-        out = Out()
-        out.img = str(name_file+ext_file)
-        out.save()
+            robjects.r['title'](title,subtitle)
+            robjects.r['box']()
 
-        return redirect("/outqueue")
+            off()
+            
+            out = Out()
+            out.img = str(name_file+ext_file)
+            out.save()
+
+        except Exception:
+            errors = Exception
+            print "Barplot View - ", errors
+
+
+        return outqueue(request)
 
 def pieplot_view(request):
     if request.method == "POST":
@@ -496,6 +482,8 @@ def pieplot_view(request):
         
         suffix_dir = "media/graphics/"
         ext_file = ".png"
+
+        name_file = "torta"+var1
         
         values_var1 = Value.objects.filter(column=var1)
 
@@ -504,19 +492,22 @@ def pieplot_view(request):
 
         errors=""
 
-        vector_var1 = robjects.IntVector(list_values_var1)
-        
-        name_file = "torta"+var1
-        
-        png(file=suffix_dir+name_file+ext_file)
-        piechart(vector_var1, labels=names, col=robjects.r['rainbow'](len(vector_var1)), radius=1.0)
-        robjects.r['title'](title,subtitle)
-        robjects.r['box']()
+        try:
+            vector_var1 = robjects.IntVector(list_values_var1)
+            png(file=suffix_dir+name_file+ext_file)
+            piechart(vector_var1, labels=names, col=robjects.r['rainbow'](len(vector_var1)), radius=1.0)
 
-        off()
-        out = Out()
-        out.img = str(name_file+ext_file)
-        out.save()
+            robjects.r['title'](title,subtitle)
+            robjects.r['box']()
+
+            off()
+
+            out = Out()
+            out.img = str(name_file+ext_file)
+            out.save()
+        except Exception:
+            errors = Exception
+            print "Pieplot View - ", errors
 
         return outqueue(request)
 
