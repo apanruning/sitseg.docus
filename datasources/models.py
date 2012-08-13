@@ -148,7 +148,8 @@ class DataSource(models.Model):
             col_tp = src.col_types(column.csv_index,start_rowx=1)
 
             for i, val in enumerate(src.col_values(column.csv_index,start_rowx=1)):
-                #Para cada valor asociado a la columna seleccionada (column) se crea una instancia del tipo Valor               
+                #Para cada valor asociado a la columna seleccionada (column) se crea una instancia del tipo Valor     
+                
                 if col_tp[i] == 1 and column.data_type=='point':
                     value = ValuePoint()
                     value.data_type = 5    
@@ -181,16 +182,15 @@ class DataSource(models.Model):
                 value.save()
 
                 search_term = slugify(value.value)
-                self.geopositionated = False
-
+                
                 #SI LOS DATOS SON GEOPOSICIONADOS
                 if column.data_type == 'point':
                     #gmaps = GoogleMaps(settings.GOOGLEMAPS_API_KEY)
                     self.geopositionated = True
-                        
+                    
                     #se debe hacer primero una consulta a la base local
                     results = MaapPoint.objects.filter(slug=search_term)
-
+          
                     if len(results) >= 1:
                         #En este caso quiere decir que la consulta a la base local fue exitosa
 
@@ -202,22 +202,21 @@ class DataSource(models.Model):
                     if len(results) < 1: 
                         #Este caso quiere decir que la consulta a la base local no fue exitosa y por lo tanto se procede a buscarlo via web. Aca se debe controlar solo el caso que sea unico. Ahora esta asi porque hay muchos MaapPoint iguales
 
-                        #results = gmaps.local_search('%s, cordoba, argentina' %value.value )['responseData']['results']
-                        #for result in results:
-                        #latlng = [float(result.get('lng')), float(result.get('lat'))]
-
-                        #    point =  MaapPoint(
-                        #        geom=Point(latlng).wkt,
-                        #        name=value.value,
-                        #    )
-                            
-                        #    point.static_url = result.get('staticMapUrl', None)
-                        #    point.save()
-                        #    value.point = point
-                        #    value.map_url = point.static_url
-                        #    value.save()
-                        results = gooJSON.goomap(gooJSON.gooadd(address=[value.get_value(),'CORDOBA','AR']),            settings.GOOGLEMAPS_API_KEY)
                         
+                        address = gooJSON.gooadd(address=[value.value,'CORDOBA','CORDOBA','AR'])
+                        results = gooJSON.goomap(address,settings.GOOGLEMAPS_API_KEY, options = ["oe=utf8", "sensor=false"])    
+                        res_dec = gooJSON.goo2df(results)
+
+                        latlng = [float(res_dec[1][16]),float(res_dec[1][17])]                        
+                        point =  MaapPoint(
+                              geom=Point(latlng).wkt,
+                              name=value.value,
+                        )
+                            
+                        point.save()
+                        value.point = point
+                        value.save()
+                                                
                         print results
 
                 
@@ -340,9 +339,9 @@ class Value(models.Model):
         elif self.data_type == 3:
             return self.valuedate.value
         elif self.data_type == 5:
-            return self.valuepoint.point
+            return self.valuepoint
         elif self.data_type == 6:
-            return self.valuearea.area
+            return self.valuearea
         else:
             pass
 

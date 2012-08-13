@@ -175,12 +175,18 @@ def column_detail(request, id):
     )
 
 def import_data(request, id):
-
     datasource = DataSource.objects.get(pk=id)
 
+    for i in range(0,len(request.POST.getlist('is_available'))):
+        col = Column.objects.get(pk=request.POST.getlist('is_available')[i])    
+        if request.POST.getlist('data_type')[i]:
+            col.data_type = request.POST.getlist('data_type')[i]
+            col.save()
+        
     datasource.xls_to_orm(
         columns=request.POST.getlist('is_available')
     )
+
     return datasource_detail(request, id)
 
 def show_data(request, id):

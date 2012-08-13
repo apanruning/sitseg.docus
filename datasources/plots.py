@@ -346,30 +346,44 @@ def scatterplot_view(request):
     if request.method == "POST":
         var1 = request.POST['var-0']
         var2 = request.POST['var-1']
+
+        title = request.POST['main-title']
+        subtitle = request.POST['sub-title']
         
         suffix_dir = "media/graphics/"
         ext_file = ".png"
+
+        name_file = "dispersion"+var1+'-'+var2
         
         values_var1 = Value.objects.filter(column=var1)
         values_var2 = Value.objects.filter(column=var2)
 
-        list_values_var1 = [v.cast_value() for v in values_var1]
-        list_values_var2 = [v.cast_value() for v in values_var2]
+        list_values_var1 = [v.get_value() for v in values_var1]
+        list_values_var2 = [v.get_value() for v in values_var2]
+        names_var1 = robjects.StrVector([str(v.get_value()) for v in values_var1])
+        names_var2 = robjects.StrVector([str(v.get_value()) for v in values_var2])
+
         errors=""
 
-        #configuracion para el grafico     
-        vector_var1 = robjects.FloatVector(list_values_var1)
-        vector_var2 = robjects.FloatVector(list_values_var2)
-      
-        name_file = "scatter"+var1+var2
-        png(file=suffix_dir+name_file+ext_file)
-        scatterplot(vector_var1, vector_var2)
-        off()
-        out = Out()
-        out.img = str(name_file+ext_file)
-        out.save()
+        try:
+            vector_var1 = robjects.FloatVector(list_values_var1)
+            vector_var2 = robjects.FloatVector(list_values_var2)
+            png(file=suffix_dir+name_file+ext_file)
+            scatterplot(vector_var1, vector_var2, xlabels=names_var1, ylabels=names_var2)
 
-        return redirect("/outqueue")
+            robjects.r['title'](title,subtitle)
+            robjects.r['box']()
+
+            off()
+
+            out = Out()
+            out.img = str(name_file+ext_file)
+            out.save()
+        except Exception:
+            errors = Exception
+            print "Scatterplot View - ", errors
+
+    return redirect("/outqueue")
 
 def scatterplotmatrix_view(request):
     if request.method == "POST":

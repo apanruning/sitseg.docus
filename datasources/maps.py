@@ -164,27 +164,29 @@ def map_points_view(request):
     
     datasource = DataSource.objects.get(pk=datasource_id)
     
-    points = Value.objects.filter(column__datasource=datasource_id,column=column_geo).values('point')
+    points = Value.objects.filter(column=column_geo)
 
     layer = Layer()
-    for point in points:
-        if point['point']:            
-                maap_point = MaapPoint.objects.get(pk=point['point'])                   
-                point['geo'] = maap_point.to_geo_element()
-                point['geo'].name = "%s" %(maap_point.name) 
-                point['geo'].icon = "/media/icons/favicon.jpg"
-                point['geo'].geom.transform(900913)
-                layer.elements.append(point['geo'])
         
-
+    for p in points:
+        maap_point = p.valuepoint.point                   
+        r = {}
+        r['geo'] = maap_point.to_geo_element()
+        r['geo'].name = "%s" %(maap_point.name) 
+        r['geo'].icon = "/media/icons/favicon.jpg"
+        
+        layer.elements.append(r['geo'])
+        
+    import pdb;pdb.set_trace()
     return render(
         request,
         'map_area_point.html',
         {
-            'objects': points,
+            'objects': [(str(p.valuepoint.point.geom.x),str(p.valuepoint.point.geom.y)) for p in points],
             'datasource': datasource,
             'json_layer': layer.json, 
-            'column_geo':Column.objects.get(pk=column_geo).name
+            'column_geo':Column.objects.get(pk=column_geo).name,
+            'max':len(points),
         }
     )
 
