@@ -488,7 +488,11 @@ def barplot_view(request):
 
 def pieplot_view(request):
     if request.method == "POST":
+        #configuracion para el grafico     
         var1 = request.POST['var-0']
+
+        title = request.POST['main-title']
+        subtitle = request.POST['sub-title']
         
         suffix_dir = "media/graphics/"
         ext_file = ".png"
@@ -497,15 +501,18 @@ def pieplot_view(request):
 
         list_values_var1 = [v.get_value() for v in values_var1]
         names = robjects.StrVector([str(v.get_value()) for v in values_var1])
-        
+
         errors=""
 
-        #configuracion para el grafico     
         vector_var1 = robjects.IntVector(list_values_var1)
         
         name_file = "torta"+var1
+        
         png(file=suffix_dir+name_file+ext_file)
         piechart(vector_var1, labels=names, col=robjects.r['rainbow'](len(vector_var1)), radius=1.0)
+        robjects.r['title'](title,subtitle)
+        robjects.r['box']()
+
         off()
         out = Out()
         out.img = str(name_file+ext_file)

@@ -12,7 +12,11 @@
 </script>
 
 <form action="{{options.action|safe}}" method="post" class="graphic_form" target='_blank'>
-<span> Elija una variable para realizar el gráfico </span>
+    <h3> Parámetros del Grafico </h3>
+    <p> Titulo Principal: <input type="text" id="main-title" name="main-title"/> </p>
+    <p> Sub Titulo: <input type="text" id="sub-title" name="sub-title" /> </p>        
+    
+    <p> Elija una variable para realizar el gráfico </p>
     {% for o in options.labels %}
         <input type="text" id='var-{{forloop.counter0}}' name="var-{{forloop.counter0}}" value="ingrese valor numérico"/> 
         <input type="button" id="{{forloop.counter0}}" value=">>" />
@@ -24,7 +28,7 @@
             <input type="radio" id="{{v.id}}" name="variable" value="{{v.id}}" /> {{v.name}} <br />
         {% endfor %}    
     {% endfor %}            
-        <input type='submit' value='graficar' />
+    <input type='submit' value='graficar' />
     {% csrf_token %}
 </form>
 {% endblock %}
