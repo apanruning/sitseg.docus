@@ -25,6 +25,7 @@
             <form action="/datasource/{{datasource.id}}/import_data" class="import_form" method="post">{% csrf_token %}
             <p><input type="submit" value="Importar Columnas Seleccionadas" /></p>
             </form>        
+            <div id="progressbar"></div>
         </div>
         <div id="{{datasource}}-data" >
             {% include 'show_data.html'%}

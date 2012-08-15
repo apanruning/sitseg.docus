@@ -35,7 +35,7 @@ class Column(models.Model):
     datasource = models.ForeignKey('DataSource', editable=False)
     is_available = models.BooleanField(default=True,)
     csv_index = models.IntegerField(editable=False)
-    data_type = models.CharField(max_length=200)
+    data_type = models.CharField(max_length=200,blank=True)
     has_geodata = models.BooleanField(default=False)
 
     def __unicode__(self):
@@ -168,71 +168,53 @@ class DataSource(models.Model):
                 elif col_tp[i] == 4:
                     value.data_type = col_tp[i]
                     value = ValueBool()
-        
                 value.value = val
-                
                 value.column = column
-
                 #Se crea una nueva instancia de fila
                 row_obj = Row(datasource=self,csv_index=i+1)
                 row_obj.save()
-
                 value.row = row_obj
-
                 value.save()
-
                 search_term = slugify(value.value)
-                
                 #SI LOS DATOS SON GEOPOSICIONADOS
                 if column.data_type == 'point':
                     #gmaps = GoogleMaps(settings.GOOGLEMAPS_API_KEY)
                     self.geopositionated = True
-                    
                     #se debe hacer primero una consulta a la base local
                     results = MaapPoint.objects.filter(slug=search_term)
-          
                     if len(results) >= 1:
                         #En este caso quiere decir que la consulta a la base local fue exitosa
-
                         for point in results:
                             value.point = point
-                            value.map_url = point.static_url
                             value.save()
-    
+                        print "Se encontro un punto geografico en la DB local con value ", point.value 
                     if len(results) < 1: 
                         #Este caso quiere decir que la consulta a la base local no fue exitosa y por lo tanto se procede a buscarlo via web. Aca se debe controlar solo el caso que sea unico. Ahora esta asi porque hay muchos MaapPoint iguales
-
-                        
                         address = gooJSON.gooadd(address=[value.value,'CORDOBA','CORDOBA','AR'])
                         results = gooJSON.goomap(address,settings.GOOGLEMAPS_API_KEY, options = ["oe=utf8", "sensor=false"])    
                         res_dec = gooJSON.goo2df(results)
-
                         latlng = [float(res_dec[1][16]),float(res_dec[1][17])]                        
                         point =  MaapPoint(
                               geom=Point(latlng).wkt,
                               name=value.value,
                         )
-                            
                         point.save()
                         value.point = point
                         value.save()
-                                                
-                        print results
+                        print "Se encontro un punto geografico en internet con value ", point.value 
 
-                
                 #SI LOS DATOS SON GEOPOSICIONADOS                        
                 if column.data_type == 'area':
                     self.geopositionated = True
                     barrio = MaapArea.objects.filter(slug=search_term) 
-
                     if len(barrio) == 1:
                         value.area = barrio[0]
                         value.save()
+                        print "Se encontro un punto geografico en internet con value ", point.value 
 
         if len(errors) == 0:
             self.is_dirty = False 
             self.save() 
-            
             if self.geopositionated:
                 values_geo = Value.objects.filter(column__datasource=self,column__has_geodata=True)
                 for t in values_geo:
@@ -240,7 +222,6 @@ class DataSource(models.Model):
                     for u in qs:
                         u.area = t.area
                         u.save()
-
         print errors
         return self.get_absolute_url()
 
@@ -326,7 +307,8 @@ def get_all_values(datasource=None):
 
 class Value(models.Model):
     column = models.ForeignKey(Column)
-    data_type = models.IntegerField()
+    ### TIPOS: 1-Texto, 2-Numero,3-Fecha,4-Booleano,5-Point,6-Area
+    data_type = models.IntegerField(blank=True) 
     row = models.ForeignKey(Row)
 
     def get_value(self):
@@ -365,13 +347,11 @@ class ValueDate(Value):
 class ValuePoint(Value):
     value = models.TextField()
     point = models.ForeignKey(MaapPoint, null=True, blank=True)
-    map_url = models.URLField(null=True, blank=True)
-
+    
 class ValueArea(Value):
     value = models.TextField()
     area = models.ForeignKey(MaapArea, null=True, blank=True)
-    map_url = models.URLField(null=True, blank=True)
-
+    
 class Out(models.Model):
     text = models.TextField(blank=True)
     session = models.DateTimeField(default=datetime.now(),editable=False) 

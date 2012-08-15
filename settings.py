@@ -128,7 +128,7 @@ INSTALLED_APPS = (
     'maap',
     'mptt',
     'rpy2',
-
+    'south',
 )
 
 AUTHENTICATION_BACKENDS = (
