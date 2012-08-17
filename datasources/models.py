@@ -153,22 +153,27 @@ class DataSource(models.Model):
                 if col_tp[i] == 1 and column.data_type=='point':
                     value = ValuePoint()
                     value.data_type = 5    
+                    value.value = val
                 elif col_tp[i] == 1 and column.data_type=='area':
                     value = ValueArea()
                     value.data_type = 6
+                    value.value = val
                 elif col_tp[i] == 1 and column.data_type!='area' and column.data_type!='point':
                     value = ValueText()
                     value.data_type = col_tp[i]
+                    value.value = val
                 elif col_tp[i] == 2:
                     value = ValueFloat()
                     value.data_type = col_tp[i]
+                    value.value = val
                 elif col_tp[i] == 3:
                     value = ValueDate()
                     value.data_type = col_tp[i]
+                    value.value = datetime(*xlrd.xldate_as_tuple(val,0))
                 elif col_tp[i] == 4:
                     value.data_type = col_tp[i]
                     value = ValueBool()
-                value.value = val
+                    value.value = val
                 value.column = column
                 #Se crea una nueva instancia de fila
                 row_obj = Row(datasource=self,csv_index=i+1)
@@ -319,7 +324,7 @@ class Value(models.Model):
         elif self.data_type == 2:
             return self.valuefloat.value
         elif self.data_type == 3:
-            return self.valuedate.value
+            return self.valuedate.value.strftime("%Y-%m-%d")
         elif self.data_type == 5:
             return self.valuepoint
         elif self.data_type == 6:
@@ -342,7 +347,7 @@ class ValueBool(Value):
     value = models.BooleanField()
 
 class ValueDate(Value):
-    value = models.DateField()
+    value = models.DateTimeField()
 
 class ValuePoint(Value):
     value = models.TextField()
