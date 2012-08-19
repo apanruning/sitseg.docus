@@ -53,8 +53,6 @@ $(function(){
         container = $(this).parents('div');
         data = $(container).find('.column_form').serializeArray();
     
-        $("#progressbar").progressbar({ value: 37 });
-        
         //message = $('<li>').append($('<strong>').text('Los datos se están procesando'));
         //$('#messages').append(message);
         $.post(

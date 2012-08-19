@@ -176,7 +176,7 @@ def column_detail(request, id):
 
 def import_data(request, id):
     datasource = DataSource.objects.get(pk=id)
-
+    import pdb; pdb.set_trace()
     for i in range(0,len(request.POST.getlist('is_available'))):
         col = Column.objects.get(pk=request.POST.getlist('is_available')[i])    
         if request.POST.getlist('data_type')[i]:

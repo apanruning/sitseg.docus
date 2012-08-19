@@ -177,7 +177,6 @@ def map_points_view(request):
         
         layer.elements.append(r['geo'])
         
-    import pdb;pdb.set_trace()
     return render(
         request,
         'map_area_point.html',

@@ -139,7 +139,9 @@ class DataSource(models.Model):
             columns = self.column_set.all()
 
         #Se borran los viejos elementos del datasource
+        #TODO: Refinar. Se deberían borrar aquellas columnas que vienen seleccionadas unicamente
         self.delete_old_values()
+
         src = self.open_source()
         
         for column in columns:
@@ -178,9 +180,12 @@ class DataSource(models.Model):
                 #Se crea una nueva instancia de fila
                 row_obj = Row(datasource=self,csv_index=i+1)
                 row_obj.save()
+                
+                import pdb;pdb.set_trace()
                 value.row = row_obj
                 value.save()
                 search_term = slugify(value.value)
+
                 #SI LOS DATOS SON GEOPOSICIONADOS
                 if column.data_type == 'point':
                     #gmaps = GoogleMaps(settings.GOOGLEMAPS_API_KEY)
