@@ -3,7 +3,7 @@
         <ul>
             <li><h3><a href="#{{datasource}}-columns">Variables</a></h3></li>
             <li><h3><a href="#{{datasource}}-data">Datos</a></h3></li>
-            <li><h3><a href="#{{datasource}}-graphs">Graficos</a></h3></li>
+            
             <li><h3><a href="#{{datasource}}-export">Exportar</a></h3></li>
         </ul>
         <div id="{{datasource}}-columns">
@@ -32,17 +32,6 @@
         </div>
         <div id="{{datasource}}-graphs" class="ui-tabs-hide">
         <p>Elija un gráfico a realizar. Cada gráfico necesita de una o más variables (columnas) para realizarse. La/s variable/s necesarias así como también una breve descripcion de que hace el gráfico se proporciona al hacer click en algún gráfico </p>
-        <div id="{{datasource}}-graphs-wrapper">
-            <ul class="graph-select">
-            {% for k, v in plots.iteritems %}
-                <li>
-                     <a href="{{v}}" class="pjax" rel="#{{datasource}}-plots-container" >{{ k }}</a>
-                </li>
-            {% endfor %}
-            </ul>
-            <div id="{{datasource}}-plots-container" class="plots-container"></div>
-            <div class="graph"></div>
-        </div>
         </div>
         <div id="{{datasource}}-export" class="ui-tabs-hide">
             <form method="POST" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}

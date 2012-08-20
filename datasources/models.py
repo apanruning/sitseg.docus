@@ -181,7 +181,6 @@ class DataSource(models.Model):
                 row_obj = Row(datasource=self,csv_index=i+1)
                 row_obj.save()
                 
-                import pdb;pdb.set_trace()
                 value.row = row_obj
                 value.save()
                 search_term = slugify(value.value)
@@ -203,6 +202,7 @@ class DataSource(models.Model):
                         address = gooJSON.gooadd(address=[value.value,'CORDOBA','CORDOBA','AR'])
                         results = gooJSON.goomap(address,settings.GOOGLEMAPS_API_KEY, options = ["oe=utf8", "sensor=false"])    
                         res_dec = gooJSON.goo2df(results)
+                        import pdb; pdb.set_trace()
                         latlng = [float(res_dec[1][16]),float(res_dec[1][17])]                        
                         point =  MaapPoint(
                               geom=Point(latlng).wkt,
