@@ -33,6 +33,7 @@
         {% if user.is_staff %}
         <menu id="controls">
             {% block controls %}
+            <a href="#{{datasource}}-graphs">Gráficos</a>
             <a href="#add-form" class="control">Nuevo conjunto de datos</a>
             {% endblock %}
         </menu>
