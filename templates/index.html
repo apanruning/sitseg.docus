@@ -35,6 +35,8 @@
             <menu id="controls">
             <a href="#export" class="control">Exportar</a>
             <a href="#graficar" class="control">Graficar</a>
+            <a href="#add-var" class="control">Agregar Variable</a>
+            <a href="#edit-var" class="control">Editar Variable</a>
 
                 {% block controls %}
                     <a href="#add-form" class="control">Nuevo conjunto de datos</a>
@@ -46,6 +48,26 @@
     </header>
     <div id="wrapper">
         <section>
+          {% if user.is_staff %}        
+            <form id="edit-var" method="POST" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
+                <legend> Editar Variable </legend>
+                
+                {{ form_add_var.as_p }}
+                <a href="#export" class="control">cerrar</a>   
+                <input type="submit" name="export" value="Exportar"/>
+            </form>
+          {% endif %}        
+
+          {% if user.is_staff %}        
+            <form id="add-var" method="POST" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
+                <legend> Agregar Variable </legend>
+                
+                {{ form_add_var.as_p }}
+                <a href="#export" class="control">cerrar</a>   
+                <input type="submit" name="export" value="Exportar"/>
+            </form>
+          {% endif %}        
+
           {% if user.is_staff %}        
             <form id="export" method="POST" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
                 <legend> Exportar </legend>

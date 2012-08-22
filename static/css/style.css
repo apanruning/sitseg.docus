@@ -263,7 +263,7 @@ form.inline {
   margin: 20% auto;
   width: 23.5em; }
 
-#add-form,#graficar,#export {
+#add-form,#graficar,#export,#add-var,#edit-var {
   display: none;
   width: 30em;
   overflow: hidden;
