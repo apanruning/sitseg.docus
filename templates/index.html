@@ -31,18 +31,42 @@
           <h1><a href="/">Indice</a>/</h1>
         {% endblock %}
         {% if user.is_staff %}
-        <menu id="controls">
-            {% block controls %}
-            <a href="#{{datasource}}-graphs">Gráficos</a>
-            <a href="#add-form" class="control">Nuevo conjunto de datos</a>
-            {% endblock %}
-        </menu>
+
+            <menu id="controls">
+            <a href="#export" class="control">Exportar</a>
+            <a href="#graficar" class="control">Graficar</a>
+
+                {% block controls %}
+                    <a href="#add-form" class="control">Nuevo conjunto de datos</a>
+                {% endblock %}
+            </menu>
         {%endif%}
 
         </div>
     </header>
     <div id="wrapper">
         <section>
+          {% if user.is_staff %}        
+            <form id="export" method="POST" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
+                <legend> Exportar </legend>
+                <p>Elija una variable para graficar </p>
+                {{ form_export.as_p }}
+                <a href="#export" class="control">cerrar</a>   
+                <input type="submit" name="export" value="Exportar"/>
+            </form>
+          {% endif %}        
+          {% if user.is_staff %}
+          <form id="graficar" method="post" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
+              <input type="hidden" name="author" value="{{user.id}}"/>
+              <legend>Graficar</legend>
+              <p>Elija una o más variables para graficar </p>
+                {{ form.as_p }}
+              <a href="#graficar" class="control">cerrar</a>   
+              <input type="submit" name="Graficar" value="Graficar"/>
+          </form>
+            
+          {% endif %}
+
         {% block page %}
           {% if user.is_staff %}
           <form id="add-form" method="post" action="." 
