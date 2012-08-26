@@ -30,11 +30,11 @@ class Annotation(models.Model):
 
 class Column(models.Model):
     name = models.CharField(max_length=200)
-    label = models.CharField(max_length=50, editable=False)
+    label = models.CharField(max_length=50, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, editable = False)
-    datasource = models.ForeignKey('DataSource', editable=False)
+    datasource = models.ForeignKey('DataSource', blank=True, null=True)
     is_available = models.BooleanField(default=True,)
-    csv_index = models.IntegerField(editable=False)
+    csv_index = models.IntegerField(blank=True, null=True,editable=False)
     data_type = models.CharField(max_length=200,blank=True)
     has_geodata = models.BooleanField(default=False)
 
@@ -45,8 +45,9 @@ class Column(models.Model):
         ordering = ['csv_index',]
 
     def save(self):
-        self.datasource.is_dirty = True
-        self.datasource.save()
+        if self.datasource:
+            self.datasource.is_dirty = True
+            self.datasource.save()
         if self.data_type in ['point', 'area']:
             self.has_geodata = True
 

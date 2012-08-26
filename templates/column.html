@@ -1,0 +1,25 @@
+{% extends "index.html" %}
+{% block controls %}
+    <a href="#add_value" class="control"> Agregar Valor </a>
+{% endblock %}
+{% if user.is_staff %}
+<form id="add-value" method="post" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
+    {{ form_add_value.as_p }}
+    <a href="#add-value" class="control">cerrar</a>   
+    <input type="submit" name="Guardar" value="Guardar"/>
+</form>
+{% endif %} 
+{% block page %}
+<table>
+    <tr>  
+        <th>
+        {{ column.name }}
+
+        </th>
+    </tr>
+    {% for v in values %}
+        {{ v.get_value }}
+    {% endfor %}
+</table>
+{% endblock %}
+

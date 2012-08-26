@@ -28,9 +28,6 @@
         <div id="{{datasource}}-data" >
             {% include 'show_data.html'%}
         </div>
-        <div id="{{datasource}}-graphs" class="ui-tabs-hide">
-        <p>Elija un gráfico a realizar. Cada gráfico necesita de una o más variables (columnas) para realizarse. La/s variable/s necesarias así como también una breve descripcion de que hace el gráfico se proporciona al hacer click en algún gráfico </p>
-        </div>
 
     <menu class="details">
     {% if user.is_staff %}
@@ -42,6 +39,5 @@
     {% endif %}
     
     </menu>
-
 
 {% endblock %}

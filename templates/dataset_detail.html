@@ -6,24 +6,8 @@
 {% block head %}
     <h1><a href="/">Indice</a>/{{dataset.name}}</h1>
 {% endblock %}
-    {% block controls %}
-    <a href="#add-form" class="control">Importar Datos</a>        
-    {% endblock %}
 
 {% block page %}
-    {% if user.is_staff %}
-    
-    <form id="add-form" method="post" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
-<a href="#add-form" class="control">cerrar</a>   
-<p> El formato de origen de los datos debe ser una planilla de cálculo del programa EXCEL.<p>
-<p> La primera fila de la misma debe ser los titulos de las columnas </p>
-<p> Los tipos que soporta el sistema son: ENTEROS, FLOTANTES, TEXTO, FECHA, BOOLEANOS, DIRECCIONES <p>
-
-    {{ form_import.as_p }}
-    
-    <input type="submit" name="Guardar" value="importar"/>
-    </form>
-    {% endif %} 
     {% if user.is_staff %}
     {% endif %} 
     

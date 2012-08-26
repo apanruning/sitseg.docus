@@ -275,8 +275,22 @@ form.inline {
   padding: 0.5em 1em 1em;
   border-radius: 0 0 3px 3px;
   box-shadow: 0 0 15px #999; }
-  #add-form .errors {
-    display: block; }
+
+#variables,#add-datasource,#add-value {
+  display: none;
+  overflow: hidden;
+  position: absolute;
+  right: 1.5em;
+  z-index: 9999;
+  top: 0;
+  background: #EEE;
+  padding: 0.5em 1em 1em;
+  border-radius: 0 0 3px 3px;
+  box-shadow: 0 0 15px #999; }
+
+#add-form .errors {
+    display: block; 
+}
 
 #chart {
   height: 400px;

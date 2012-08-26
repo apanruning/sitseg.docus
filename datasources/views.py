@@ -38,21 +38,52 @@ def index(request):
             'author':request.user.id
         }
         
-        form = DataSetForm(initial=initial)
-        
         if request.method == 'POST':
-           #Formulario para cargar un nuevo DataSet
-           form = DataSetForm(request.POST, initial=initial)
-           if form.is_valid():
-                dataset = form.save()
-                return render(
-                    request,
-                    'dataset_detail.html',
-                    {
-                        'id': dataset.pk,
-                    }
-                )
+            if request.POST['add-var']:
+               #Formulario para cargar un nuevo DataSet
+               form_col = ColumnForm(request.POST)
+               if form_col.is_valid():
+                    column = form_col.save()
+                    return render(
+                        request,
+                        'index.html',
+                        {
+                            'dataset_list': [],
+                        }
+                    )
+                
+            elif request.POST['add-form']:
+               #Formulario para cargar un nuevo DataSet
+               form = DataSetForm(request.POST, initial=initial)
+               if form.is_valid():
+                    dataset = form.save()
+                    return dataset_detail(request, dataset.pk)
+            elif request.POST['add-datasource']:
+                form_add_datasource = DataSourceForm(request.POST, request.FILES, initial=initial)
+                if form.is_valid():
+                    datasource = form_add_datasource.save()
+                    datasource.import_columns()
+                    return datasource_detail(request,datasource.id)
+            else:
+                pass
+
+        form = DataSetForm(initial=initial)
+
         comments = u"<p>Un espacio de trabajo consiste en un repositorio donde se pueden alojar diferentes <strong>Fuentes de Datos</strong>.</p> "
+
+        ####### Revisar
+        geo_columns = [(c.pk, c.name) for c in Column.objects.filter(has_geodata=True, data_type=6)]
+        form_export = ExportForm({'datasource':id})
+        form_export.fields['column_geo'].choices = geo_columns
+
+        if request.method == 'POST':
+            if form_export.is_valid():
+                areas = Value.objects.filter(column__datasource=form_export.fields['datasource_id'],column=form_export.fields['column_geo']).values("area")   
+                generate_shp(form_export.fields['name_file'], areas)
+        #######
+
+        form_add_var = ColumnForm()
+
         return render(
             request,
             'index.html',
@@ -60,6 +91,9 @@ def index(request):
                 'dataset_list': DataSet.objects.all(),
                 'form': form,
                 'comments':unicode(comments),
+                'form_export':form_export,
+                'form_add_var':form_add_var,
+                'variables':Column.objects.all(),
             }
         )
 
@@ -93,17 +127,6 @@ def datasource_detail(request, id):
 
     instance = get_object_or_404(DataSource, pk=id)
     plots = {}
-
-    ####### Revisar
-    geo_columns = [(c.pk, c.name) for c in instance.column_set.filter(has_geodata=True, data_type=6)]
-    form_export = ExportForm({'datasource':id})
-    form_export.fields['column_geo'].choices = geo_columns
-
-    if request.method == 'POST':
-        if form_export.is_valid():
-            areas = Value.objects.filter(column__datasource=form_export.fields['datasource_id'],column=form_export.fields['column_geo']).values("area")   
-            generate_shp(form_export.fields['name_file'], areas)
-    #######                    
 
     columns_geo = Column.objects.filter(datasource=instance,has_geodata=True)        
     
@@ -147,30 +170,19 @@ def datasource_detail(request, id):
 
 def column_detail(request, id):
     instance = get_object_or_404(Column, pk=id)
-    if request.method == "POST":
 
-        column_form = ColumnForm(request.POST, instance=instance )
- 
-        if column_form.is_valid():
-            instance = column_form.save()
-
-        return render(
-            request,
-            'column_obj.html',
-            {
-                'column':column_form,
-            }
-        )
-
-    dataset = Value.objects.filter(column=instance)
+    if request.method == 'POST':
+        form = ValueForm(request.POST)
+        if form.is_valid():
+            value = form.save()
 
     return render(
         request,
         'column.html',
         {
             'column':instance,
-            'dataset': dataset.annotate(count = Count('value')), 
-            'label':instance.label,
+            'values':Value.objects.filter(column=instance),
+            'form_add_value':ValueForm()
         }
     )
 

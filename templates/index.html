@@ -33,13 +33,18 @@
         {% if user.is_staff %}
 
             <menu id="controls">
+            <a href="#variables" class="control">Variables</a>            
             <a href="#export" class="control">Exportar</a>
             <a href="#graficar" class="control">Graficar</a>
             <a href="#add-var" class="control">Agregar Variable</a>
             <a href="#edit-var" class="control">Editar Variable</a>
+            <a href="#add-form" class="control">Nuevo conjunto de datos</a>
+            <a href="#add-datasource" class="control">Nueva Fuente de Datos</a>
+            
 
                 {% block controls %}
-                    <a href="#add-form" class="control">Nuevo conjunto de datos</a>
+
+                    
                 {% endblock %}
             </menu>
         {%endif%}
@@ -48,13 +53,39 @@
     </header>
     <div id="wrapper">
         <section>
+            {% if user.is_staff %}
+            <form id="add-datasource" method="post" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
+                <p> El formato de origen de los datos debe ser una planilla de cálculo del programa EXCEL.<p>
+                <p> La primera fila de la misma debe ser los titulos de las columnas </p>
+                <p> Los tipos que soporta el sistema son: ENTEROS, FLOTANTES, TEXTO, FECHA, BOOLEANOS, DIRECCIONES <p>
+
+                {{ form_add_datasource.as_p }}
+                <a href="#add-datasource" class="control">cerrar</a>   
+                <input type="submit" name="Guardar" value="Guardar"/>
+            </form>
+            {% endif %} 
+
+          {% if user.is_staff %}        
+            <div id="variables"> 
+                <legend> Variables </legend>
+                <ul>
+                {% for v in variables %}
+                    <li> <a href="/column/{{ v.id }}"> {{ v.name }} </a> {% if v.datasource %} - {{ v.datasource.name }} {% endif %} {% if v.datasource.dataset %} - v.datasource.dataset.name {% endif %} </li>
+                {% endfor %}
+                </ul>
+
+                
+
+            </div>
+          {% endif %}        
+
           {% if user.is_staff %}        
             <form id="edit-var" method="POST" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
                 <legend> Editar Variable </legend>
                 
                 {{ form_add_var.as_p }}
-                <a href="#export" class="control">cerrar</a>   
-                <input type="submit" name="export" value="Exportar"/>
+                <a href="#edit-var" class="control">cerrar</a>   
+                <input type="submit" name="edit-var" value="Guardar"/>
             </form>
           {% endif %}        
 
@@ -63,8 +94,8 @@
                 <legend> Agregar Variable </legend>
                 
                 {{ form_add_var.as_p }}
-                <a href="#export" class="control">cerrar</a>   
-                <input type="submit" name="export" value="Exportar"/>
+                <a href="#add-var" class="control">cerrar</a>   
+                <input type="submit" name="add-var" value="Agregar"/>
             </form>
           {% endif %}        
 
@@ -82,7 +113,7 @@
               <input type="hidden" name="author" value="{{user.id}}"/>
               <legend>Graficar</legend>
               <p>Elija una o más variables para graficar </p>
-                {{ form.as_p }}
+                {{ form_graph.as_p }}
               <a href="#graficar" class="control">cerrar</a>   
               <input type="submit" name="Graficar" value="Graficar"/>
           </form>
