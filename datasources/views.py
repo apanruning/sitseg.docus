@@ -48,13 +48,7 @@ def index(request):
                    form_col = ColumnForm(request.POST)
                    if form_col.is_valid():
                         column = form_col.save()
-                        return render(
-                            request,
-                            'index.html',
-                            {
-                                'dataset_list': [],
-                            }
-                        )
+
             except MultiValueDictKeyError:
                 print "En el request no hay nada que sea add-var" 
                 
@@ -64,7 +58,6 @@ def index(request):
                    form = DataSetForm(request.POST, initial=initial)
                    if form.is_valid():
                         dataset = form.save()
-                        return dataset_detail(request, dataset.pk)
             except MultiValueDictKeyError:
                 print "En el request no hay nada que sea add-form" 
 
@@ -74,7 +67,6 @@ def index(request):
                     if form.is_valid():
                         datasource = form_add_datasource.save()
                         datasource.import_columns()
-                        return datasource_detail(request,datasource.id)
             except MultiValueDictKeyError:
                 print "En el request no hay nada que sea add-datasource"  
 
