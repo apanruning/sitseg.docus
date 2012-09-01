@@ -36,6 +36,10 @@ $(function(){
         return false;
         
     });
+
+    $('#variables').on('click',function(){
+            
+    });
     $('form input[type="text"]:first').focus()
    
     $('input[type="file"]').change(function(){
@@ -84,7 +88,7 @@ $(function(){
     $('body').on('click.pjax', '.pjax', pjax);
     $('body').on('click.collapsable','.collapsable', collapsable);
     
-    window.setTimeout(function(){
+    /*window.setTimeout(function(){
         $('#messages .control').click();
-    }, 3000);
+    }, 3000);*/
 });

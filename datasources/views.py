@@ -15,6 +15,8 @@ from maap.models import MaapPoint
 from maps import generate_shp
 from django.contrib.auth import get_user
 
+from django.utils.datastructures import MultiValueDictKeyError
+
 import simplejson
 
 def index(request):
@@ -22,7 +24,7 @@ def index(request):
     dataset_list = {}
 
     if not request.user.is_authenticated():
-        comments = u"<h1>Bienvenido</h1><p>Para comenzar a trabajar inicie sesión</a> y podrá elegir un espacio de trabajo de la lista o agregar un <strong>Conjunto de Datos</strong> nuevo.</p>"
+        comments = u"<h1>Inicie Sesión</h1>"
         return render(
             request,
             'index.html',
@@ -37,35 +39,45 @@ def index(request):
         initial={
             'author':request.user.id
         }
+
+        #Aque se procesan los request que vienen de los formularios (Agregar Variable, Exportar, Graficar, Agregar Nueva Fuente de Datos, Agregar Nuevo Conjunto de Datos
         
         if request.method == 'POST':
-            if request.POST['add-var']:
-               #Formulario para cargar un nuevo DataSet
-               form_col = ColumnForm(request.POST)
-               if form_col.is_valid():
-                    column = form_col.save()
-                    return render(
-                        request,
-                        'index.html',
-                        {
-                            'dataset_list': [],
-                        }
-                    )
+            try:
+                if request.POST['add-var']:
+                   form_col = ColumnForm(request.POST)
+                   if form_col.is_valid():
+                        column = form_col.save()
+                        return render(
+                            request,
+                            'index.html',
+                            {
+                                'dataset_list': [],
+                            }
+                        )
+            except MultiValueDictKeyError:
+                print "En el request no hay nada que sea add-var" 
                 
-            elif request.POST['add-form']:
-               #Formulario para cargar un nuevo DataSet
-               form = DataSetForm(request.POST, initial=initial)
-               if form.is_valid():
-                    dataset = form.save()
-                    return dataset_detail(request, dataset.pk)
-            elif request.POST['add-datasource']:
-                form_add_datasource = DataSourceForm(request.POST, request.FILES, initial=initial)
-                if form.is_valid():
-                    datasource = form_add_datasource.save()
-                    datasource.import_columns()
-                    return datasource_detail(request,datasource.id)
-            else:
-                pass
+            try:            
+                if request.POST['add-form']:
+                   #Formulario para cargar un nuevo DataSet
+                   form = DataSetForm(request.POST, initial=initial)
+                   if form.is_valid():
+                        dataset = form.save()
+                        return dataset_detail(request, dataset.pk)
+            except MultiValueDictKeyError:
+                print "En el request no hay nada que sea add-form" 
+
+            try:
+                if request.POST['add-datasource']:
+                    form_add_datasource = DataSourceForm(request.POST, request.FILES, initial=initial)
+                    if form.is_valid():
+                        datasource = form_add_datasource.save()
+                        datasource.import_columns()
+                        return datasource_detail(request,datasource.id)
+            except MultiValueDictKeyError:
+                print "En el request no hay nada que sea add-datasource"  
+
 
         form = DataSetForm(initial=initial)
 
@@ -94,6 +106,7 @@ def index(request):
                 'form_export':form_export,
                 'form_add_var':form_add_var,
                 'variables':Column.objects.all(),
+                'datasources':DataSource.objects.all(),
             }
         )
 
@@ -122,6 +135,8 @@ def dataset_detail(request,id):
             'form_import': form,
         }
     )
+
+
 
 def datasource_detail(request, id):
 

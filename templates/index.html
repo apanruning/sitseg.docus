@@ -33,11 +33,10 @@
         {% if user.is_staff %}
 
             <menu id="controls">
-            <a href="#variables" class="control">Variables</a>            
+            <a href="#variables">Variables</a>            
             <a href="#export" class="control">Exportar</a>
             <a href="#graficar" class="control">Graficar</a>
             <a href="#add-var" class="control">Agregar Variable</a>
-            <a href="#edit-var" class="control">Editar Variable</a>
             <a href="#add-form" class="control">Nuevo conjunto de datos</a>
             <a href="#add-datasource" class="control">Nueva Fuente de Datos</a>
             
@@ -64,30 +63,6 @@
                 <input type="submit" name="Guardar" value="Guardar"/>
             </form>
             {% endif %} 
-
-          {% if user.is_staff %}        
-            <div id="variables"> 
-                <legend> Variables </legend>
-                <ul>
-                {% for v in variables %}
-                    <li> <a href="/column/{{ v.id }}"> {{ v.name }} </a> {% if v.datasource %} - {{ v.datasource.name }} {% endif %} {% if v.datasource.dataset %} - v.datasource.dataset.name {% endif %} </li>
-                {% endfor %}
-                </ul>
-
-                
-
-            </div>
-          {% endif %}        
-
-          {% if user.is_staff %}        
-            <form id="edit-var" method="POST" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
-                <legend> Editar Variable </legend>
-                
-                {{ form_add_var.as_p }}
-                <a href="#edit-var" class="control">cerrar</a>   
-                <input type="submit" name="edit-var" value="Guardar"/>
-            </form>
-          {% endif %}        
 
           {% if user.is_staff %}        
             <form id="add-var" method="POST" action="." class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
@@ -119,8 +94,6 @@
           </form>
             
           {% endif %}
-
-        {% block page %}
           {% if user.is_staff %}
           <form id="add-form" method="post" action="." 
                 class="{{form.errors|yesno:'errors,valid'}}" enctype="multipart/form-data">{% csrf_token %}
@@ -131,20 +104,44 @@
               <input type="submit" name="Guardar" value="Crear"/>
           </form>
           {% endif %}   
-            {% autoescape off %}{{ comments }}{% endautoescape %} 
-
+        {% block page %}
+          {% autoescape off %}{{ comments }}{% endautoescape %} 
+          
+          {% if user.is_staff %}        
+          <fieldset>
+            <legend> Variables </legend>
+                <ul>
+                {% for v in variables %}
+                    <li> <a href="/column/{{ v.id }}"> {{ v.name }} {% if v.datasource %} - {{ v.datasource.name }} {% endif %} {% if v.datasource.dataset %} - v.datasource.dataset.name {% endif %} </a> </li>
+                {% endfor %}
+                </ul>
+          </fieldset>
+          {% endif %}        
+          <fieldset>  
+            <legend> Fuentes de Datos </legend>
             {% autopaginate dataset_list 10 %}
             <ul>
-            {% for dataset in dataset_list %}
+                {% for dataset in dataset_list %}
                 <li>
-                    <h2><a href="{{dataset.get_absolute_url}}">#{{dataset.pk}}-{{dataset.name}}</a></h2> 
+                    <h2><a href="{{dataset.get_absolute_url}}"><h4> {{dataset.pk}} </h4> {{dataset.name}}</a></h2> 
                 </li>
-            {% empty %}
+                {% empty %}
                 <li>No hay registros</li>
-            {% endfor %}        
+                {% endfor %}        
             </ul>
             {% paginate %}
-            
+          </fieldset>  
+          <fieldset>
+          <legend> Conjuntos de Datos </legend>
+            <ul>
+                {% for v in datasources %}
+                    <li> <a href="/datasource_detail/{{ v.id }}"> <h4> {{dataset.pk}} </h4> {{ v.name }} - {{ v.created }} </a> </li>
+                {% empty %}
+                    <li> No hay registros </li>
+                {% endfor %}
+            </ul>
+
+          </fieldset>
         {% endblock %}
         </section>
     </div>
