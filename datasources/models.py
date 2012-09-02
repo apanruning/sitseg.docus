@@ -30,11 +30,11 @@ class Annotation(models.Model):
 
 class Column(models.Model):
     name = models.CharField(max_length=200)
-    label = models.CharField(max_length=50, blank=True, null=True)
+    label = models.CharField(max_length=50, blank=True)
     created = models.DateTimeField(auto_now_add=True, editable = False)
-    datasource = models.ForeignKey('DataSource', blank=True, null=True)
+    datasource = models.ForeignKey('DataSource', blank=True)
     is_available = models.BooleanField(default=True,)
-    csv_index = models.IntegerField(blank=True, null=True,editable=False)
+    csv_index = models.IntegerField(blank=True, editable=False)
     data_type = models.CharField(max_length=200,blank=True)
     has_geodata = models.BooleanField(default=False)
 
@@ -343,8 +343,8 @@ class ValueInt(Value):
 
 class ValueText(Value):
     value = models.TextField()
-    area = models.ForeignKey(MaapArea, null=True, blank=True)
-    point = models.ForeignKey(MaapPoint, null=True, blank=True)
+    area = models.ForeignKey(MaapArea, blank=True,null=True)
+    point = models.ForeignKey(MaapPoint, blank=True, null=True)
 
 class ValueFloat(Value):
     value = models.FloatField()
@@ -357,11 +357,11 @@ class ValueDate(Value):
 
 class ValuePoint(Value):
     value = models.TextField()
-    point = models.ForeignKey(MaapPoint, null=True, blank=True)
+    point = models.ForeignKey(MaapPoint, blank=True, null=True)
     
 class ValueArea(Value):
     value = models.TextField()
-    area = models.ForeignKey(MaapArea, null=True, blank=True)
+    area = models.ForeignKey(MaapArea, blank=True, null=True)
     
 class Out(models.Model):
     text = models.TextField(blank=True)
